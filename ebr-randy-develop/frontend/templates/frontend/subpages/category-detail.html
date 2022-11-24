@@ -1,0 +1,1123 @@
+{% extends 'frontend/subpages/base.html'%}
+{% load review_card %}
+{% load static %}
+
+{% block title %}
+    {{ category.first.meta_title }}
+{% endblock %}
+
+{% block seoTag %}
+    <meta name="description" content="{{ category.first.description }}">
+    <meta name="theme-color" content="#80b600">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#80b600">
+	<meta name="msapplication-navbutton-color" content="#80b600">
+    <meta property='og:url' content='http://54.213.76.238/category/{{category.first.slug}}/' />
+    <meta property="fb:app_id" content="462030500496873" />
+
+    <meta property="og:locale" content="en_us" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{ category.first.meta_title }}" />
+    <meta property="og:description" content="{{ category.first.description }}" />
+    <meta property="og:site_name" content="ElectricBikeReview.com" />
+    <meta property="og:image" content="https://ebr-dev-bucket.s3.amazonaws.com/{{ category.first.icon_image }}" />
+	<meta name="twitter:card" content="summary" />
+    <meta name="twitter:description" content="{{ category.first.description }}" />
+    <meta name="twitter:title" content="{{ category.first.meta_title }}" />
+    <meta name="twitter:image" content="https://ebr-dev-bucket.s3.amazonaws.com/{{ category.first.icon_image }}" />
+    <meta name="twitter:site" content="@ebikereview" />
+{% endblock %}
+
+{% block body %}
+    <!-- Middle Area -->
+    <section class="middle_area">
+        <div class="filter-selected-options">
+            {% for child_category in category %}
+                <button class="btn filter-selected-databtn">
+                    <a href="javascript:void(0);" class="remove-category-cross" data-id="{{child_category.id}}" data-parent="{% if child_category.parent_category is None %}true{% else %}false{% endif %}"><img src="{% static 'assets/images/cross.png' %}" alt="cross" /></a>
+                    <span>{{child_category.name}}</span>
+                </button>
+            {% endfor %}
+            {% if total_reviews|length > 2 %}
+                <p class="search-res-text">{{ total_reviews }} Results:</p>
+            {% else %}
+                <p class="search-res-text">{{ total_reviews }} Result:</p>
+            {% endif %}
+        </div>
+        <script type="application/ld+json">
+            {{ seo_schema |safe }}
+        </script>
+        <div class="main-content">
+            <div class="row m-0">
+<!--                <div class="col-lg-8 col-xl-9 col-md-6 col-sm-6 p-0">-->
+                    <div class="left-side-content">
+                        <h3 class="section-title" data-id="{{ category.first.id }}">{{category.first.name}}</h3>
+                        <div class="img-cont-box">
+                            {% if category.first.icon_image %}
+                                <img src="https://ebr-dev-bucket.s3.amazonaws.com/{{ category.first.icon_image }}" alt="cycle" />
+                            {% endif %}
+                            <p class="desc_p" data-disc="{{category.first.short_description}}">
+                                <span>{{category.first.short_description}}</span>
+                                  <a href="javascript:void(0);" id="show-more-desc" style="display: none;" data-value="true">
+                                    Read More <i class="fa fa-angle-down"></i>
+                                  </a>
+                            </p>
+                        </div>
+                        <div class="product-card-wrapper">
+                            {% for featured_review in featured_reviews %}
+                                <div class="product-card-item">
+                                    <div class="protitle-wrapper">
+                                        <h4 class="product-title"><a href="/{{featured_review.brands.all.0.slug}}/{{featured_review.slug}}/">{{featured_review.name}}</a><span>Promoted</span></h4>
+                                        <p class="product-price">${{ featured_review.review_general_review.all.0.msrp|floatformat:"-3g" }}</p>
+                                    </div>
+                                    <div class="product-desc">
+                                        <p class="desc_1"><a href="/brand/{{featured_review.brands.all.0.slug}}/" class="ps-link">{{featured_review.brands.all.0.name}}</a></p>
+                                        <div class="data-price">
+                                            <div class="procard-lastdata">
+                                                {% for category in featured_review.categories.all %}
+                                                    <p class="desc_1">
+                                                      <a href="/category/{{category.slug}}">{{ category.slug | category_name_clean }}</a>
+                                                    </p>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="owl-carousel product-img-slider">
+                                        <a href="/{{featured_review.brands.all.0.slug}}/{{featured_review.slug}}">
+                                            <img src="{{ featured_review.featured_image_thumbnail.url }}" class="pro-card-img active-cycle" alt="{{ featured_review.name }}"  />
+                                        </a>
+                                        {% for reviewgalley in featured_review.review_galley_review.all|dictsort:"order" %}
+                                            <a href="/{{featured_review.brands.all.0.slug}}/{{featured_review.slug}}">
+                                                <img src="{{reviewgalley.image.thumbnail_image.url}}" class="pro-card-img" alt="{{ reviewgalley.image.title }}"  />
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                    <!-- <button class="btn compare-btn">
+                                                <img src="./assets/images/plus.png" alt="plus" />
+                                            </button> -->
+                                    <div class="pro-meta-data">
+                                        <div class="pro-metadata-item">
+                                            <p class="prometa-title">Motor Type</p>
+                                            <h6>{{ featured_review.review_general_review.all.0.motor_type }}</h6>
+                                        </div>
+                                        <div class="pro-metadata-item">
+                                            <p class="prometa-title">Battery Size</p>
+                                            <h6>{{ featured_review.review_general_review.all.0.demo_battery_watt_hours|floatformat:"-2g" }} Wh</h6>
+                                        </div>
+                                        <div class="pro-metadata-item">
+                                            <p class="prometa-title">Ebike Type</p>
+                                            {% if featured_review.review_general_review.all.0.demo_bike_class.all|length > 1 %}
+                                                <h6 class="dotted-class">{{ featured_review.review_general_review.all.0.demo_bike_class.all.0 }}<span>···</span></h6>
+                                            {% else %}
+                                                <h6>{{ featured_review.review_general_review.all.0.demo_bike_class.all.0 }}</h6>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="procard-btns">
+                                        <button class="btn theme-btn grey-btn">
+                                            <a href="/{{featured_review.brands.all.0.slug}}/{{featured_review.slug}}">VIEW DETAILS</a>
+                                        </button>
+                                        {% if featured_review.id in compare_review %}
+                                          <button class="btn theme-btn grey-btn compare-btn added" data-id="{{featured_review.id}}"><span>-</span>REMOVE</button>
+                                        {% else %}
+                                          <button class="btn theme-btn grey-btn compare-btn" data-id="{{featured_review.id}}"><span>+</span>COMPARE</button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                            {% for review in reviews %}
+                                <div class="product-card-item">
+                                    <div class="protitle-wrapper">
+                                        <h4 class="product-title"><a href="/{{review.brands.all.0.slug}}/{{review.slug}}/">{{ review.name }}</a></h4>
+                                        <p class="product-price">${{ review.review_general_review.all.0.msrp|floatformat:"-3g" }}</p>
+                                    </div>
+                                    <div class="product-desc">
+                                        {% for brand in review.brands.all %}
+                                            <p class="desc_1">
+                                              <a href="/brand/{{review.brands.all.0.slug}}" class="ps-link">{{brand.name}}</a>
+                                            </p>
+                                        {% endfor %}
+                                        <div class="data-price">
+                                            <div class="procard-lastdata">
+                                                {% for category in review.categories.all %}
+                                                    <p class="desc_1">
+                                                      <a href="/category/{{category.slug}}">{{ category.slug | category_name_clean }}</a>
+                                                    </p>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="owl-carousel product-img-slider">
+                                        <a href="/{{review.brands.all.0.slug}}/{{review.slug}}/">
+                                            <img src="{{ review.featured_image_thumbnail.url }}" class="pro-card-img" alt="{{ review.name }}"  />
+                                        </a>
+                                        {% for reviewgalley in review.review_galley_review.all|dictsort:"order" %}
+                                            <a href="/{{review.brands.all.0.slug}}/{{review.slug}}/">
+                                                <img src="{{reviewgalley.image.thumbnail_image.url}}" class="pro-card-img" alt="{{ reviewgalley.image.title }}"  />
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                    <!-- <button class="btn compare-btn">
+                                                <img src="./assets/images/plus.png" alt="plus" />
+                                            </button> -->
+                                    <div class="pro-meta-data">
+                                        <div class="pro-metadata-item">
+                                            <p class="prometa-title">Motor Type</p>
+                                            <h6>{{ review.review_general_review.all.0.motor_type }}</h6>
+                                        </div>
+                                        <div class="pro-metadata-item">
+                                            <p class="prometa-title">Battery Size</p>
+                                            <h6>{{ review.review_general_review.all.0.demo_battery_watt_hours|floatformat:"-2g" }} Wh</h6>
+                                        </div>
+                                        <div class="pro-metadata-item">
+                                            <p class="prometa-title">Ebike Type</p>
+                                            {% if review.review_general_review.all.0.demo_bike_class.all|length > 1 %}
+                                                <h6 class="dotted-class">{{ review.review_general_review.all.0.demo_bike_class.all.0 }}<span>···</span></h6>
+                                            {% else %}
+                                                <h6>{{ review.review_general_review.all.0.demo_bike_class.all.0 }}</h6>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="procard-btns">
+                                        <button class="btn theme-btn grey-btn">
+                                            <a href="/{{review.brands.all.0.slug}}/{{review.slug}}">VIEW DETAILS</a>
+                                        </button>
+                                        {% if review.id in compare_review %}
+                                            <button class="btn theme-btn grey-btn compare-btn added" data-id="{{review.id}}"><span>-</span>REMOVE</button>
+                                        {% else %}
+                                            <button class="btn theme-btn grey-btn compare-btn" data-id="{{review.id}}"><span>+</span>COMPARE</button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        {% if reviews or featured_reviews %}
+                            {% if pages|length > 1 %}
+                              <ul class="pagination justify-content-center pagination-sm">
+                                    <li class="page-item">
+                                        {% if reviews.has_previous %}
+                                          <a class="page-link cust-arrow" href="?page={{ reviews.previous_page_number }}&order={{request.GET.order}}" aria-label="Previous">
+                                            <span aria-hidden="true">&lsaquo;</span>
+                                          </a>
+                                        {% else %}
+                                          <a class="page-link cust-arrow disabled" href="javascript:void(0);" aria-label="Previous">
+                                            <span aria-hidden="true">&lsaquo;</span>
+                                          </a>
+                                        {% endif %}
+                                    </li>
+
+                                    {% if reviews.number == 1 %}
+                                        {% if reviews.paginator.num_pages <= 5 %}
+                                            {% for page in pages %}
+                                                {% if  page == reviews.number %}
+                                                    <li class="page-item"><a class="page-link active">{{ page }}</a></li>
+                                                {% elif reviews.number != reviews.paginator.num_pages %}
+                                                    <li class="page-item"><a class="page-link" href="?page={{ page }}&order={{request.GET.order}}">{{ page }}</a></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <li class="page-item"><a class="page-link active">{{ reviews.number }}</a></li>
+                                            <li class="page-item"><a class="page-link" href="?page={{ reviews.number|add:'1' }}&order={{request.GET.order}}">{{ reviews.number|add:"1" }}</a></li>
+                                            <li class="page-item"><a class="page-link" href="?page={{ reviews.number|add:'2' }}&order={{request.GET.order}}">{{ reviews.number|add:"2" }}</a></li>
+                                            <li class="page-item"><a class="page-link" href="?page={{ reviews.number|add:'3' }}&order={{request.GET.order}}">{{ reviews.number|add:"3" }}</a></li>
+                                            <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                            <li class="page-item"><a class="page-link" href="?page={{ reviews.paginator.num_pages }}&order={{request.GET.order}}">{{ reviews.paginator.num_pages }}</a></li>
+                                        {% endif %}
+                                        <!-- Second page pagination code. -->
+                                    {% elif reviews.number > 1 and reviews.number < 4 %}
+                                        {% if reviews.paginator.num_pages <= 5 %}
+                                            {% for page in pages %}
+                                                {% if  page == reviews.number %}
+                                                    <li class="page-item"><a class="page-link active" href="javascript:void(0);">{{ page }}</a></li>
+                                                {% else %}
+                                                    <li class="page-item"><a class="page-link" href="?page={{ page }}&order={{request.GET.order}}">{{ page }}</a></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <li class="page-item"><a class="page-link" href="?page=1&order={{request.GET.order}}">1</a></li>
+                                            {% for page in pages %}
+                                                {% if page >= 2 and page <= 4 %}
+                                                    {% if  page == reviews.number %}
+                                                        <li class="page-item"><a class="page-link active" href="javascript:void(0);">{{ page }}</a></li>
+                                                    {% else %}
+                                                        <li class="page-item"><a class="page-link" href="?page={{ page }}&order={{request.GET.order}}">{{ page }}</a></li>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                            <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                            <li class="page-item"><a class="page-link" href="?page={{ reviews.paginator.num_pages }}&order={{request.GET.order}}">{{ reviews.paginator.num_pages }}</a></li>
+                                        {% endif %}
+
+                                    {% elif reviews.number >= 4 and reviews.number <= reviews.paginator.num_pages|add:'-3' %}
+                                        <li class="page-item"><a class="page-link" href="?page=1&order={{request.GET.order}}">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                            {% for page in pages %}
+                                                {% if reviews.number >= 4 and reviews.number <= reviews.paginator.num_pages|add:'-3' %}
+                                                    {% if page == reviews.number %}
+                                                        <li class="page-item"><a class="page-link" href="?page={{ reviews.previous_page_number }}&order={{request.GET.order}}">{{ reviews.previous_page_number }}</a></li>
+                                                        <li class="page-item"><a class="page-link active" href="javascript:void(0);">{{ page }}</a></li>
+                                                        <li class="page-item"><a class="page-link" href="?page={{ reviews.next_page_number }}&order={{request.GET.order}}">{{ reviews.next_page_number }}</a></li>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                            <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                            <li class="page-item"><a class="page-link" href="?page={{ reviews.paginator.num_pages }}&order={{request.GET.order}}">{{ reviews.paginator.num_pages }}</a></li>
+                                    <!-- last pages -->
+                                    {% elif reviews.number > reviews.paginator.num_pages|add:'-3' and reviews.number < reviews.paginator.num_pages %}
+                                        {% if reviews.paginator.num_pages <= 5 %}
+                                            {% for page in pages %}
+                                                {% if  page == reviews.number %}
+                                                    <li class="page-item"><a class="page-link" href="javascript:void(0);">{{ page }}</a></li>
+                                                {% elif reviews.number != reviews.paginator.num_pages %}
+                                                    <li class="page-item"><a class="page-link" href="?page={{ page }}&order={{request.GET.order}}">{{ page }}</a></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <li class="page-item"><a class="page-link" href="?page=1&order={{request.GET.order}}">1</a></li>
+                                            <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                            {% for page in pages %}
+                                                {% if page >= reviews.paginator.num_pages|add:'-3' and reviews.number < reviews.paginator.num_pages %}
+                                                    {% if  page == reviews.number %}
+                                                        <li class="page-item"><a class="page-link active" href="javascript:void(0);">{{ page }}</a></li>
+                                                    {% else %}
+                                                        <li class="page-item"><a class="page-link" href="?page={{ page }}&order={{request.GET.order}}">{{ page }}</a></li>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    <!--  -->
+                                    {% elif reviews.number == reviews.paginator.num_pages %}
+                                        {% if reviews.paginator.num_pages <= 5 %}
+                                            {% for page in pages %}
+                                                {% if  page == reviews.number %}
+                                                    <li class="page-item"><a class="page-link active" href="javascript:void(0);">{{ page }}</a></li>
+                                                {% else %}
+                                                    <li class="page-item"><a class="page-link" href="?page={{ page }}&order={{request.GET.order}}">{{ page }}</a></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <li class="page-item"><a class="page-link" href="?page=1&order={{request.GET.order}}">1</a></li>
+                                            <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                            <li class="page-item"><a class="page-link" href="?page={{ reviews.paginator.num_pages|add:'-3' }}&order={{request.GET.order}}">{{ reviews.paginator.num_pages|add:'-3' }}</a></li>
+                                            <li class="page-item"><a class="page-link" href="?page={{ reviews.paginator.num_pages|add:'-2' }}&order={{request.GET.order}}">{{ reviews.paginator.num_pages|add:'-2' }}</a></li>
+                                            <li class="page-item"><a class="page-link" href="?page={{ reviews.paginator.num_pages|add:'-1' }}&order={{request.GET.order}}">{{ reviews.paginator.num_pages|add:'-1' }}</a></li>
+                                            <li class="page-item"><a class="page-link active" href="javascript:void(0);">{{ reviews.paginator.num_pages }}</a></li>
+                                        {% endif %}
+                                    {% endif %}
+
+                                    <li class="page-item">
+                                        {% if reviews.has_next %}
+                                          <a class="page-link cust-arrow" href="?page={{ reviews.next_page_number }}&order={{request.GET.order}}" aria-label="Next">
+                                            <span aria-hidden="true">&rsaquo;</span>
+                                          </a>
+                                        {% else %}
+                                            <a class="page-link cust-arrow disabled" href="javascript:void(0);" aria-label="Next">
+                                                <span aria-hidden="true">&rsaquo;</span>
+                                            </a>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            {% endif %}
+                        {% else %}
+                             <h4 class="pagination justify-content-center pagination-sm">No reviews for this category!</h4>
+                        {% endif %}
+
+                        <div class="page_section ebr_comments_wrapper">
+                            <div class="ebr_comments">
+                                <div class="prev_main_heading">
+                                    <h2>Comments for {{ category.first.name }} ({{ total_comment }})</h2>
+                                    <button type="button" id="filter" class="btn btn-popover btn-primary btn-lg" data-toggle="popover" data-trigger="focus" data-placement="bottom">
+                                        <img src="{% static 'assets/images/filter.png' %}" alt="filter-img" />Sort BY
+                                    </button>
+                                    <div id="filter-content" class="dropdown-menu" style="display: none;">
+                                        <ul class="custmenu-list">
+                                            <li>
+                                                <a href="javascript:void(0);" class="dropdown-item" onclick="sort_by('most_valuable')">Top Comments</a>
+                                            </li>
+                                            <li>
+                                                <a href="javascript:void(0);" class="dropdown-item" onclick="sort_by('newest_first')">Newest First</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="comments_inner">
+                                    <div class="replied_comments">
+
+                                    </div>
+                                    {% if total_comment|add:"-2" > 0 %}
+                                        <div class="see_more_btn comment-readmore-link">
+                                          <a href="javascript:;" id="show_more_comments" data-review="{{ comment_type_id }}">
+                                              Show {% if total_comment >= 3 %} {{total_comment|add:"-2"}} {% else %} {{total_comment}} {% endif %} More {% if total_comment|add:"-2" > 1 %} Comments {% else %} Comment {% endif %} <i class="fa fa-angle-down"></i>
+                                          </a>
+                                        </div>
+                                    {% elif total_comment|add:"-2" < -1 %}
+                                        <h4>No comment for this category!</h4>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Comment and reply form -->
+                        <div class="ebr_post_comment" id="postcomment" >
+                            <div class="prev_main_heading">
+                                <h2>Post a Comment for {{ category.first.name }}</h2>
+                            </div>
+                            <div class="comment_form_div">
+                                <div class="cancel_reply_link mb-3 d-none">
+                                    <a href="javascript:void(0);">Cancel reply
+                                    </a>
+                                  </div>
+                                <p class="sub_title">Name and email are optional. Your email address will not be published.</p>
+                                <form method="POST" id="comment_reply_form" enctype="multipart/form-data">
+                              {% csrf_token %}
+                              <div class="row">
+                                <input type="hidden" id="comment_type_id" name="comment_type_id" value="{{category.first.id}}">
+                                <input type="hidden" id="parent_id" name="replied_comment">
+                                <div class="col-lg-6 col-md-12 ps-0">
+                                  <div class="ebr_form_block">
+                                    <div class="ebr_inputs form-group">
+                                      <input type="text" placeholder="Name" class="form-control" name="name" id="name" autocomplete="off">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12 pl_0">
+                                  <div class="ebr_form_block">
+                                    <div class="ebr_inputs form-group">
+                                      <input type="text" placeholder="Email" class="form-control" name="email" id="email" autocomplete="off">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-lg-12 col-md-12 ps-0">
+                                <div class="ebr_form_block">
+                                  <div class="ebr_inputs form-group">
+                                    <!-- <textarea placeholder="Comments" class="form-control" rows="4"></textarea> -->
+                                    <div class="wrapper" style="display: block;position: relative;">
+
+                                        <!-- Editor Control Box -->
+                                        <div class="editor-controls" id="editor-controls">
+
+                                            <!-- Inline Styles -->
+                                            <div class="rte editor button-group" id="inlineStyleGroup">
+                                                <!-- Bold -->
+                                                <a class="rte button editor" id="bold" title="Bold" onclick="boldSel()"><i class="fa fa-fw fa-bold"></i></a>
+                                                <!-- Italicize -->
+                                                <a class="rte button editor" id="italic" title="Italicize" onclick="italicSel()"><i class="fa fa-fw fa-italic"></i></a>
+                                                <!-- Underline -->
+                                                <a class="rte button editor" id="underline" title="Underline" onclick="underlineSel()"><i class="fa fa-fw fa-underline"></i></a>
+                                                <!-- Strikethrough -->
+                                                <a class="rte button editor" id="strikethrough" title="Strikethrough" onclick="strikethroughSel()"><i class="fa fa-fw fa-strikethrough"></i></a>
+                                            </div>
+
+                                            <!-- Lists -->
+                                            <div class="button-group" id="listsGroup">
+                                                <!-- Unordered List -->
+                                                <a class="rte button editor" id="unordered" title="Bulleted List" onclick="newUlSel()"><i class="fa fa-fw fa-list-ul"></i></a>
+                                                <!-- Ordered List -->
+                                                <a class="rte button editor" id="ordered" title="Numbered List" onclick="newOlSel()"><i class="fa fa-fw fa-list-ol"></i></a>
+                                            </div>
+
+                                            <!-- Hyperlinks -->
+                                            <div class="button-group" id="linkGroup">
+                                                <!-- Hyperlink -->
+                                                <a class="rte button editor" id="link" title="Add Hyperlink" onclick="linkSel()"><i class="fa fa-fw fa-link"></i></a>
+                                                <!-- Remove Hyperlink -->
+                                                <a class="rte button editor" id="unlink" title="Remove Hyperlink" onclick="unlinkSel()"><i class="fa fa-fw fa-unlink"></i></a>
+                                            </div>
+
+                                        </div>
+
+                                        <!-- Editor text box -->
+                                        <!-- <textarea class="editor-richText-box form-control" id="editor-richText-box" name="richTextBox" style="display:none" wrap="hard" placeholder="Comments" rows="4"></textarea> -->
+                                        <iframe class="editor-richText-box" id="editor-richText-box" name="richTextBox"></iframe>
+                                        <small class='description_error' style="color: red; display: none;">Please enter description</small>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              </div>
+                              <div class="comment_footer">
+                                <div class="ebr_checkbox">
+                                  <div class="form-check">
+                                    <label class="form-check-label">
+                                      <input type="checkbox" class="form-check-input" value="true" id="is_notification" name="is_notification"> Receive email notification when someone replies.
+                                    </label>
+                                  </div>
+                                </div>
+                                <div class="post_btn">
+                                  <button type="submit" class="add_review_btn btn theme-btn">Post Comment</button>
+                                </div>
+                              </div>
+                            </form>
+                            </div>
+                          <div class="comment-submitted d-none">
+                              <p>Comment has been submitted successfully.</p>
+                              <p>Comment is being held for moderation and will be posted after it has been reviewed</p>
+                          </div>
+                        </div>
+                    </div>
+<!--                </div>-->
+                {% include 'frontend/include/right_side_section.html' %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+
+{% block script %}
+
+    <script>
+        const slider = document.querySelector('.filter-selected-options');
+        let mouseDown = false;
+        let startX, scrollLeft;
+
+        let startDragging = function (e) {
+          mouseDown = true;
+          startX = e.pageX - slider.offsetLeft;
+          scrollLeft = slider.scrollLeft;
+        };
+        let stopDragging = function (event) {
+          mouseDown = false;
+        };
+
+        slider.addEventListener('mousemove', (e) => {
+          e.preventDefault();
+          if(!mouseDown) { return; }
+          const x = e.pageX - slider.offsetLeft;
+          const scroll = x - startX;
+          slider.scrollLeft = scrollLeft - scroll;
+        });
+
+        // Add the event listeners
+        slider.addEventListener('mousedown', startDragging, false);
+        slider.addEventListener('mouseup', stopDragging, false);
+        slider.addEventListener('mouseleave', stopDragging, false);
+
+
+        function GetUserIP(){
+          var ret_ip;
+          $.ajaxSetup({async: false});
+          $.get('https://api.ipify.org/?format=json', function(r){
+            ret_ip = r.ip;
+          });
+          return ret_ip;
+        }
+
+        $(document).ready(function(){
+            var category = document.querySelector('.left-side-content').querySelector('.section-title');
+            var category_name = category.innerText;
+            var category_id = category.getAttribute('data-id');
+            $.ajax({
+                url: '/visitor_history/',
+                method: 'GET',
+                data: {
+                    "ip": GetUserIP(),
+                    "type": 'category',
+                    "type_name": category_name,
+                    "type_name_id": category_id,
+                    "type_url": window.location.href,
+                },
+                async: false,
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+            countLines();
+        });
+
+        function countLines() {
+           var el = $("p.desc_p span");
+           el.each(function(e){
+            $(this).css({
+                'display': '',
+                '-webkit-line-clamp': '',
+                '-webkit-box-orient': '',
+                'overflow': '',
+                });
+            var divHeight = $(this).outerHeight();
+            var lineHeight = parseInt($(this).css("line-height"));
+            var lines = divHeight / lineHeight;
+            if(lines > 3){
+                $(this).css({
+                'display': '-webkit-box',
+                '-webkit-line-clamp': '3',
+                '-webkit-box-orient': 'vertical',
+                'overflow': 'hidden',
+                });
+                $(this).siblings().css('display', 'block');
+            }
+           });
+        }
+
+        $( window ).resize(function() {
+            countLines();
+        });
+
+        $(".compare-btn").on('click', function () {
+            var get_cookies = $.cookie("id")
+            console.log(get_cookies)
+            var id_list = []
+            var data_id = $(this).data('id');
+            if (get_cookies == undefined || get_cookies == ""){
+                if ($(this).hasClass('added') === true) {
+                    for(var i=0; i<id_list.length; i++){
+                        if (id_list[i] === data_id) {
+                            id_list.splice(i, 1);
+                        }
+                    }
+                }else{
+                    id_list.push(data_id)
+                }
+                $.cookie("id", JSON.stringify(id_list), { path: '/' });
+                $('.count-icon').html(id_list.length)
+            }else{
+                get_cookies = JSON.parse(get_cookies)
+                if ($(this).hasClass('added') === true) {
+                   for(var i=0; i<get_cookies.length; i++){
+                        if (get_cookies[i] === data_id) {
+                            get_cookies.splice(i, 1);
+                        }
+                    }
+                }else{
+                    get_cookies.push(data_id)
+                }
+                $.cookie("id", JSON.stringify(get_cookies), { path: '/' });
+                $('.count-icon').html(get_cookies.length)
+            }
+        })
+
+        $(document).on('click', ".reply_comment", function(){
+            $('#parent_id').attr('value', $(this).data('parentid'))
+            $(".cancel_reply_link").removeClass('d-none')
+        });
+
+        $(".cancel_reply_link").on('click', function(){
+            $('#parent_id').val("");
+            $(".cancel_reply_link").addClass('d-none')
+        })
+
+        var is_notification_checked = true;
+        $("#comment_reply_form").on('submit', function(e){
+            e.preventDefault();
+
+            var name = $.trim($("#name").val());
+            var email = $.trim($("#email").val());
+            // var description = $("#description").val();
+            var description = $('#editor-richText-box').contents().find('body').html();
+            var comment_type_id = $("#comment_type_id").val();
+            var user_ip = GetUserIP();
+            var parent_id = $("#parent_id").val();
+            var is_notification = $("#is_notification").prop('checked');
+            var csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
+            var regex = /(<\/?(?:span|div|b|i|u|p|pre|ol|ul|li|strong|a|em|small)[^>]*>)|<[^>]+>/ig
+            var final_description = description.replace(regex,'$1').replaceAll(/<input(.*?)>/gim, " ");
+            if(final_description.replace(/\&nbsp;/g, '').trim().length > 1){
+                $(".add_review_btn").prop("disabled", true);
+                var data = {
+                    'csrf_token':csrf_token,
+                    'name': name.length>1? name : "Anonymous",
+                    'email':email,
+                    'description':final_description,
+                    'comment_type_id':comment_type_id,
+                    'comment_type': 'Category',
+                    'user_ip':user_ip,
+                    'parent_id':parent_id,
+                    'is_notification':is_notification,
+                    'user_ip':GetUserIP(),
+                }
+
+                $.ajax({
+                    url:'/add-new-comment/',
+                    method: 'POST',
+                    data: data,
+                    async: true,
+                    beforeSend: function(msg){
+                        clear_comment_form()
+                        $(".comment-submitted").removeClass("d-none");
+                    },
+                    success: function(data){
+                        $("#email").attr('required',false);
+                        setTimeout(function(){
+                            is_notification_checked = true;
+                            $(".comment-submitted").addClass("d-none");
+                            $(".comment_form_div").show()
+                        }, 5000);
+                    }
+                })
+            }else{
+                $('.description_error').css('display', 'block');
+            }
+            return false;
+        });
+
+        function clear_comment_form(){
+            $(".cancel_reply_link").click();
+            $(".comment_form_div").hide();
+            $("#comment_reply_form")[0].reset();
+            $(".add_review_btn").prop("disabled", false);
+            $('#editor-richText-box').contents().find('body').html('');
+            $('.description_error').css('display', 'none');
+        }
+
+        $("#email").on("keyup", function(){
+            var EmailRegex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if(is_notification_checked == true){
+                $("#is_notification").prop('checked', true);
+            }
+
+            if($("#is_notification").prop("checked") == true && $(this).val() == ""){
+                $(this).css("border-color", "red");
+                $(this).attr("placeholder", "Email is Requeired now.");
+                $(this).attr('required',true);
+            } else if($("#is_notification").prop("checked") == false && $(this).val() == ""){
+                $(this).css("border-color", "");
+            } else if($("#is_notification").prop("checked") == true && EmailRegex.test($(this).val()) === true){
+                $(this).css("border-color", "");
+            } else if($("#is_notification").prop("checked") == true && EmailRegex.test($(this).val()) === false){
+                $(this).css("border-color", "red");
+                $(this).attr("placeholder", "Email is Requeired now.");
+                $(this).attr('required',true);
+            } else if($("#is_notification").prop("checked") == false && EmailRegex.test($(this).val()) === true){
+                $(this).css("border-color", "");
+            } else if($("#is_notification").prop("checked") == false && EmailRegex.test($(this).val()) === false){
+                $(this).css("border-color", "red");
+            }
+            is_notification_checked = false;
+        })
+
+        $("#is_notification").on("click", function(){
+            var EmailRegex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if(!$(this).is(":checked")){
+                $("#is_notification").val("False")
+                $("#email").css("border-color", "");
+                $("#email").attr('required',false);
+                $("#email").attr("placeholder", "Email");
+            } else if ($(this).is(":checked")){
+                $("#is_notification").val("True")
+                $("#email").attr('required',true);
+                if(EmailRegex.test($("#email").val()) === false){
+                    $("#email").css("border-color", "red");
+                    $("#email").attr("placeholder", "Email is Requeired now.");
+                }
+            }
+        })
+
+        function display_comments(data){
+            $.ajax({
+                url:'/display-comments/',
+                method:"GET",
+                data: data,
+                success:function(data){
+                    $(".replied_comments").append(data)
+                }
+            })
+        }
+
+        $(document).ready(function(){
+            var category = document.querySelector('.left-side-content').querySelector('.section-title');
+            var category_name = category.innerText;
+            var category_id = category.getAttribute('data-id');
+            var data = {
+                'ip': GetUserIP(),
+                'comment_type': 'Category',
+                'comment_type_id': category_id,
+            }
+            display_comments(data)
+        })
+
+        $(document).on('click', '.sub_comments', function(){
+            var parent_comment_id = $(this).data("parent")
+            var is_sub_comment = $(this).data("issubcomment")
+
+            var data = {
+                'ip':GetUserIP(),
+                'parent_comment_id':parent_comment_id,
+                'is_sub_comment': is_sub_comment
+            }
+
+            //$(this).hide()
+            console.log($(this).parent(), is_sub_comment)
+
+            $.ajax({
+                url:'/display-sub-comments/',
+                method:'GET',
+                data:data,
+                context: this,
+                success:function(data){
+                    if(is_sub_comment == 'True'){
+                        $(this).parent().replaceWith(data);
+                    } else{
+                        $(this).parent().replaceWith(data);
+                    }
+                }
+            })
+        })
+
+        $(document).on("click", "#show_more_comments", function(){
+            $(this).toggleClass('all_comments')
+            var comment_filter = $("#comment_filter").val()
+            if($("#show_more_comments").html() != "Less comments"){
+                display_show_more_button = $("#show_more_comments").html()
+            }
+            var all_comments;
+
+            if($(this).hasClass('all_comments') === true){
+                $("#show_more_comments").html("Less comments")
+                $(".replied_comments").empty()
+                all_comments = 'True'
+            } else {
+                $("#show_more_comments").html(`${display_show_more_button}`)
+                $(".replied_comments").empty()
+                all_comments = 'False'
+            }
+
+            var category = document.querySelector('.left-side-content').querySelector('.section-title');
+            var category_id = category.getAttribute('data-id');
+            var data = {
+                'ip': GetUserIP(),
+                'comment_type': 'Category',
+                'comment_type_id': category_id,
+                'all_comments' : all_comments,
+                'comment_filter': comment_filter,
+            }
+
+            display_comments(data)
+        })
+
+        $(document).on('click', "a.btn.theme-btn.helpfulbtn", function(){
+          $(this).toggleClass("helpbtnactive");
+          $(this).parents("ul.comment_btns").parent(".comment_inner").parent(".cm_right").parent(".comment_head").siblings(".download_box").find(".icon").toggleClass("active-icon");
+        });
+         $(document).on('click', ".download_box .icon svg", function(){
+          $(this).parents(".icon").parents(".download_box").siblings(".comment_head").children(".cm_right").children(".comment_inner").children("ul.comment_btns").find("a.btn.theme-btn.helpfulbtn").toggleClass("helpbtnactive");
+          $(this).parents(".icon").toggleClass("active-icon");
+        });
+
+        $(document).on('click', '.comment_upvote', function(){
+            var comment_id = $(this).data('id')
+            $.ajax({
+                url: '/comment/upvote',
+                method: 'GET',
+                data: {
+                    "ip": GetUserIP(),
+                    "comment_type": 'Category',
+                    "comment_id": comment_id,
+                },
+                async: false,
+                success: function (data) {
+                    console.log(data);
+                }
+            })
+        });
+
+        function sort_by(name){
+            $('#comment_filter').val(name);
+            var all_comments;
+            var category = document.querySelector('.left-side-content').querySelector('.section-title');
+            var category_id = category.getAttribute('data-id');
+            if($("#show_more_comments").html() != "Less comments"){
+                display_show_more_button = $("#show_more_comments").html()
+            }
+
+            if($("#show_more_comments").hasClass('all_comments') === true){
+                $("#show_more_comments").html("Less comments")
+                $(".replied_comments").empty()
+                all_comments = 'True'
+            } else {
+                $("#show_more_comments").html(`${display_show_more_button}`)
+                $(".replied_comments").empty()
+                all_comments = 'False'
+            }
+
+            var data = {
+                'ip':GetUserIP(),
+                'comment_type': 'Category',
+                'comment_type_id': category_id,
+                'all_comments' : all_comments,
+                'comment_filter': name,
+            }
+            $(".replied_comments").empty()
+            display_comments(data)
+        }
+
+        $('#show-more-desc').on('click', function () {
+            var show_type = $(this).data('value');
+            if(show_type == 'true'){
+                $('.desc_p span').css({
+                    'display': '',
+                    '-webkit-line-clamp': '',
+                    '-webkit-box-orient': '',
+                    'overflow': '',
+                });
+                $(this).data('value', 'false');
+                $(this).html('Show Less <i class="fa fa-angle-up"></i>');
+                $('.desc_p span').text(`${$('.desc_p').data('disc')}`)
+            }else{
+              countLines();
+              $(this).data('value', 'true');
+                $(this).html('Read More <i class="fa fa-angle-down"></i>');
+            }
+        })
+
+        var category_id_list = []
+        $(".remove-category-cross").on('click', function(){
+            console.log("helooooooosssssssss", $(this).data("parent"))
+            if($(this).data("parent") == true){
+                var child_category = []
+                $(this).parent().siblings('.filter-selected-databtn').each(function(e){
+                    child_category.push($(this).children('.remove-category-cross').data("id"))
+                });
+                if(child_category.length == 0){
+                    window.location.href = '/'
+                }else{
+                    window.location.href = `/search/?categories=${child_category.join()}`
+                }
+            }else{
+               var get_removed_cookies = $.cookie("remove_category_id");
+                if (get_removed_cookies == undefined || get_removed_cookies == ""){
+                    category_id_list.push(parseInt($(this).data("id")))
+                    $.cookie("remove_category_id", category_id_list, { path: '/' });
+                }
+                else if(get_removed_cookies){
+                    var new_cookies = $.map(get_removed_cookies.split(","), function(val){return parseInt(val);})
+                    new_cookies.push($(this).data('id'))
+                    $.cookie("remove_category_id", new_cookies, { path: '/' });
+                }
+                window.location.href = ''
+            }
+        })
+
+
+    </script>
+
+    <script>
+      /*Handles functionality for rich text editor web component.*/
+      $(document).ready(function(){
+      	// Call iFrameReady function
+      	iFrameReady();
+
+      	// Handle Editor Permissions
+      	setPermissions(1,1,1,1,1,1,1,1,1,1,1);
+
+      	// Handle text file import event
+      	$("#fileImport").change(function() {
+      		var fr = new FileReader();
+      		console.log("This = " + this);
+      		fr.onload = function() {
+      			loadContent(this.result);
+      			console.log("This.result = " + this.result);
+      		};
+      		fr.readAsText(this.files[0]);
+      		console.log("This.Files[0] = " + this.files[0]);
+      	});
+
+
+      	// Load content
+      	//loadContent("This is <i>Awesome</i>!");
+
+      	// Preformat text font
+      	$('.editor-richText-box').ready(function() {
+      		richTextBox.document.execCommand('fontName',false,'sans-serif');
+      	})
+
+      	// Dropdown Functionality
+      	// font family
+      	$('#fontFamily').change(function() {
+      		var fontFamily = this.value;
+      		// Match dropdown box style to selected color
+      		$(this).css('font-family',fontFamily);
+
+      		// Set selected color
+      		richTextBox.document.execCommand('fontName',false,fontFamily);
+      	});
+
+      	$('#parStyle').change(function() {
+      		richTextBox.document.execCommand('formatBlock',false,this.value);
+      	});
+
+      	$('#fontSize').change(function() {
+      		richTextBox.document.execCommand('fontSize',false,this.value);
+      	});
+
+      	$('#textColor').change(function() {
+      		var colorValue = this.value;
+      		var textColor = $(this).css('color');
+      		console.log("TextColor: ",textColor);
+      		if (colorValue == "CUSTOM") {
+      			// Prompt for Custom Color
+      			colorValue = prompt("Enter the HEX value or RGBA value: ","");
+      		}
+      		// Match dropdown box style to selected color
+      		$(this).css('background-color',colorValue);
+
+      		// Set selected color
+      		richTextBox.document.execCommand('foreColor',false,colorValue);
+      	});
+
+      	$('#textHilight').change(function() {
+      		var color = this.value;
+      		if (color == "CUSTOM") {
+      			// Prompt for Custom Color
+      			color = prompt("Enter the HEX value or RGBA value: ","");
+      		}
+      		richTextBox.document.execCommand('foreColor',false,color);
+      	});
+
+      });
+
+      /* FUNCTION DEFINITIONS */
+
+      /* FUNCTION: iFrameReady()
+      Allows user editing of iFrame contents. */
+      function iFrameReady() {
+      	richTextBox.document.designMode = 'On';
+      }
+
+      /* FUNCTION: submitContent()
+      Inserts rich text iFrame content into textarea field and submits the content to the parser */
+      function submitContent() {
+      	var theForm = document.getElementById("wc-richTextEditor-form");
+      	theForm.elements["textareaBox"].value = window.frames['richTextBox'].document.body.innerHTML;
+      	theForm.submit();
+      }
+
+      /* FUNCTION: importContent()
+      Gets html content from database and injects it into the editor iframe */
+      function loadContent(content) {
+      	var theForm = document.getElementById("wc-richTextEditor-form");
+      	window.frames['richTextBox'].document.body.innerHTML = content;
+      }
+
+      /* FUNCTION: setPermissions()
+      Gets object editing permissions and sets Constants for editor's use. */
+      function setPermissions(HTML,CHANGE_PAR_STYLE,ALLOW_H1,CHANGE_INLINE_STYLE,CHANGE_SIZE,CHANGE_FONT_FAMILY,CHANGE_PAR_ALIGNMENT,CHANGE_TEXT_COLOR,ADD_LINK,ADD_LIST,ADD_IMAGE) {
+      		// Restrict all HTML features
+      		if (HTML == 0) {
+      			CHANGE_PAR_STYLE = 0;
+      			ALLOW_H1 = 0;
+      			CHANGE_INLINE_STYLE = 0;
+      			CHANGE_SIZE = 0;
+      			CHANGE_FONT_FAMILY = 0;
+      			CHANGE_PAR_ALIGNMENT = 0;
+      			CHANGE_TEXT_COLOR = 0;
+      			ADD_LINK = 0;
+      			ADD_LIST = 0;
+      			ADD_IMAGE = 0;
+      		}
+
+      		//Handle Permissions
+      		if (CHANGE_PAR_STYLE == 0) {
+      			$('.editor-controls > #parStyleGroup').hide();
+      		}
+      		if (ALLOW_H1 == 0) {
+      			$('option#heading1').hide();
+      			$('option#heading1').selected = false;
+      		}
+      		if (CHANGE_INLINE_STYLE == 0) {
+      			$('.editor-controls > #inlineStyleGroup').hide();
+      		}
+      		if (CHANGE_SIZE == 0) {
+      			$('.editor-controls > #textSizeGroup').hide();
+      		}
+      		if (CHANGE_FONT_FAMILY == 0) {
+      			$('.editor-controls > #fontFamilyGroup').hide();
+      		}
+      		if (CHANGE_PAR_ALIGNMENT == 0) {
+      			$('.editor-controls > #alignmentGroup').hide();
+      		}
+      		if (CHANGE_TEXT_COLOR == 0) {
+      			$('.editor-controls > #textColorGroup').hide();
+      		}
+      		if (ADD_LIST == 0) {
+      			$('.editor-controls > #listsGroup').hide();
+      		}
+      		if (ADD_LINK == 0) {
+      			$('.editor-controls > #linkGroup').hide();
+      		}
+      }
+
+      /* FUNCTION: importFromFile()
+      Gets object editing permissions and sets Constants for editor's use. */
+
+
+      /* FUNCTION: boldSel()
+      Bolds selected text. */
+      function boldSel() {
+      	richTextBox.document.execCommand('bold',false,null);
+      }
+
+      /* FUNCTION: underlineSel()
+      Underlines selected text. */
+      function underlineSel() {
+      	richTextBox.document.execCommand('underline',false,null);
+      }
+
+      /* FUNCTION: italicSel()
+      Italicizes selected text. */
+      function italicSel() {
+      	richTextBox.document.execCommand('italic',false,null);
+      }
+
+      /* FUNCTION: strikethroughSel()
+      Stikes through selected text. */
+      function strikethroughSel() {
+      	richTextBox.document.execCommand('strikeThrough',false,null);
+      }
+
+      /* FUNCTION: highlightColorSel()
+      Changes highlight color of selected text. */
+      function highlightColorSel() {
+
+      }
+
+      /* FUNCTION: alignLeftSel()
+      Left-aligns selected text. */
+      function alignLeftSel() {
+      	richTextBox.document.execCommand('justifyLeft',false,null);
+      }
+
+      /* FUNCTION: alignCenterSel()
+      Center-aligns selected text. */
+      function alignCenterSel() {
+      	richTextBox.document.execCommand('justifyCenter',false,null);
+      }
+
+      /* FUNCTION: alignRightSel()
+      Right-aligns selected text. */
+      function alignRightSel() {
+      	richTextBox.document.execCommand('justifyRight',false,null);
+      }
+
+      /* FUNCTION: alignJustifySel()
+      Justifies selected text. */
+      function alignJustifySel() {
+      	richTextBox.document.execCommand('justifyFull',false,null);
+      }
+
+      /* FUNCTION: newOlSel()
+      Creates new Ordered List. */
+      function newOlSel() {
+      	richTextBox.document.execCommand("InsertOrderedList", false,"newOL");
+      }
+
+      /* FUNCTION: newUlSel()
+      Creates new Unordered List. */
+      function newUlSel() {
+      	richTextBox.document.execCommand("InsertUnorderedList", false,"newUL");
+      }
+
+      /* FUNCTION: linkSel()
+      Creates new hyperlink. */
+      function linkSel() {
+      	var linkURL = prompt("Enter URL:", "http://");
+      	richTextBox.document.execCommand("CreateLink", false, linkURL);
+      }
+
+      /* FUNCTION: unlinkSel()
+      Removes hyperlink. */
+      function unlinkSel() {
+      	richTextBox.document.execCommand("Unlink", false, null);
+      }
+    </script>
+{% endblock %}

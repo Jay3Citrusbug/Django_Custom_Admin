@@ -1,0 +1,162 @@
+{% load static %}
+{% load review_card %}
+
+<!--<div class="col-lg-4 col-xl-3 col-md-6 col-sm-6 p-0">-->
+    <div class="right-side-content">
+        <h3 class="section-title">Ebike Shops Near You</h3>
+        <iframe src="http://54.213.76.238/dashboard-integration/shops-osm/" id="shops-directory-map-iframe" style="width: 100%; height: 600px;"></iframe>
+        <div class="recent-form-section">
+            <h3 class="rec-title">Related Forum Discussion</h3>
+            <div class="discussion-box-wrapper">
+                {% for forum in recent_forum_discussion  %}
+                    <div class="discussion-item">
+                        <h4><a href="{{ forum.link }}">{{ forum.title }}</a></h4>
+                        <p class="link-text"><a href="{{ forum.forum_link }}">{{ forum.forum }}</a></p>
+                        <p class="update-box">Updated: {{ forum.post_date | timesince }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+            <a href="https://electricbikereview.com/forums/" class="theme-btn btn btn-with-img">
+                <span>Visit the Forums</span>
+                <img src="{% static 'assets/images/link-icon.png' %}" alt="link" />
+            </a>
+        </div>
+        {% if related_review %}
+            <div class="recent-form-section rev-relatedbike-section">
+              <h3 class="rec-title">Related Ebike Reviews</h3>
+              <div class="cycle-section">
+                <div class="product-card-wrapper" >
+                    {% for review in featured_reviews %}
+                      <div class="product-card-item">
+                          <div class="protitle-wrapper">
+                              <h4 class="product-title"><a href="/{{review.brands.all.0.slug}}/{{review.slug}}">{{ review.name }}</a><span>Promoted</span></h4>
+                              <p class="product-price">${{ review.review_general_review.all.0.msrp|floatformat:"-3g" }}</p>
+                          </div>
+                          <div class="product-desc">
+                              <p class="desc_1">
+                                  {% for brand in review.brands.all %}
+                                    <a href="/brand/{{brand.slug}}" class="ps-link">{{brand.name}}</a>
+                                  {% endfor %}
+                              </p>
+                              <div class="data-price">
+                                  <div class="procard-lastdata">
+                                      {% for category in review.categories.all %}
+                                        <p class="desc_1">
+                                            <a href="/category/{{category.slug}}">{{ category.slug | category_name_clean }}</a>
+                                        </p>
+                                      {% endfor %}
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="owl-carousel product-img-slider" >
+                              <a href="/{{review.brands.all.0.slug}}/{{review.slug}}">
+                                <img src="{{ review.featured_image_thumbnail.url }}" class="pro-card-img active-cycle" alt="{{ review.name }}"  />
+                              </a>
+                              {% for reviewgalley in review.review_galley_review.all|dictsort:"order" %}
+                                <a href="/{{review.brands.all.0.slug}}/{{review.slug}}">
+                                    <img src="{{reviewgalley.image.thumbnail_image.url}}" class="pro-card-img" alt="{{ reviewgalley.image.title }}"  />
+                                </a>
+                              {% endfor %}
+                          </div>
+                          <!-- <button class="btn compare-btn">
+                              <img src="{% static 'assets/images/plus.png" alt="plus" />
+                          </button> -->
+                          <div class="pro-meta-data">
+                              <div class="pro-metadata-item">
+                                  <p class="prometa-title">Motor Type</p>
+                                  <h6>{{ review.review_general_review.all.0.motor_type }}</h6>
+                              </div>
+                              <div class="pro-metadata-item">
+                                  <p class="prometa-title">Battery Size</p>
+                                  <h6>{{ review.review_general_review.all.0.demo_battery_watt_hours|floatformat:"-2g" }} Wh</h6>
+                              </div>
+                              <div class="pro-metadata-item">
+                                  <p class="prometa-title">Ebike Type</p>
+                                  {% if review.review_general_review.all.0.demo_bike_class.all|length > 1 %}
+                                    <h6 class="dotted-class">{{ review.review_general_review.all.0.demo_bike_class.all.0 }}<span>···</span></h6>
+                                  {% else %}
+                                    <h6>{{ review.review_general_review.all.0.demo_bike_class.all.0 }}</h6>
+                                  {% endif %}
+                              </div>
+                          </div>
+                          <div class="procard-btns">
+                              <button class="btn theme-btn grey-btn">
+                                  <a href="/{{review.brands.all.0.slug}}/{{review.slug}}">VIEW DETAILS</a>
+                              </button>
+                              {% if review.id in compare_review %}
+                                <button class="btn theme-btn grey-btn compare-btn added" data-id="{{review.id}}"><span>-</span>REMOVE</button>
+                              {% else %}
+                                <button class="btn theme-btn grey-btn compare-btn" data-id="{{review.id}}"><span>+</span>COMPARE</button>
+                              {% endif %}
+                          </div>
+                      </div>
+                    {% endfor %}
+
+                    {% for review in related_review %}
+                      <div class="product-card-item">
+                          <div class="protitle-wrapper">
+                              <h4 class="product-title"><a href="/{{review.brands.all.0.slug}}/{{review.slug}}">{{ review.name }}</a></h4>
+                              <p class="product-price">${{ review.review_general_review.all.0.msrp|floatformat:"-3g" }}</p>
+                          </div>
+                          <div class="product-desc">
+                              <p class="desc_1">
+                                  {% for brand in review.brands.all %}
+                                    <a href="/brand/{{brand.slug}}" class="ps-link">{{brand.name}}</a>
+                                  {% endfor %}
+                              </p>
+                              <div class="data-price">
+                                  <div class="procard-lastdata">
+                                      {% for category in review.categories.all %}
+                                        <p class="desc_1">
+                                            <a href="/category/{{category.slug}}">{{ category.slug | category_name_clean }}</a>
+                                        </p>
+                                      {% endfor %}
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="owl-carousel product-img-slider" >
+                              <a href="/{{review.brands.all.0.slug}}/{{review.slug}}">
+                                <img src="{{ review.featured_image_thumbnail.url }}" class="pro-card-img active-cycle" alt="{{ review.name }}"  />
+                              </a>
+                              {% for reviewgalley in review.review_galley_review.all|dictsort:"order" %}
+                                <a href="/{{review.brands.all.0.slug}}/{{review.slug}}">
+                                    <img src="{{reviewgalley.image.thumbnail_image.url}}" class="pro-card-img" alt="{{ reviewgalley.image.title }}"  />
+                                </a>
+                              {% endfor %}
+                          </div>
+                          <div class="pro-meta-data">
+                              <div class="pro-metadata-item">
+                                  <p class="prometa-title">Motor Type</p>
+                                  <h6>{{ review.review_general_review.all.0.motor_type }}</h6>
+                              </div>
+                              <div class="pro-metadata-item">
+                                  <p class="prometa-title">Battery Size</p>
+                                  <h6>{{ review.review_general_review.all.0.demo_battery_watt_hours|floatformat:"-2g" }} Wh</h6>
+                              </div>
+                              <div class="pro-metadata-item">
+                                  <p class="prometa-title">Ebike Type</p>
+                                  {% if review.review_general_review.all.0.demo_bike_class.all|length > 1 %}
+                                    <h6 class="dotted-class">{{ review.review_general_review.all.0.demo_bike_class.all.0 }}<span>···</span></h6>
+                                  {% else %}
+                                    <h6>{{ review.review_general_review.all.0.demo_bike_class.all.0 }}</h6>
+                                  {% endif %}
+                              </div>
+                          </div>
+                          <div class="procard-btns">
+                              <button class="btn theme-btn grey-btn">
+                                  <a href="/{{review.brands.all.0.slug}}/{{review.slug}}">VIEW DETAILS</a>
+                              </button>
+                              {% if review.id in compare_review %}
+                                <button class="btn theme-btn grey-btn compare-btn added" data-id="{{review.id}}"><span>-</span>REMOVE</button>
+                              {% else %}
+                                <button class="btn theme-btn grey-btn compare-btn" data-id="{{review.id}}"><span>+</span>COMPARE</button>
+                              {% endif %}
+                          </div>
+                      </div>
+                    {% endfor %}
+                </div>
+              </div>
+            </div>
+        {% endif %}
+    </div>
+<!--</div>-->

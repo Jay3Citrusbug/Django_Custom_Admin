@@ -1,0 +1,1983 @@
+{% load static %}
+{% load review_card %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.sandbox.google.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+    <link rel="stylesheet" href="{% static 'assets/css/font-awesome.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/css/select2.min.css" />
+    <link rel="stylesheet" href="{% static 'assets/css/common.css' %}">
+    {% block style %}
+    {% endblock %}
+    <link rel="icon" href="http://54.213.76.238/static/assets/images/ebr-favicon.png" sizes="32x32" />
+    <link rel="icon" href="http://54.213.76.238/static/assets/images/ebr-favicon.png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="http://54.213.76.238/static/assets/images/ebr-favicon.png" />
+    <meta name="msapplication-TileImage" content="http://54.213.76.238/static/assets/images/EBRlogo.png" />
+    {% block seoTag %}
+
+    {% endblock %}
+
+</head>
+
+<body class="">
+    <div class="page-wrapper">
+        <!-- Header -->
+        <header data-scroll="top" class="header_wrapper" id="top">
+            <div class="header-top">
+                <div class="logo-wrapper">
+                    <a href="/">
+                        <img src="{% static 'assets/images/ebr-logo.svg' %}" alt="logo" />
+                    </a>
+                </div>
+                <div class="header-nav">
+                    <ul class="navbar-nav" id="accordionul">
+                        <!-- Nav Item - Pages Collapse Menu -->
+                        <!-- <li class="nav-item">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="ebikes" aria-expanded="false">
+                                <span>Ebikes</span>
+
+                               <div id="ebikesdrop" class="dropdown-menu" style="">
+                                <a class="dropdown-item" href="#">Categories</a>
+                                <a class="dropdown-item" href="#">Brands</a>
+                                <a class="dropdown-item" href="#">Best Bikes</a>
+                                <a class="dropdown-item" href="#">New Bikes</a>
+                            </div>
+                        </li> -->
+                        {% for main_menu in main_menus %}
+                            <li class="nav-item">
+                                <button type="button" id="{{ main_menu.name|lower }}" class="btn btn-popover btn-primary btn-lg" data-toggle="popover" data-trigger="click" data-placement="bottom">
+                                    {{ main_menu.name | title }}</button>
+                                <div id="{{ main_menu.name|lower }}-content" class="dropdown-menu" style="display: none;">
+                                    <ul class="custmenu-list">
+                                        {% for child_menu in main_menu.child_menus %}
+                                            <li><a class="dropdown-item" href="{{ child_menu.link }}">{{ child_menu.name | title }}</a></li>
+                                        {% endfor %}
+                                        {% comment %}{% if main_menu.name|lower == 'more' %}
+                                            <li class="darkmode_li"><span>Dark Mode</span>
+                                                <label class="switch">
+                                                  <input type="checkbox">
+                                                  <span class="slider round"></span>
+                                                </label>
+                                            </li>
+                                        {% endif %}
+                                        {% endcomment %}
+                                    </ul>
+                                </div>
+                            </li>
+                        {% endfor %}
+<!--                        <li class="nav-item">-->
+<!--                            <button type="button" id="forums" class="btn btn-popover btn-primary btn-lg" data-toggle="popover" data-trigger="click" data-placement="bottom">-->
+<!--                                Forums</button>-->
+<!--                            <div id="forums-content" class="dropdown-menu" style="display: none;">-->
+<!--                                <ul class="custmenu-list">-->
+<!--                                    <li><a class="dropdown-item" href="#">By Category</a></li>-->
+<!--                                    <li><a class="dropdown-item" href="#">By Brand</a></li>-->
+<!--                                    <li><a class="dropdown-item" href="#">Popular Posts</a></li>-->
+<!--                                    <li><a class="dropdown-item" href="#">New Posts</a></li>-->
+<!--                                </ul>-->
+<!--                            </div>-->
+<!--                        </li>-->
+
+<!--                        <li class="nav-item">-->
+<!--                            <button type="button" id="more" class="btn btn-popover btn-primary btn-lg" data-toggle="popover" data-trigger="click" data-placement="bottom">-->
+<!--                                More</button>-->
+<!--                            <div id="more-content" class="dropdown-menu" style="display: none;">-->
+<!--                                <ul class="custmenu-list">-->
+<!--                                    <li><a class="dropdown-item" href="#">Local Shops</a></li>-->
+<!--                                    <li><a class="dropdown-item" href="#">Compare Tool</a></li>-->
+<!--                                    <li><a class="dropdown-item" href="#">FAQs</a></li>-->
+<!--                                    <li class="darkmode_li"><span>Dark Mode</span>-->
+<!--                                        <label class="switch">-->
+<!--                                          <input type="checkbox">-->
+<!--                                          <span class="slider round"></span>-->
+<!--                                        </label>-->
+<!--                                    </li>-->
+<!--                                </ul>-->
+<!--                            </div>-->
+<!--                        </li>-->
+
+                        <!-- Nav Item - Utilities Collapse Menu -->
+                        <!-- <li class="nav-item">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="#forums" aria-expanded="false">
+                                <span>Forums</span>
+                            </a>
+                            <div id="forumsdrop" class="dropdown-menu" style="">
+                                <a class="dropdown-item" href="#">By Category</a>
+                                <a class="dropdown-item" href="#">By Brand</a>
+                                <a class="dropdown-item" href="#">Popular Posts</a>
+                                <a class="dropdown-item" href="#">New Posts</a>
+                            </div>
+                        </li> -->
+
+                        <!-- Nav Item - Pages Collapse Menu -->
+                        <!-- <li class="nav-item">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="#more" aria-expanded="false">
+                                <span>More</span>
+                            </a>
+                            <div id="moredrop" class="dropdown-menu" style="">
+                                <a class="dropdown-item" href="#">Local Shops</a>
+                                <a class="dropdown-item" href="#">Compare Tool</a>
+                                <a class="dropdown-item" href="#">FAQs</a>
+                            </div>
+                        </li> -->
+                    </ul>
+                </div>
+                <div class="navExtra-content">
+                    <a href="/compare/" class="compare-icon-head">
+                        <img src="{% static 'assets/images/compare-icon.png' %}" alt="compare" />
+                        <div class="count-icon">{{compare_review|length}}</div>
+                    </a>
+                </div>
+            </div>
+            <div class="header-bottom">
+                <ul class="navbar-nav" id="header-bottom">
+                        <!-- Nav Item - Pages Collapse Menu -->
+                    <li class="filter-data">
+                        <div class="form-group search-bar">
+                            <!-- <img src="assets/images/search-glass.png" alt="search" /> -->
+                            <input type="search" id="search-review-data" class="search form-control" placeholder="Brand or Model" name="search" autocomplete="off"/>
+                            <ul class="suggestions">
+                            </ul>
+                            <a href="javascript:void(0);" class="search-close"><img src="{% static 'assets/images/cross.png' %}" alt="search" /></a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn dropdown-toggle" data-toggle="modal" data-target="#category-modal" id="categories" aria-expanded="false">
+                            <span>Categories</span>
+                        </button>
+                        <!-- <div id="categoriesdrop" class="dropdown-menu header-bottom-drops" style="">
+                            <h4 class="bottom-header-title">Categories: </h4>
+                            <div class="categories-group">
+                                <div class="categoryitems">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <a href="javascript:void(0);" class="category-item">
+                                                <img src="assets/images/category1.png" alt="category" />
+                                                <p>Cruiser (396)</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <a href="javascript:void(0);" class="category-item">
+                                                <img src="assets/images/category2.png" alt="category" />
+                                                <p>City (541)</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <a href="javascript:void(0);" class="category-item">
+                                                <img src="assets/images/category3.png" alt="category" />
+                                                <p>Commuting (145)</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <a href="javascript:void(0);" class="category-item active_category">
+                                                <img src="assets/images/category4.png" alt="category" />
+                                                <p>Folding (1.5k)</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <a href="javascript:void(0);" class="category-item">
+                                                <img src="assets/images/category1.png" alt="category" />
+                                                <p>Fat (12k</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <a href="javascript:void(0);" class="category-item active_category">
+                                                <img src="assets/images/category2.png" alt="category" />
+                                                <p>Mountain (49)</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <a href="javascript:void(0);" class="category-item">
+                                                <img src="assets/images/category3.png" alt="category" />
+                                                <p>Cargo (2.7k)</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <a href="javascript:void(0);" class="category-item">
+                                                <img src="assets/images/category4.png" alt="category" />
+                                                <p>Road (392)</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <a href="javascript:void(0);" class="category-item">
+                                                <img src="assets/images/category1.png" alt="category" />
+                                                <p>Trike (14k)</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <a href="javascript:void(0);" class="category-item">
+                                                <img src="assets/images/category2.png" alt="category" />
+                                                <p>Recumbent (429)</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <a href="javascript:void(0);" class="category-item">
+                                                <img src="assets/images/category3.png" alt="category" />
+                                                <p>Minibike (75)</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <a href="javascript:void(0);" class="category-item">
+                                                <img src="assets/images/category4.png" alt="category" />
+                                                <p>Kids (33)</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <a href="javascript:void(0);" class="category-item">
+                                                <img src="assets/images/category1.png" alt="category" />
+                                                <p>Other (343)</p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="">
+                                        <a href="category-list.html" class="category-list-link">Complete ebike category list</a>
+                                    </div>
+                                </div>
+                                <div class="btn-section-sticky">
+                                    <div class="">
+                                        <button class="btn theme-btn">See 1,762 Results</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn dropdown-toggle" data-toggle="modal" data-target="#filters" id="#morefilters" aria-expanded="false">
+                            <span>Filters</span>
+                        </button>
+                        <!-- <div id="morefiltersdrop" class="dropdown-menu header-bottom-drops" style="">
+                            <div class="morefilter-list">
+                                <h4 class="bottom-header-title">Model Year: </h4>
+                                <div class="price-range-box">
+                                    <select class="form-control">
+                                        <option disabled="disabled" selected="selected">Min Year</option>
+                                        <option>1996</option>
+                                    </select>
+                                    <span class="line"></span>
+                                    <select class="form-control">
+                                        <option disabled="disabled" selected="selected">Max Year</option>
+                                        <option>1996</option>
+                                    </select>
+                                </div>
+
+                                <h4 class="bottom-header-title">Total Weight:</h4>
+                                <div class="graph-range-box">
+                                    <canvas id="myChart2"></canvas>
+
+                                    <div class="min-max-slider" data-legendnum="2">
+                                        <label for="min">Minimum price</label>
+                                        <input id="min2" class="min" name="min" type="range" step="1" min="0" max="3000" />
+                                        <label for="max">Maximum price</label>
+                                        <input id="max2" class="max" name="max" type="range" step="1" min="0" max="3000" />
+                                    </div>
+                                </div>
+                                <div class="price-range-box">
+                                    <input class="form-control" type="text" name="minweight" placeholder="Min Weight" />
+                                    <span class="line"></span>
+                                    <input class="form-control" type="text" name="maxweight" placeholder="Max Weight" />
+                                </div>
+
+                                <h4 class="bottom-header-title">Motor Type:</h4>
+                                <div class="checkbox-grp-filter">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" value="">Hub Motor (572)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" value="">Mid-Drive Motor (1.2k)
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <h4 class="bottom-header-title">Battery Capacity:</h4>
+                                <div class="graph-range-box">
+                                    <canvas id="myChart3"></canvas>
+
+                                    <div class="min-max-slider" data-legendnum="2">
+                                        <label for="min">Minimum price</label>
+                                        <input id="min3" class="min" name="min" type="range" step="1" min="0" max="3000" />
+                                        <label for="max">Maximum price</label>
+                                        <input id="max3" class="max" name="max" type="range" step="1" min="0" max="3000" />
+                                    </div>
+                                </div>
+                                <div class="price-range-box">
+                                    <input class="form-control" type="text" name="minwh" placeholder="Min Wh" />
+                                    <span class="line"></span>
+                                    <input class="form-control" type="text" name="maxwh" placeholder="Max Wh" />
+                                </div>
+
+                                <h4 class="bottom-header-title">Class:</h4>
+                                <div class="checkbox-grp-filter">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" value="">Class 1: Pedal assist only (3.1k)<br/><span>Top speed 20mph in NA, 25km/h in Europe.</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" value="">Class 2: Throttle (141) <br/><span>Twist or trigger, may also have pedal assist.</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" value="">Class 3: Speed pedelec (59) <br/><span>Pedal assist up to 28mph (45km/h).</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" value="">Other: Very high speed (24k) <br/><span>Usually for off-road recreational use.</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <h4 class="bottom-header-title">Suspension:</h4>
+                                <div class="checkbox-grp-filter">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" value="">None: Rigid (1.8k)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" value="">Front: Hardtail (34k)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" value="">Rear: Softail (4)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" value="">Both: Full Suspension (583)
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <h4 class="bottom-header-title">Suspension Travel: </h4>
+                                <div class="price-range-box">
+                                    <input class="form-control" type="text" name="mintravel" placeholder="Min Travel" />
+                                    <span class="line"></span>
+                                    <input class="form-control" type="text" name="maxtravel" placeholder="Max Travel" />
+                                </div>
+
+                                <h4 class="bottom-header-title">Accessories:</h4>
+                                <div class="checkbox-grp-filter">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" value="">Fenders (5k)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" value="">Lights (7.5k)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input" value="">Racks (741)
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <h4 class="bottom-header-title">Keywords:</h4>
+                                <input type="text" class="form-control keyword-search" placeholder="Bosch, Fox, Gates etc." name="keyword" />
+                            </div>
+                            <div class="motorfilbtn">
+                                <button class="btn theme-btn see-result">See 767 Results</button>
+                            </div>
+                        </div> -->
+                    </li>
+
+                    <li class="nav-item">
+                        <!-- <button class="btn dropdown-toggle" data-toggle="dropdown" id="#price" aria-expanded="false">
+                            <span>Price</span>
+                        </button>
+                        <div id="pricedrop" class="dropdown-menu header-bottom-drops" style="">
+                            <h4 class="bottom-header-title">Price: </h4>
+                            <div class="graph-range-box">
+                                <canvas id="myChart"></canvas>
+
+                                <div class="min-max-slider" data-legendnum="2">
+                                    <label for="min">Minimum price</label>
+                                    <input id="min" class="min" name="min" type="range" step="1" min="0" max="3000" />
+                                    <label for="max">Maximum price</label>
+                                    <input id="max" class="max" name="max" type="range" step="1" min="0" max="3000" />
+                                </div>
+                            </div>
+                            <div class="price-range-box">
+                                <input class="form-control" type="text" name="minprice" placeholder="Min Price" />
+                                <span class="line"></span>
+                                <input class="form-control" type="text" name="maxprice" placeholder="Max Price" />
+                            </div>
+                            <button class="btn theme-btn see-result">See 1,890 Results</button>
+                        </div> -->
+
+                        <button type="button" id="sorting" class="btn btn-popover dropdown-toggle" data-toggle="popover" data-trigger="click" data-placement="bottom">
+                                Sorting</button>
+                        <div id="sorting-content" class="dropdown-menu" style="display: none;">
+                            <ul class="custmenu-list">
+                                <li><a class="dropdown-item" href="?{% url_replace request 'order' '1' %}">Price: Low to High</a></li>
+                                <li><a class="dropdown-item" href="?{% url_replace request 'order' '2' %}">Price: High to Low</a></li>
+                                <li><a class="dropdown-item" href="?{% url_replace request 'order' '3' %}">Year: New to Old</a></li>
+                                <li><a class="dropdown-item" href="?{% url_replace request 'order' '4' %}">Year: Old to New</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </header>
+
+        {% block body %}
+        {% endblock %}
+
+        <footer class="footer_wrapper {% if not request.COOKIES.CookieAlertBoxClosed %}cookie_pad{% endif %}">
+            <iframe src="http://54.213.76.238/dashboard-integration/shops-nearby/" id="shops-nearby-iframe" style="width: 100%;height: 100vh; border: 0;"></iframe>
+            <div class="footer_links_wrapper">
+                <div class="row">
+                    <!-- Dynamic footer for review detail page. -->
+                    {% if footer_reviews %}
+                        {% for footer_review in footer_reviews %}
+                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                <div class="footer_links">
+                                    <h2>{{ footer_review.footer_name }}</h2>
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-xs-6">
+                                            <ul>
+                                                {% for review in footer_review.reviews %}
+                                                    <li><a href="/{{ review.brands.all.0.slug }}/{{review.slug}}/">{{ review.name }}</a></li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="footer_links">
+                            <h2>Popular Electric Bike Brands</h2>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-xs-6">
+                                    <ul>
+                                        {% for popular_brand in popular_brands %}
+                                            <li><a href="{{ popular_brand.link }}">{{ popular_brand.name }}</a></li>
+                                            {% if forloop.counter|divisibleby:"8" %}
+                                                </ul>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-xs-6">
+                                                <ul>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="footer_links">
+                            <h2>Popular Electric Bike Categories</h2>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-xs-6">
+                                    <ul>
+                                        {% for popular_category in popular_categories %}
+                                            <li><a href="{{ popular_category.link }}">{{ popular_category.name }}</a></li>
+                                            {% if forloop.counter|divisibleby:"8" %}
+                                                </ul>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-xs-6">
+                                                <ul>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="footer_links">
+                            <h2>Popular Electric Bike Topics</h2>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-xs-6">
+                                    <ul>
+                                        {% for popular_search in popular_topics %}
+                                            <li><a href="{{ popular_search.link }}">{{ popular_search.name }}</a></li>
+                                            {% if forloop.counter|divisibleby:"8" %}
+                                                </ul>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-xs-6">
+                                                <ul>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="copy_right_wrapper">
+                <div class="copy_right_inner">
+                    <ul class="footer_menu">
+                        {% for footer_menu in footer_menus %}
+                            <li><a href="{{ footer_menu.link }}">{{footer_menu.name }}</a></li>
+                            {% if not forloop.last %}
+                                <li><span class="dash-line">/</span></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                    <p>
+                        Copyright © 2012-{% now 'Y' %} ElectricBikeReview.com, All Rights Reserved.
+                    </p>
+                    <ul class="social_link">
+                        <li>
+                            <a href="">
+                                <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16.0083 25.3506H15.9817C15.899 25.3506 7.62833 25.3346 5.54166 24.768C4.39423 24.4589 3.49813 23.5623 3.18966 22.4146C2.81444 20.2978 2.63324 18.1511 2.64833 16.0013C2.63864 13.848 2.82474 11.6983 3.20433 9.57864C3.52127 8.42998 4.41344 7.52923 5.559 7.2013C7.58833 6.66797 15.631 6.66797 15.9723 6.66797H16.0003C16.0843 6.66797 24.3763 6.68397 26.4417 7.25064C27.5867 7.56131 28.481 8.4561 28.791 9.6013C29.1782 11.726 29.3599 13.8831 29.3337 16.0426C29.343 18.1933 29.1565 20.3404 28.7763 22.4573C28.4639 23.6035 27.5672 24.4981 26.4203 24.808C24.3937 25.3453 16.3497 25.3506 16.0083 25.3506ZM13.3417 12.008L13.335 20.008L20.2843 16.008L13.3417 12.008Z" fill="#1D1D1F"></path>
+                                </svg>
+                            </a>
+                        </li>
+                        <li><a href="">
+                                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2.66895 16.0034C2.6705 22.5626 7.44015 28.1474 13.9183 29.1754V19.8567H10.5356V16.0034H13.9223V13.07C13.7709 11.6801 14.2456 10.2948 15.2178 9.28995C16.19 8.28507 17.5587 7.76473 18.9529 7.87004C19.9537 7.8862 20.9519 7.97533 21.9396 8.13671V11.4154H20.2543C19.6741 11.3394 19.0908 11.531 18.6686 11.9363C18.2465 12.3415 18.0313 12.9166 18.0836 13.4994V16.0034H21.7783L21.1876 19.858H18.0836V29.1754C25.0896 28.0682 30.0024 21.6697 29.263 14.6155C28.5235 7.5612 22.3907 2.32062 15.3074 2.69028C8.22409 3.05995 2.67007 8.91045 2.66895 16.0034Z" fill="#1D1D1F"></path>
+                                </svg>
+                            </a></li>
+                        <li><a href="">
+                                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16.0029 28.0558C12.7229 28.0558 12.3363 28.0385 11.0563 27.9825C10.0581 27.9497 9.07284 27.7467 8.14293 27.3825C6.53401 26.7563 5.26178 25.4836 4.63626 23.8745C4.286 22.9412 4.09709 21.9551 4.0776 20.9585C4.00293 19.6811 4.00293 19.2625 4.00293 16.0078C4.00293 12.7185 4.02026 12.3345 4.0776 11.0611C4.09751 10.0658 4.28642 9.08116 4.63626 8.14915C5.2611 6.53785 6.5354 5.26404 8.14693 4.63981C9.07845 4.28808 10.0634 4.09867 11.0589 4.07981C12.3323 4.00781 12.7509 4.00781 16.0029 4.00781C19.3096 4.00781 19.6896 4.02515 20.9496 4.07981C21.9477 4.09883 22.9353 4.28823 23.8696 4.63981C25.4807 5.26475 26.7547 6.53831 27.3803 8.14915C27.7364 9.09474 27.9263 10.0948 27.9416 11.1051C28.0163 12.3825 28.0163 12.7998 28.0163 16.0531C28.0163 19.3065 27.9976 19.7331 27.9416 20.9958C27.9217 21.9934 27.7324 22.9804 27.3816 23.9145C26.7545 25.5248 25.4803 26.7979 23.8696 27.4238C22.9366 27.7734 21.9511 27.9623 20.9549 27.9825C19.6816 28.0558 19.2643 28.0558 16.0029 28.0558ZM15.9576 6.11848C12.6963 6.11848 12.3576 6.13448 11.0843 6.19181C10.3242 6.20188 9.57157 6.34213 8.85893 6.60648C7.8066 7.00916 6.9739 7.83847 6.56693 8.88915C6.30055 9.60954 6.16027 10.3705 6.15226 11.1385C6.0816 12.4305 6.0816 12.7691 6.0816 16.0078C6.0816 19.2078 6.0936 19.5958 6.15226 20.8798C6.1642 21.6401 6.30439 22.3929 6.56693 23.1065C6.9745 24.1565 7.80705 24.9851 8.85893 25.3878C9.57108 25.6539 10.3241 25.7942 11.0843 25.8025C12.3749 25.8771 12.7149 25.8771 15.9576 25.8771C19.2283 25.8771 19.5669 25.8611 20.8296 25.8025C21.5901 25.7932 22.3434 25.653 23.0563 25.3878C24.1022 24.9817 24.9295 24.1549 25.3363 23.1091C25.6021 22.3881 25.7424 21.6269 25.7509 20.8585H25.7656C25.8229 19.5838 25.8229 19.2438 25.8229 15.9865C25.8229 12.7291 25.8083 12.3865 25.7509 11.1131C25.739 10.3537 25.5988 9.60183 25.3363 8.88915C24.9304 7.84191 24.103 7.01354 23.0563 6.60648C22.3435 6.3408 21.5902 6.20051 20.8296 6.19181C19.5403 6.11848 19.2029 6.11848 15.9576 6.11848ZM16.0029 22.1665C13.5096 22.1681 11.2608 20.6675 10.3054 18.3644C9.35 16.0614 9.87614 13.4096 11.6384 11.6458C13.4007 9.88194 16.0521 9.35351 18.3559 10.3069C20.6598 11.2603 22.1624 13.5078 22.1629 16.0011C22.1593 19.4026 19.4043 22.1599 16.0029 22.1665ZM16.0029 11.9985C13.7938 11.9985 12.0029 13.7893 12.0029 15.9985C12.0029 18.2076 13.7938 19.9985 16.0029 19.9985C18.2121 19.9985 20.0029 18.2076 20.0029 15.9985C19.9978 13.7915 18.2099 12.0036 16.0029 11.9985ZM22.4029 11.0478C21.6102 11.0449 20.9695 10.4006 20.9709 9.60782C20.9724 8.81505 21.6155 8.17316 22.4083 8.17316C23.201 8.17316 23.8441 8.81504 23.8456 9.60781C23.846 9.9903 23.694 10.3572 23.4233 10.6274C23.1526 10.8976 22.7854 11.0489 22.4029 11.0478Z" fill="#1D1D1F"></path>
+                                </svg>
+                            </a></li>
+                        <li><a href="">
+                                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M26.66 8.91602C27.8553 8.20147 28.7496 7.07633 29.176 5.75068C28.0529 6.41709 26.8241 6.88652 25.5427 7.13868C23.7661 5.25939 20.9514 4.80205 18.6712 6.02222C16.3911 7.2424 15.21 9.838 15.788 12.3587C11.1875 12.1277 6.90131 9.95457 3.99602 6.38002C2.47981 8.99524 3.25462 12.3384 5.76669 14.02C4.8583 13.9908 3.97006 13.7449 3.17602 13.3027C3.17602 13.3267 3.17602 13.3507 3.17602 13.3747C3.17655 16.0989 5.09652 18.4455 7.76669 18.9853C6.92411 19.2146 6.0403 19.2483 5.18269 19.084C5.93362 21.4137 8.08076 23.0097 10.528 23.0573C8.50113 24.6482 5.99799 25.5109 3.42135 25.5067C2.96465 25.5073 2.5083 25.4811 2.05469 25.428C4.67121 27.1094 7.71651 28.0018 10.8267 27.9987C15.1537 28.0284 19.3121 26.3226 22.3717 23.2627C25.4313 20.2029 27.1368 16.0443 27.1067 11.7173C27.1067 11.4693 27.1009 11.2227 27.0894 10.9773C28.21 10.1675 29.1771 9.16422 29.9454 8.01468C28.9014 8.47743 27.794 8.78125 26.66 8.91602Z" fill="#1D1D1F"></path>
+                                </svg>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+
+        <div class="cookie_wrapper {% if request.COOKIES.CookieAlertBoxClosed %}d-none{% endif %}">
+            <div class="cookie_inner">
+                <p>
+                    We use cookies to improve user experience and advertising. By clicking accept, you agree to our <a href="" data-toggle="modal" data-target="#preferences" id="#preferences" aria-expanded="false">Terms of Use</a>. You can change settings by clicking Preferences.
+                </p>
+                <ul>
+                    <li><button class="btn theme-btn cookie_p_btn" data-toggle="modal" data-target="#preferences" id="#preferences" aria-expanded="false">Preferences</button></li>
+                    <li><button class="btn theme-btn blue-btn cookie_close_btn">Accept</button></li>
+                </ul>
+            </div>
+        </div>
+
+        <button id="scrollToTop" style="display: none;"><span></span></button>
+        <div class='upper-layout' style="display: none;"></div>
+        <div class="bottom-layout" style="display: none;"></div>
+    </div>
+
+    <!--Category Modal start-->
+    <div class="modal" id="category-modal">
+        <div class="modal-dialog header-bottom-modal modal-dialog-scrollable modal-dialog-centered">
+          <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h1 class="modal-title">Categories</h1>
+              <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="categories-group">
+                    <div class="categoryitems">
+                        <div class="row">
+                            {% for category in bike_categories %}
+                            <div class="col-sm-6 col-md-4">
+                                <a href="javascript:void(0);" class="category-item {% if category.id in selected_categories %}active_category{% endif %}" data-id="{{ category.category_list }}" data-value="{{ category.total_review }}" data-slug={{category.slug}}>
+                                    <img src="https://ebr-dev-bucket.s3.amazonaws.com/{{ category.icon_image }}" alt="{{ category.name }}" />
+                                    <p>{{ category.slug | category_name_clean | title}} ({{ category.total_review }})</p>
+                                    <img src="{% static 'assets/images/checkmark.png' %}" class="checkmark-img" alt="checkmark" />
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="">
+                            <a href="/category/" class="category-list-link">Complete ebike category list</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <div class="header-btns-modal">
+                    <a href="javascript:void(0);" class="reset-link" id="resetCategory">Reset All</a>
+                    <div class="">
+                        <button class="btn theme-btn" id="total_category_result" data-value="{{ bike_reviews }}" disabled>See {{ bike_reviews }} Results</button>
+                    </div>
+                </div>
+
+            </div>
+          </div>
+        </div>
+    </div>
+   <!--Category Modal end-->
+
+   <!--Filter Modal start-->
+    <div class="modal" id="filters">
+        <div class="modal-dialog header-bottom-modal modal-dialog-scrollable modal-dialog-centered">
+          <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h1 class="modal-title">Filters</h1>
+              <button type="button" class="close" data-dismiss="modal">×</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form id="frmCont">
+                    <div class="morefilter-list">
+                        <h4 class="bottom-header-title">Model Year: </h4>
+                        <div class="price-wrapper">
+                            <div class="price-range-box">
+                                <select class="form-control year-range min more-filter" id="year-range1" name="min_year">
+                                    <option value="" disabled="disabled" selected="selected">Min Year</option>
+                                    {% for year in review_year_range %}
+                                        <option value="{{year}}" {% if year == pre_selected_min_year %}selected{% endif %}>{{year}}</option>
+                                    {% endfor %}
+                                </select>
+                                <span class="line"></span>
+                                <select class="form-control year-range max more-filter" id="year-range" name="max_year">
+                                    <option value="" disabled="disabled" selected="selected">Max Year</option>
+                                    {% for year in review_year_range %}
+                                        <option value="{{year}}" {% if year == pre_selected_max_year %}selected{% endif %}>{{year}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="justify-content-between d-flex flex-wrap">
+                                <span id="error_min_year" class="text-danger text-left small" style="width: calc(50% - 24px);"></span>
+                                <span id="error_max_year" class="text-danger text-right small" style="width: calc(50% - 24px);"></span>
+                            </div>
+                        </div>
+
+                        <h4 class="bottom-header-title">Total Weight:</h4>
+<!--                        <div class="graph-range-box">-->
+<!--                            <canvas id="myChart2"></canvas>-->
+<!--                            <div class="min-max-slider" data-legendnum="2">-->
+<!--                                <label id="minimum2">Minimum price</label>-->
+<!--                                <input id="min2" class="min" name="min" type="range" step="1" min="0" max="3000" />-->
+<!--                                <label id="maximum2">Maximum price</label>-->
+<!--                                <input id="max2" class="max" name="max" type="range" step="1" min="0" max="3000" />-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <div class="price-wrapper">
+                            <div class="price-range-box">
+                                <div class="min-max-weight-input">
+                                    <input class="form-control more-filter weight-range min" oninput="validity.valid||(value='');" type="number"
+                                                    value="{% if pre_selected_min_weight != None %}{{pre_selected_min_weight}}{% endif %}" placeholder="Min Weight (lbs)" name="min_weight" />
+                                    <span id="min_weight_show">0 lbs (0 kg)</span>
+                                </div>
+                                <span class="line"></span>
+                                <div class="min-max-weight-input">
+                                    <input class="form-control more-filter weight-range max" min="1" oninput="validity.valid||(value='');" type="number"
+                                                value="{% if pre_selected_max_weight != None %}{{pre_selected_max_weight}}{% endif %}" placeholder="Max Weight (lbs)" name="max_weight" />
+                                    <span id="max_weight_show">0 lbs (0 kg)</span>
+                                </div>
+                            </div>
+                            <div class="justify-content-between d-flex flex-wrap">
+                                <span id="error_min_weight" class="text-danger text-left small" style="width: calc(50% - 24px);"></span>
+                                <span id="error_max_weight" class="text-danger text-right small" style="width: calc(50% - 24px);"></span>
+                            </div>
+                        </div>
+
+                        <h4 class="bottom-header-title">Motor Type:</h4>
+                        <div class="checkbox-grp-filter">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input more-filter" name="motor_type" value="Hub" id="hub-motor" {% if 'Hub Motor' in pre_selected_motor_type %}checked{% endif %}>Hub Motor ({{hub_motors.count}})
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input more-filter" name="motor_type" value="Mid-Drive" id="mid-drive-motor" {% if 'Mid-Drive' in pre_selected_motor_type %}checked{% endif %}>Mid-Drive Motor ({{mid_drive_motors.count}})
+                                </label>
+                            </div>
+                        </div>
+
+                        <h4 class="bottom-header-title">Battery Capacity:</h4>
+<!--                        <div class="graph-range-box">-->
+<!--                            <canvas id="myChart3"></canvas>-->
+
+<!--                            <div class="min-max-slider" data-legendnum="2">-->
+<!--                                <label id="minimum3">Minimum price</label>-->
+<!--                                <input id="min3" class="min" name="min" type="range" step="1" min="0" max="3000" />-->
+<!--                                <label id="maximum3">Maximum price</label>-->
+<!--                                <input id="max3" class="max" name="max" type="range" step="1" min="0" max="3000" />-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <div class="price-wrapper">
+                            <div class="price-range-box">
+                                <input class="form-control more-filter battery-capacity min" type="number" min="1" oninput="validity.valid||(value='');" value="{% if pre_selected_min_battery != None %}{{pre_selected_min_battery}}{% endif %}" name="min_battery" placeholder="Min Wh" />
+                                <span class="line"></span>
+                                <input class="form-control more-filter battery-capacity max" type="number" min="1" oninput="validity.valid||(value='');" value="{% if pre_selected_max_battery != None %}{{pre_selected_max_battery}}{% endif %}" name="max_battery" placeholder="Max Wh" />
+                            </div>
+                            <div class="justify-content-between d-flex flex-wrap">
+                                <span id="error_min_battery_capacity" class="text-danger text-left small" style="width: calc(50% - 24px);"></span>
+                                <span id="error_max_battery_capacity" class="text-danger text-right small" style="width: calc(50% - 24px);"></span>
+                            </div>
+                        </div>
+
+                        <h4 class="bottom-header-title">Class:</h4>
+                        <div class="checkbox-grp-filter">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input more-filter" name="bike_class" id="bike-class-1" value="Class 1" {% if 'Class 1' in pre_selected_bike_class %}checked{% endif %}>Class 1: Pedal assist only ({{review_class_1.count}})<br/><span>Top speed 20mph in NA, 25km/h in Europe.</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input more-filter" name="bike_class" id="bike-class-2"
+                                                    value="Class 2" {% if 'Class 2' in pre_selected_bike_class %}checked{% endif %}>Class 2: Throttle ({{review_class_2.count}}) <br/><span>Twist or trigger, may also have pedal assist.</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input more-filter" name="bike_class" id="bike-class-3"
+                                                    value="Class 3" {% if 'Class 3' in pre_selected_bike_class %}checked{% endif %}>Class 3: Speed pedelec ({{review_class_3.count}}) <br/><span>Pedal assist up to 28mph (45km/h).</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input more-filter" name="bike_class"
+                                                    id="bike-class-other" value="Other" {% if 'Other' in pre_selected_bike_class %}checked{% endif %}>Other: Very high speed ({{review_class_other.count}}) <br/><span>Usually for off-road recreational use.</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="bottom-header-title">Suspension:</h4>
+                        <div class="checkbox-grp-filter">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input more-filter" name="suspension" id="suspension-none"
+                                                    value="None" {% if 'None' in pre_selected_suspension %}checked{% endif %}>None: Rigid ({{suspension_rigid.count}})
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input more-filter" name="suspension"
+                                                    id="suspension-front" value="Front Suspension" {% if 'Front Suspension' in pre_selected_suspension %}checked{% endif %}>Front: Hardtail ({{suspension_hardtail.count}})
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input more-filter" name="suspension" id="suspension-rear"
+                                                    value="Rear Suspension" {% if 'Rear Suspension' in pre_selected_suspension %}checked{% endif %}>Rear: Softail ({{suspension_softail.count}})
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input more-filter" name="suspension" id="suspension-full"
+                                                    value="Full Suspension"  {% if 'Full Suspension' in pre_selected_suspension %}checked{% endif %}>Both: Full Suspension ({{suspension_full_suspension.count}})
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="bottom-header-title">Suspension Travel:</h4>
+                        <div class="price-wrapper">
+                            <div class="price-range-box">
+                                <input class="form-control suspension-travel min" type="number" min="1" oninput="validity.valid||(value='');" name="min_suspension_travel" placeholder="Min Travel (mm)" />
+                                <span class="line"></span>
+                                <input class="form-control suspension-travel max" type="number" min="1" oninput="validity.valid||(value='');" name="max_suspension_travel" placeholder="Max Travel (mm)" />
+                            </div>
+                            <div class="justify-content-between d-flex flex-wrap">
+                                <span id="error_min_suspension_travel" class="text-danger text-left small" style="width: calc(50% - 24px);"></span>
+                                <span id="error_max_suspension_travel" class="text-danger text-right small" style="width: calc(50% - 24px);"></span>
+                            </div>
+                        </div>
+
+                        <h4 class="bottom-header-title">Accessories:</h4>
+                        <div class="checkbox-grp-filter">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input more-filter" name="accessories_fenders"
+                                                    id="accessories-fenders" value="Yes" {% if pre_selected_accessories_fenders %}checked{% endif %}>Fenders ({{accessories_fenders.count}})
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input more-filter" name="accessories_lights"
+                                                    id="accessories-lights" value="Yes" {% if pre_selected_accessories_lights %}checked{% endif %}>Lights ({{accessories_lights.count}})
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-check">
+                                        <label class="form-check-label">
+                                            <input type="checkbox" class="form-check-input more-filter" name="accessories_racks"
+                                                    id="accessories-racks" value="Yes" {% if pre_selected_accessories_racks %}checked{% endif %}>Racks ({{accessories_rack.count}})
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="bottom-header-title">Keywords:</h4>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input type="text" class="form-control keyword-search more-filter" value="{% if pre_selected_keywords != None %}{{pre_selected_keywords}}{% endif %}" placeholder="Bosch, Fox, Gates etc." name="keywords" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <div class="header-btns-modal">
+                    <a href="javascript:void(0);" class="reset-link" id="resetFilter">Reset All</a>
+                    <div class="">
+                        <button class="btn theme-btn see-result" id="more-filter-see-result" data-value="{{ bike_reviews }}" disabled>See {{ bike_reviews }} Results</button>
+                    </div>
+                </div>
+            </div>
+
+          </div>
+        </div>
+    </div>
+
+   <!--Filter Modal end-->
+
+    <!--Preferences Modal start-->
+    <div class="modal" id="preferences">
+        <div class="modal-dialog header-bottom-modal modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h1 class="modal-title">Cookie Settings</h1>
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="cookie-setting-froup">
+                        <div class="cookie-setting-content">
+                            <p>
+                                When you visit any of our websites, it may store or retrieve information on your browser, mostly in the form of cookies. This information might be about you, your preferences or your device and is mostly used to
+                                make the site work as you expect it to. The information does not usually directly identify you, but it can give you a more personalized web experience. Because we respect your right to privacy, you can choose not
+                                to allow some types of cookies. Click on the different category headings to find out more and manage your preferences. Please note, blocking some types of cookies may impact your experience of the site and the
+                                services we are able to offer.
+                            </p>
+
+                            <ul class="cookie-setting-list">
+                                <li>
+                                    <p>
+                                        Strictly Necessary <span><i class="fa fa-question-circle" aria-hidden="true"></i> </span>
+                                    </p>
+                                    <label class="switch">
+                                        <input type="checkbox" checked disabled/>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <p>
+                                        Performance Cookies <span><i class="fa fa-question-circle" aria-hidden="true"></i> </span>
+                                    </p>
+                                    <label class="switch">
+                                        <input type="checkbox" checked/>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <p>
+                                        Functional Cookies <span><i class="fa fa-question-circle" aria-hidden="true"></i> </span>
+                                    </p>
+                                    <label class="switch">
+                                        <input type="checkbox" checked/>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </li>
+                                <li>
+                                    <p>
+                                        Targeting Cookies <span><i class="fa fa-question-circle" aria-hidden="true"></i> </span>
+                                    </p>
+                                    <label class="switch">
+                                        <input type="checkbox" checked/>
+                                        <span class="slider round"></span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="border-top: 0;">
+                    <div class="header-btns-modal">
+                        <div class="cookie-setting-btns">
+                            <button class="btn btn-primary cookie_close_btn">Confirm my choices</button>
+                            <button class="btn btn-secondary cookie_close_btn">Accept all cookies</button>
+                        </div>
+                        <a href="javascript:void(0);" data-dismiss="modal">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Preferences Modal end-->
+
+
+
+    <!-- <script src="{% static 'assets/js/jquery-3.2.1.slim.min.js' %}"></script> -->
+    <script src="{% static 'assets/js/jquery.js' %}"></script>
+    <!-- <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js' %}"></script> -->
+    <script src="{% static 'assets/js/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'assets/js/popper.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js' %}"></script>
+    <script src="{% static 'assets/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'assets/js/flyto.js' %}"></script>
+<!--    <script src="{% static 'assets/js/home_custom.js' %}"></script>-->
+    {% block script %}
+    {% endblock %}
+    <script src="{% static 'assets/js/jquery_cookie.min.js' %}"></script>
+
+
+    <!--These jQuery libraries for select2 need to be included-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.1/js/select2.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.js"></script>
+
+    <script>
+        $('.year-range').select2();
+
+        $('.product-card-wrapper').flyto({
+            item      : '.product-card-item',
+            target    : '.compare-icon-head',
+            button    : '.compare-btn'
+        });
+        // Hide Header on on scroll down
+        // var didScroll;
+        // var lastScrollTop = 0;
+        // var delta = 5;
+        // var navbarHeight = $('header').outerHeight();
+
+        // $(window).scroll(function(event){
+        //     didScroll = true;
+        // });
+
+        // setInterval(function() {
+        //     if (didScroll) {
+        //         hasScrolled();
+        //         didScroll = false;
+        //     }
+        // }, 250);
+
+        // function hasScrolled() {
+        //     var st = $(this).scrollTop();
+
+        //     // Make sure they scroll more than delta
+        //     if(Math.abs(lastScrollTop - st) <= delta)
+        //         return;
+
+        //     // If they scrolled down and are past the navbar, add class .nav-up.
+        //     // This is necessary so you never see what is "behind" the navbar.
+        //     if (st > lastScrollTop && st > navbarHeight){
+        //         // Scroll Down
+        //         $('header').removeClass('nav-down').addClass('nav-up');
+        //     } else {
+        //         // Scroll Up
+        //         if(st + $(window).height() < $(document).height()) {
+        //             $('header').removeClass('nav-up').addClass('nav-down');
+        //         }
+        //     }
+
+        //     lastScrollTop = st;
+        // }
+
+        // $(".filter-data").removeClass("fullwidth-search");
+    </script>
+    <script>
+        $(".cookie_close_btn").on('click', function(){
+            console.log("cokkies ---*-*-*-*->?>>>")
+            $.cookie("CookieAlertBoxClosed", new Date(), { path: '/' });
+            $("#preferences").modal('hide');
+            $(".cookie_wrapper").addClass("d-none");
+            $(".footer_wrapper").removeClass("cookie_pad");
+        });
+
+        $("#search-review-data").on('keyup', function () {
+            $.ajax({
+                url: '/search_filter/',
+                method: 'GET',
+                data: { "search_input": $(this).val() },
+                async: false,
+                success: function (data) {
+                    var li_counter = document.querySelector(".suggestions");
+                    li_counter.innerHTML = ""
+                    if (data['search'] != "") {
+                        if(data['data']['data_brand_name'].length != 0){
+                            var new_li = document.createElement('li');
+                            new_li.innerHTML = 'Brand'
+                            li_counter.appendChild(new_li);
+                            for (let datas in data['data']['data_brand_name']) {
+                                var new_li = document.createElement('li');
+                                new_li.innerHTML = `<span class='name'> <a href="/brand/${data['data']['data_brand_name'][datas][1]}" class="text-center"> ${data['data']['data_brand_name'][datas][0]} </a> </span>`
+                                li_counter.appendChild(new_li);
+                            }
+                        }
+
+                        if (data['data']['data_brand_name'].length != 0 || data['data']['data_model_name'].length != 0){
+                            var new_li = document.createElement('li');
+                            new_li.innerHTML = "<hr style='margin:0; padding: 0px 26px; flex: 0 0 80%;'>";
+                            li_counter.appendChild(new_li);
+                        }else {
+                            var new_li = document.createElement('li');
+                            new_li.innerHTML = "<span class='name'> No Data Founded </span>";
+                            li_counter.appendChild(new_li);
+                        }
+                        if(data['data']['data_brand_name'].length != 0){
+                            var new_li = document.createElement('li');
+                            new_li.innerHTML = 'Model'
+                            li_counter.appendChild(new_li);
+                            for (let datas in data['data']['data_model_name']) {
+                                var new_li = document.createElement('li');
+                                new_li.innerHTML = `<span class='name'> <a href="/${data['data']['data_model_name'][datas][2]}/${data['data']['data_model_name'][datas][1]}" class="text-center"> ${data['data']['data_model_name'][datas][0]} </a> </span>`;
+                                li_counter.appendChild(new_li);
+                            }
+                        }
+                    }
+                }
+            })
+
+            var count1 = $(".suggestions li").length;
+
+            if (count1 > 0) {
+                $(".filter-data").addClass("addlayer");
+            }
+            else {
+                $(".filter-data").removeClass("addlayer");
+            }
+        });
+
+        var slug_list = []
+        var id_list = []
+        var before_click_categories = [];
+        var advance_search_url;
+
+        $(document).ready(function(){
+            document.onkeydown = function (evt) {
+                if (evt.keyCode == 27) {
+                    // Escape key pressed
+                    $(".filter-data").removeClass("fullwidth-search");
+                }
+            };
+
+            $("input.search.form-control").on('click',function(){
+                $(this).parents(".filter-data").addClass("fullwidth-search");
+            });
+
+            var all_categories = $('.category-item').map((_,el) => el).get()
+            for (let category in all_categories){
+                if (all_categories[category].getAttribute("class").includes("active_category") === true){
+                    slug_list.push(all_categories[category].getAttribute("data-slug"))
+                    id_list.push(all_categories[category].getAttribute("data-id"))
+                }
+                else {
+                    slug_list = slug_list.filter(slug_list => slug_list !== all_categories[category].getAttribute("data-slug"))
+                    id_list = id_list.filter(id_list => id_list !== all_categories[category].getAttribute("data-id"))
+                }
+            }
+            category_data_result(id_list)
+            before_click_categories = $.merge(before_click_categories, id_list);
+
+            // ========================== Filter count ==================
+            var min_price = $(".price-range.min").val();
+            var max_price = $(".price-range.max").val();
+            var min_year = $(".year-range.min").val();
+            var max_year = $(".year-range.max").val();
+            var min_weight = $(".weight-range.min").val();
+            var max_weight = $(".weight-range.max").val();
+            var min_battery = $(".battery-capacity.min").val();
+            var max_battery = $(".battery-capacity.max").val();
+            var min_suspension_travel = $(".suspension-travel.min").val();
+            var max_suspension_travel = $(".suspension-travel.max").val();
+            var keywords = $(".keyword-search").val();
+            var motor_type_hub_motor = $("#hub-motor").val();
+            var motor_type_mid_drive = $("#mid-drive-motor").val();
+            var motor_type = [];
+            var bike_class = [];
+            var suspension = [];
+            var accessories_fenders;
+            var accessories_lights;
+            var accessories_racks;
+            console.log('min_suspension_travel', min_suspension_travel, '------------')
+            if (min_year == ""){
+                min_year = []
+            }
+            if (max_year == ""){
+                max_year = []
+            }
+            if (min_weight == ""){
+                min_weight = []
+            }
+            if (max_weight == ""){
+                max_weight = []
+            }
+            if (min_battery == ""){
+                min_battery = []
+            }
+            if (max_battery == ""){
+                max_battery = []
+            }
+            if (min_suspension_travel == ""){
+                min_suspension_travel = []
+            }
+            if (max_suspension_travel == ""){
+                max_suspension_travel = []
+            }
+            if (keywords == ""){
+                keywords = []
+            }
+            if (accessories_fenders == ""){
+                accessories_fenders = []
+            }
+            if (accessories_lights == ""){
+                accessories_lights = []
+            }
+            if (accessories_racks == ""){
+                accessories_racks = []
+            }
+
+            motor_type = [];
+            suspension = [];
+            bike_class = [];
+            if ($('#hub-motor').is(':checked')) {
+                motor_type_hub_motor = $('#hub-motor').val();
+                motor_type.push(motor_type_hub_motor)
+            }
+
+            if ($('#mid-drive-motor').is(':checked')) {
+                motor_type_mid_drive_motor = $('#mid-drive-motor').val();
+                motor_type.push(motor_type_mid_drive_motor)
+
+            }
+
+            if ($('#bike-class-1').is(':checked')) {
+                class_1 = $('#bike-class-1').val()
+                bike_class.push(class_1)
+            }
+
+            if ($('#bike-class-2').is(':checked')) {
+                class_2 = $('#bike-class-2').val()
+                bike_class.push(class_2)
+            }
+
+            if ($('#bike-class-3').is(':checked')) {
+                class_3 = $('#bike-class-3').val()
+                bike_class.push(class_3)
+            }
+
+            if ($('#bike-class-other').is(':checked')) {
+                class_other = $('#bike-class-other').val()
+                bike_class.push(class_other)
+            }
+
+            if ($('#suspension-none').is(':checked')) {
+                suspension_rigid = $('#suspension-none').val()
+                suspension.push(suspension_rigid)
+            }
+
+            if ($('#suspension-front').is(':checked')) {
+                suspension_hardtail = $('#suspension-front').val()
+                suspension.push(suspension_hardtail)
+            }
+
+            if ($('#suspension-rear').is(':checked')) {
+                suspension_softail = $('#suspension-rear').val()
+                suspension.push(suspension_softail)
+            }
+
+            if ($('#suspension-full').is(':checked')) {
+                suspension_full_suspension = $('#suspension-full').val()
+                suspension.push(suspension_full_suspension)
+            }
+
+            if ($('#accessories-fenders').is(':checked')) {
+                accessories_fenders = $('#accessories-fenders').val()
+            } else {
+                accessories_fenders = []
+            }
+
+            if ($('#accessories-lights').is(':checked')) {
+                accessories_lights = $('#accessories-lights').val()
+            } else {
+                accessories_lights = []
+            }
+
+            if ($('#accessories-racks').is(':checked')) {
+                accessories_racks = $('#accessories-racks').val()
+            } else {
+                accessories_racks = []
+            }
+
+            if(min_weight != '' && min_weight != [] && min_weight != undefined ){
+                min_weight_kg = Math.round(min_weight * 0.45359237)
+                console.log(min_weight, '------->>> min weight', min_weight_kg)
+                $('#min_weight_show').text(`${min_weight} lbs (${min_weight_kg} kg)`);
+
+            }else{
+                $('#min_weight_show').text(`${0} lbs (${0} kg)`);
+            }
+
+            if(max_weight != '' && max_weight != [] && max_weight != undefined ){
+                max_weight_kg = Math.round(max_weight * 0.45359237)
+                console.log(max_weight, '------->>> max weight', max_weight_kg)
+                $('#max_weight_show').text(`${max_weight} lbs (${max_weight_kg} kg)`);
+            }else{
+                $('#max_weight_show').text(`${0} lbs (${0} kg)`);
+            }
+
+
+            more_filter_ajax(min_year, max_year, min_weight, max_weight, min_battery, max_battery, min_suspension_travel, max_suspension_travel,
+                keywords, motor_type, bike_class,
+                suspension, accessories_fenders,
+                accessories_lights, accessories_racks)
+            // more_filter_inputs(min_year, max_year, min_weight, max_weight, min_battery, max_battery, min_suspension_travel, max_suspension_travel,
+            //     keywords, motor_type, bike_class,
+            //     suspension, accessories_fenders,
+            //     accessories_lights, accessories_racks)
+
+            // price_range_ajax(min_price , max_price)
+            // price_range(min_price, max_price)
+            // $('#price-result').prop("disabled", true);
+            $('#more-filter-see-result').prop("disabled", true);
+
+        })
+
+        $(".category-item").click(function () {
+            console.log($(this).data('id'))
+            $(this).toggleClass("active_category");
+            if ($(this).hasClass("active_category") === true) {
+                slug_list.push($(this).data('slug'))
+                id_list.push($(this).data('id'))
+                category_data_result(id_list)
+            } else {
+                slug_list = slug_list.filter(slug_list => slug_list !== $(this).data('slug'))
+                id_list = id_list.filter(id_list => id_list !== $(this).data('id'))
+                category_data_result(id_list)
+            }
+            if($('.active_category').length == 0 || JSON.stringify(before_click_categories.sort()) === JSON.stringify(id_list.sort())){
+                $('#total_category_result').prop("disabled", true);
+            }else{
+                $('#total_category_result').removeAttr("disabled");
+            }
+        })
+
+        function category_data_result(category_id) {
+            console.log('category_id', category_id)
+            $.ajax({
+                url: '/category-count-ajax/',
+                method: 'GET',
+                data: { 'category_id': category_id.join(',') },
+                success: function (data) {
+                    console.log('===', data);
+                    if (data['data'] == 0) {
+                        $("#total_category_result").text('See ' + $("#total_result").data('value') + ' Results')
+                    } else {
+                        $("#total_category_result").text('See ' + `${data['data']}` + ' Results')
+                    }
+                }
+            })
+        }
+        $('#total_category_result').on('click', function () {
+            $.removeCookie("remove_category_id", { path: '/' });
+            if ($('.active_category').length == 1) {
+                window.location.href = `/category/${slug_list}`
+            } else {
+                window.location.href = `/search/?categories=${id_list.join()}`
+            }
+        })
+
+        $('#resetCategory').on('click', function(){
+            var category_list = $('.categoryitems div div')
+            category_list.each(function(e){
+                $(this).children('a').removeClass("active_category");
+            });
+
+            id_list = [];
+            slug_list = [];
+            category_data_result([]);
+            $('#total_category_result').prop("disabled", true);
+        });
+
+        $('#resetFilter').on('click', function(){
+            console.log('hellllooooooooooo');
+            $(".year-range.min").val('').trigger("change");
+            $(".year-range.max").val('').trigger("change");
+            $(".weight-range.min").val('');
+            $(".weight-range.max").val('');
+            $(".battery-capacity.min").val('');
+            $(".battery-capacity.max").val('');
+            $(".suspension-travel.min").val('');
+            $(".suspension-travel.max").val('');
+            $(".keyword-search").val('');
+            $('#hub-motor').prop('checked', false);
+            $('#mid-drive-motor').prop('checked', false);
+            $('#bike-class-1').prop('checked', false);
+            $('#bike-class-2').prop('checked', false);
+            $('#bike-class-3').prop('checked', false);
+            $('#bike-class-other').prop('checked', false);
+            $('#suspension-none').prop('checked', false);
+            $('#suspension-front').prop('checked', false);
+            $('#suspension-rear').prop('checked', false);
+            $('#suspension-full').prop('checked', false);
+            $('#accessories-fenders').prop('checked', false);
+            $('#accessories-lights').prop('checked', false);
+            $('#accessories-racks').prop('checked', false);
+
+            $('#min_weight_show').text(`${0} lbs (${0} kg)`);
+            $('#max_weight_show').text(`${0} lbs (${0} kg)`);
+
+            var min_year = []
+            var max_year = []
+            var min_weight = []
+            var max_weight = []
+            var min_battery = []
+            var max_battery = []
+            var min_suspension_travel = []
+            var max_suspension_travel = []
+            var keywords = []
+            var accessories_fenders = []
+            var accessories_lights = []
+            var accessories_racks = []
+            var motor_type = [];
+            var bike_class = [];
+            var suspension = [];
+            var motor_type = [];
+            var suspension = [];
+            var bike_class = [];
+
+            more_filter_ajax(min_year, max_year, min_weight, max_weight, min_battery, max_battery, min_suspension_travel, max_suspension_travel,
+            keywords, motor_type, bike_class,
+            suspension, accessories_fenders,
+            accessories_lights, accessories_racks)
+
+        });
+
+        // =================== advance filter =------------
+
+        var advance_search_review_responce;
+function more_filter_ajax(min_year, max_year, min_weight, max_weight, min_battery, max_battery, min_suspension_travel, max_suspension_travel,
+    keywords, motor_type, bike_class,
+    suspension, accessories_fenders,
+    accessories_lights, accessories_racks) {
+
+    var data = $('#frmCont').serializeArray();
+    console.log('----->>>', data)
+
+    var data_responce = {
+        "min_year": min_year,
+        "max_year": max_year,
+        "min_weight": min_weight,
+        "max_weight": max_weight,
+        "motor_type": motor_type,
+        "min_battery": min_battery,
+        "max_battery": max_battery,
+        "bike_class": bike_class,
+        "suspension": suspension,
+        "min_suspension_travel": min_suspension_travel,
+        "max_suspension_travel": max_suspension_travel,
+        "accessories_fenders": accessories_fenders,
+        "accessories_lights": accessories_lights,
+        "accessories_racks": accessories_racks,
+        "keywords": keywords,
+    }
+
+    if($("#frmCont").valid() == true){
+        $('#more-filter-see-result').removeAttr("disabled");
+        $.ajax({
+            url: '/more-filter/',
+            method: 'GET',
+            data: $.param(data),
+            async:false,
+            success: function (data) {
+                console.log(data, "-----------------------")
+                if (data['total_reviews'].length == 0){
+                    $('#more-filter-see-result').prop("disabled", true);
+                }else{
+                    $('#more-filter-see-result').removeAttr("disabled");
+                }
+
+                if (data['total_reviews'].length == 0) {
+                    $("#total_result").text('See ' + $("#total_result").data('value') + ' Results')
+                } else {
+                    $("#total_result").text('See ' + `${data['total_reviews'].length}` + ' Results')
+                }
+
+                advance_search_url = this.url.replace('/more-filter/', '/search/')
+                advance_search_review_responce = data
+                var see_result = $('#more-filter-see-result')[0]
+                see_result.innerHTML = `See ${data['total_reviews'].length} Results`
+                 if(advance_search_url != '/search/'){
+                     $('#more-filter-see-result').removeAttr("disabled");
+                 }
+                 else{
+                     $('#more-filter-see-result').prop("disabled", true);
+                 }
+            },
+        })
+    }else{
+        $('#more-filter-see-result').prop("disabled", true);
+    }
+}
+
+$(document).on('keyup change', '.year-range, .weight-range, .battery-capacity, .supension-travel, .keyword-search, .more-filter',function(){
+    more_filter_ajax();
+});
+
+// function more_filter_inputs(min_year, max_year, min_weight, max_weight, min_battery, max_battery, min_suspension_travel, max_suspension_travel, keywords, motor_type, bike_class, suspension, accessories_fenders, accessories_lights, accessories_racks) {
+
+//     var pre_entered_min_year = min_year
+//     var pre_entered_max_year = max_year
+//     var pre_entered_min_weight = min_weight
+//     var pre_entered_max_weight = max_weight
+//     var pre_entered_min_battery = min_battery
+//     var pre_entered_max_battery = max_battery
+//     var pre_entered_min_suspension_travel = min_suspension_travel
+//     var pre_entered_max_suspension_travel = max_suspension_travel
+//     var pre_entered_keywords = keywords
+//     var pre_entered_motor_type = motor_type
+//     var pre_entered_bike_class = bike_class
+//     var pre_entered_suspension = suspension
+//     var pre_entered_accessories_fenders = accessories_fenders
+//     var pre_entered_accessories_lights = accessories_lights
+//     var pre_entered_accessories_racks = accessories_racks
+
+//     // var min_year;
+//     // var max_year;
+//     // var min_weight;
+//     // var max_weight;
+//     // var motor_type = [];
+//     // var bike_class = []
+//     // var suspension = []
+//     // var min_battery;
+//     // var max_battery;
+//     // var min_suspension_travel;
+//     // var max_suspension_travel;
+//     // var accessories_fenders;
+//     // var accessories_lights;
+//     // var accessories_racks;
+//     // var keywords;
+
+
+//     $('.weight-range').on('keyup change', function () {
+//         if ($(this).hasClass('min')) {
+//             min_weight = $(this).val()
+//             if (parseInt(min_weight) >= parseInt(max_weight)) {
+//                 $("#error_max_weight").html('')
+//                 $("#error_min_weight").html('Min weight must be lower.')
+//                 $('#more-filter-see-result').prop("disabled", true);
+//             } else if (parseInt(min_weight) < parseInt(max_weight)) {
+//                 $("#error_max_weight").html('')
+//                 $("#error_min_weight").html('')
+//                 $('#more-filter-see-result').removeAttr("disabled");
+//             } else if (min_weight == "" || max_weight == "") {
+//                 $("#error_max_weight").html('')
+//                 $("#error_min_weight").html('')
+//                 $('#more-filter-see-result').removeAttr("disabled");
+//             }
+//             if (min_weight == ""){
+//                 min_weight = []
+//             }
+//         }
+//         if ($(this).hasClass('max')) {
+//             max_weight = $(this).val()
+//             if (parseInt(min_weight) >= parseInt(max_weight)) {
+//                 $("#error_min_weight").html('')
+//                 $("#error_max_weight").html('Max weight must be higher.')
+//                 $('#more-filter-see-result').prop("disabled", true);
+//             } else if (parseInt(min_weight) < parseInt(max_weight)) {
+//                 $("#error_min_weight").html('')
+//                 $("#error_max_weight").html('')
+//                 $('#more-filter-see-result').removeAttr("disabled");
+//             } else if (min_weight == "" || max_weight == "") {
+//                 $("#error_min_weight").html('')
+//                 $("#error_max_weight").html('')
+//                 $('#more-filter-see-result').removeAttr("disabled");
+//             }
+//             if (max_weight == ""){
+//                 max_weight = []
+//             }
+//         }
+
+//         if(min_weight != '' && min_weight != [] && min_weight != undefined ){
+//             min_weight_kg = Math.round(min_weight * 0.45359237)
+//             $('#min_weight_show').text(`${min_weight} lbs (${min_weight_kg} kg)`);
+
+//         }else{
+//             $('#min_weight_show').text(`${0} lbs (${0} kg)`);
+//         }
+
+//         if(max_weight != '' && max_weight != [] && max_weight != undefined ){
+//             max_weight_kg = Math.round(max_weight * 0.45359237)
+//             $('#max_weight_show').text(`${max_weight} lbs (${max_weight_kg} kg)`);
+//         }else{
+//             $('#max_weight_show').text(`${0} lbs (${0} kg)`);
+//         }
+
+
+
+//         if (pre_entered_min_year == min_year && pre_entered_max_year == max_year && pre_entered_min_weight == min_weight && pre_entered_max_weight == max_weight && pre_entered_min_battery == min_battery
+//             && pre_entered_max_battery == max_battery && pre_entered_keywords == keywords){
+//                 $('#more-filter-see-result').prop("disabled", true);
+//         }
+//         // if (pre_entered_min_year == min_year && pre_entered_max_year == max_year && pre_entered_min_weight == min_weight && pre_entered_max_weight == max_weight && pre_entered_min_battery == min_battery
+//         //     && pre_entered_max_battery == max_battery && pre_entered_min_suspension_travel == min_suspension_travel && pre_entered_max_suspension_travel == max_suspension_travel && pre_entered_keywords == keywords
+//         //     && pre_entered_motor_type == motor_type && pre_entered_bike_class == bike_class && pre_entered_suspension == suspension && pre_entered_accessories_fenders == accessories_fenders &&
+//         //     pre_entered_accessories_lights == accessories_lights && pre_entered_accessories_racks == accessories_racks){
+//         //         $('#more-filter-see-result').prop("disabled", true);
+//         // }
+
+//         more_filter_ajax(min_year, max_year, min_weight, max_weight, min_battery, max_battery, min_suspension_travel, max_suspension_travel,
+//             keywords, motor_type, bike_class,
+//             suspension, accessories_fenders,
+//             accessories_lights, accessories_racks)
+//     })
+
+//     $('.battery-capacity').on('keyup change', function () {
+//         if ($(this).hasClass('min')) {
+//             min_battery = $(this).val()
+//             if (parseInt(min_battery) >= parseInt(max_battery)) {
+//                 $("#error_max_battery_capacity").html('')
+//                 $("#error_min_battery_capacity").html('Min capacity must be lower.')
+//                 $('#more-filter-see-result').prop("disabled", true);
+//             } else if (parseInt(min_battery) < parseInt(max_battery)) {
+//                 $("#error_max_battery_capacity").html('')
+//                 $("#error_min_battery_capacity").html('')
+//                 $('#more-filter-see-result').removeAttr("disabled");
+//             } else if (min_battery == "" || max_battery == "") {
+//                 $("#error_`max_battery_capacity`").html('')
+//                 $("#error_min_battery_capacity").html('')
+//                 $('#more-filter-see-result').removeAttr("disabled");
+//             }
+//             if (min_battery == ""){
+//                 min_battery = []
+//             }
+//         }
+//         if ($(this).hasClass('max')) {
+//             max_battery = $(this).val()
+//             if (parseInt(min_battery) >= parseInt(max_battery)) {
+//                 $("#error_min_battery_capacity").html('')
+//                 $("#error_max_battery_capacity").html('Max capacity must be higher.')
+//                 $('#more-filter-see-result').prop("disabled", true);
+//             } else if (parseInt(min_battery) < parseInt(max_battery)) {
+//                 $("#error_min_battery_capacity").html('')
+//                 $("#error_max_battery_capacity").html('')
+//                 $('#more-filter-see-result').removeAttr("disabled");
+//             } else if (min_battery == "" || max_battery == "") {
+//                 $("#error_min_battery_capacity").html('')
+//                 $("#error_max_battery_capacity").html('')
+//                 $('#more-filter-see-result').removeAttr("disabled");
+//             }
+//             if (max_battery == ""){
+//                 max_battery = []
+//             }
+//         }
+
+//         if (pre_entered_min_year == min_year && pre_entered_max_year == max_year && pre_entered_min_weight == min_weight && pre_entered_max_weight == max_weight && pre_entered_min_battery == min_battery
+//             && pre_entered_max_battery == max_battery && pre_entered_keywords == keywords){
+//                 $('#more-filter-see-result').prop("disabled", true);
+//         }
+
+//         more_filter_ajax(min_year, max_year, min_weight, max_weight, min_battery, max_battery, min_suspension_travel, max_suspension_travel,
+//             keywords, motor_type, bike_class,
+//             suspension, accessories_fenders,
+//             accessories_lights, accessories_racks)
+//     })
+
+//     $('.suspension-travel').on('keyup change', function () {
+//         if ($(this).hasClass('min')) {
+//             min_suspension_travel = $(this).val()
+//             if (parseInt(min_suspension_travel) >= parseInt(max_suspension_travel)) {
+//                 $("#error_max_suspension_travel").html('')
+//                 $("#error_min_suspension_travel").html('Min suspension travel must  be lower.')
+//                 // $('#more-filter-see-result').prop("disabled", true);
+//             } else if (parseInt(min_suspension_travel) < parseInt(max_suspension_travel)) {
+//                 $("#error_max_suspension_travel").html('')
+//                 $("#error_min_suspension_travel").html('')
+//                 // $('#more-filter-see-result').removeAttr("disabled");
+//             } else if (min_suspension_travel == "" || max_suspension_travel == "") {
+//                 $("#error_max_suspension_travel").html('')
+//                 $("#error_min_suspension_travel").html('')
+//                 // $('#more-filter-see-result').removeAttr("disabled");
+//             }
+//             if (min_suspension_travel == ""){
+//                 min_suspension_travel = []
+//             }
+//         }
+//         if ($(this).hasClass('max')) {
+//             max_suspension_travel = $(this).val()
+//             if (parseInt(min_suspension_travel) >= parseInt(max_suspension_travel)) {
+//                 $("#error_min_suspension_travel").html('')
+//                 $("#error_max_suspension_travel").html('Max suspension travel must be higher.')
+//                 // $('#more-filter-see-result').prop("disabled", true);
+//             } else if (parseInt(min_suspension_travel) < parseInt(max_suspension_travel)) {
+//                 $("#error_min_suspension_travel").html('')
+//                 $("#error_max_suspension_travel").html('')
+//                 // $('#more-filter-see-result').removeAttr("disabled");
+//             } else if (min_suspension_travel == "" || max_suspension_travel == "") {
+//                 $("#error_min_suspension_travel").html('')
+//                 $("#error_max_suspension_travel").html('')
+//                 // $('#more-filter-see-result').removeAttr("disabled");
+//             }
+//             if (max_suspension_travel == ""){
+//                 max_suspension_travel = []
+//             }
+//         }
+
+//         // if (pre_entered_min_year == min_year && pre_entered_max_year == max_year && pre_entered_min_weight == min_weight && pre_entered_max_weight == max_weight && pre_entered_min_battery == min_battery
+//         //     && pre_entered_max_battery == max_battery && pre_entered_min_suspension_travel == min_suspension_travel && pre_entered_max_suspension_travel == max_suspension_travel && pre_entered_keywords == keywords
+//         //     && pre_entered_motor_type == motor_type && pre_entered_bike_class == bike_class && pre_entered_suspension == suspension && pre_entered_accessories_fenders == accessories_fenders &&
+//         //     pre_entered_accessories_lights == accessories_lights && pre_entered_accessories_racks == accessories_racks){
+//         //         $('#more-filter-see-result').prop("disabled", true);
+//         // }
+
+//         more_filter_ajax(min_year, max_year, min_weight, max_weight, min_battery, max_battery, min_suspension_travel, max_suspension_travel,
+//             keywords, motor_type, bike_class,
+//             suspension, accessories_fenders,
+//             accessories_lights, accessories_racks)
+//     })
+
+//     $('.keyword-search').on('keyup change', function () {
+//         keywords = $(this).val()
+//         if(keywords == ""){
+//             keywords = []
+//         }
+
+//         if (pre_entered_keywords != keywords){
+//             $('#more-filter-see-result').removeAttr("disabled");
+//         }
+
+//         if (pre_entered_min_year == min_year && pre_entered_max_year == max_year && pre_entered_min_weight == min_weight && pre_entered_max_weight == max_weight && pre_entered_min_battery == min_battery
+//             && pre_entered_max_battery == max_battery && pre_entered_keywords == keywords){
+//                 $('#more-filter-see-result').prop("disabled", true);
+//         }
+
+//         more_filter_ajax(min_year, max_year, min_weight, max_weight, min_battery, max_battery, min_suspension_travel, max_suspension_travel,
+//             keywords, motor_type, bike_class,
+//             suspension, accessories_fenders,
+//             accessories_lights, accessories_racks)
+//     })
+
+//     $('.more-filter').on('change', function () {
+//         motor_type = [];
+//         suspension = [];
+//         bike_class = [];
+//         if ($('#hub-motor').is(':checked')) {
+//             motor_type_hub_motor = $('#hub-motor').val();
+//             motor_type.push(motor_type_hub_motor)
+//         }
+
+//         if ($('#mid-drive-motor').is(':checked')) {
+//             motor_type_mid_drive_motor = $('#mid-drive-motor').val();
+//             motor_type.push(motor_type_mid_drive_motor)
+
+//         }
+
+//         if ($('#bike-class-1').is(':checked')) {
+//             class_1 = $('#bike-class-1').val()
+//             bike_class.push(class_1)
+//         }
+
+//         if ($('#bike-class-2').is(':checked')) {
+//             class_2 = $('#bike-class-2').val()
+//             bike_class.push(class_2)
+//         }
+
+//         if ($('#bike-class-3').is(':checked')) {
+//             class_3 = $('#bike-class-3').val()
+//             bike_class.push(class_3)
+//         }
+
+//         if ($('#bike-class-other').is(':checked')) {
+//             class_other = $('#bike-class-other').val()
+//             bike_class.push(class_other)
+//         }
+
+//         if ($('#suspension-none').is(':checked')) {
+//             suspension_rigid = $('#suspension-none').val()
+//             suspension.push(suspension_rigid)
+//         }
+
+//         if ($('#suspension-front').is(':checked')) {
+//             suspension_hardtail = $('#suspension-front').val()
+//             suspension.push(suspension_hardtail)
+//         }
+
+//         if ($('#suspension-rear').is(':checked')) {
+//             suspension_softail = $('#suspension-rear').val()
+//             suspension.push(suspension_softail)
+//         }
+
+//         if ($('#suspension-full').is(':checked')) {
+//             suspension_full_suspension = $('#suspension-full').val()
+//             suspension.push(suspension_full_suspension)
+//         }
+
+//         if ($('#accessories-fenders').is(':checked')) {
+//             accessories_fenders = $('#accessories-fenders').val()
+//         } else {
+//             accessories_fenders = []
+//         }
+
+//         if ($('#accessories-lights').is(':checked')) {
+//             accessories_lights = $('#accessories-lights').val()
+//         } else {
+//             accessories_lights = []
+//         }
+
+//         if ($('#accessories-racks').is(':checked')) {
+//             accessories_racks = $('#accessories-racks').val()
+//         } else {
+//             accessories_racks = []
+//         }
+
+//         if (pre_entered_min_year == min_year && pre_entered_max_year == max_year && pre_entered_min_weight == min_weight && pre_entered_max_weight == max_weight && pre_entered_min_battery == min_battery
+//             && pre_entered_max_battery == max_battery && pre_entered_min_suspension_travel == min_suspension_travel && pre_entered_max_suspension_travel == max_suspension_travel && pre_entered_keywords == keywords
+//             && pre_entered_motor_type == motor_type && pre_entered_bike_class == bike_class && pre_entered_suspension == suspension && pre_entered_accessories_fenders == accessories_fenders &&
+//             pre_entered_accessories_lights == accessories_lights && pre_entered_accessories_racks == accessories_racks){
+//                 $('#more-filter-see-result').prop("disabled", true);
+//         }
+
+//         more_filter_ajax(min_year, max_year, min_weight, max_weight, min_battery, max_battery, min_suspension_travel, max_suspension_travel,
+//             keywords, motor_type, bike_class,
+//             suspension, accessories_fenders,
+//             accessories_lights, accessories_racks)
+//     })
+
+
+//     }
+
+    $("#more-filter-see-result").on("click", function(){
+        window.location.href = `${advance_search_url}`
+        // window.location.href = `${advance_search_url}&reviews=${btoa(advance_search_review_responce['total_reviews'])}`
+    })
+
+
+    // more_filter_inputs()
+
+
+    //-*/-*/-*/-*/-*/-*/-*/-*/-*/-*/-*/-*/-*/-*/-*/-*/
+
+    $('[name="max_weight"]').on("keyup change", function(){
+        var max_weight = $(this).val();
+        if(max_weight != '' && max_weight != [] && max_weight != undefined ){
+            max_weight_kg = Math.round(max_weight * 0.45359237)
+            $('#max_weight_show').text(`${max_weight} lbs (${max_weight_kg} kg)`);
+        }else{
+            $('#max_weight_show').text(`${0} lbs (${0} kg)`);
+        }
+    });
+
+    $('[name="min_weight"]').on("keyup change", function(){
+        var min_weight = $(this).val();
+        if(min_weight != '' && min_weight != [] && min_weight != undefined ){
+            min_weight_kg = Math.round(min_weight * 0.45359237)
+            $('#min_weight_show').text(`${min_weight} lbs (${min_weight_kg} kg)`);
+        }else{
+            $('#min_weight_show').text(`${0} lbs (${0} kg)`);
+        }
+    });
+
+    // ########################   #####################
+        $('[name="min_year"], [name="max_year"]').select2({}).on("change", function (e) {
+          $('#frmCont').valid();
+        });
+
+        $("#frmCont").validate({
+        ignore: [],
+        onkeyup: function(element) {
+          $(element).valid();
+        },
+        rules: {
+            // Year selection
+            min_year: {
+			    required: function(element) {
+                  return ($('[name="max_year"]').val() != null);
+                },
+                max: function(element) {
+                  if($('[name="max_year"]').val() != null){
+                    return parseInt($('[name="max_year"]').val());
+                  }
+                }
+            },
+            max_year: {
+                required: function(element) {
+                  return ($('[name="min_year"]').val() != null);
+                },
+                min: function(element) {
+                  if($('[name="min_year"]').val() != null){
+                    return parseInt($('[name="min_year"]').val());
+                  }
+                }
+            },
+            // WEIGHT SECTION
+            min_weight: {
+			    required: function(element) {
+				    return $('[name="max_weight"]').is(':filled');
+				},
+                digits: true,
+                min: 1,
+                max: function(element) {
+                  if($('[name="max_weight"]').val() != ''){
+                    return parseInt($('[name="max_weight"]').val()) - 1;
+                  }else{
+                    return 0;
+                  }
+              }
+            },
+            max_weight: {
+                required: function(element) {
+                  return $('[name="min_weight"]').is(':filled');
+              },
+                digits: true,
+                min: function(element) {
+                  if($('[name="min_weight"]').val() != ''){
+                    return parseInt($('[name="min_weight"]').val()) + 1;
+                  }else{
+                    return 0;
+                  }
+              }
+            },
+            // Battery capacity section
+            min_battery: {
+			    required: function(element) {
+				    return $('[name="max_battery"]').is(':filled');
+				},
+                digits: true,
+                min: 1,
+                max: function(element) {
+                  if($('[name="max_battery"]').val() != ''){
+                    return parseInt($('[name="max_battery"]').val()) - 1;
+                  }else{
+                    return 0;
+                  }
+                }
+            },
+            max_battery: {
+                required: function(element) {
+                  return $('[name="min_battery"]').is(':filled');
+              },
+                digits: true,
+                min: function(element) {
+                  if($('[name="min_battery"]').val() != ''){
+                    return parseInt($('[name="min_battery"]').val()) + 1;
+                  }else{
+                    return 0;
+                  }
+              }
+            },
+
+            min_suspension_travel: {
+			    required: function(element) {
+				    return $('[name="max_suspension_travel"]').is(':filled');
+				},
+                digits: true,
+                min: 1,
+                max: function(element) {
+                  if($('[name="max_suspension_travel"]').val() != ''){
+                    return parseInt($('[name="max_suspension_travel"]').val()) - 1;
+                  }else{
+                    return 0;
+                  }
+              }
+            },
+            max_suspension_travel: {
+                required: function(element) {
+                  return $('[name="min_suspension_travel"]').is(':filled');
+              },
+                digits: true,
+                min: function(element) {
+                  if($('[name="min_suspension_travel"]').val() != ''){
+                    return parseInt($('[name="min_suspension_travel"]').val()) + 1;
+                  }else{
+                    return 0;
+                  }
+              }
+            }
+        },
+        messages: {
+            min_year: {
+                max: 'Min year must be lower.',
+            },
+            max_year: {
+                min: 'Max year must be higher.',
+            }
+        },
+        errorPlacement: function(error, element) {
+            //Custom position: first name
+            console.log('element.attr', element.attr("name"), error)
+            if (element.attr("name") == "min_year") {
+                $("#error_min_year").html(error);
+            }else if (element.attr("name") == "max_year") {
+                $("#error_max_year").html(error);
+            }else if (element.attr("name") == "min_weight") {
+                $("#error_min_weight").html(error);
+            }else if (element.attr("name") == "max_weight") {
+                $("#error_max_weight").html(error);
+            }else if (element.attr("name") == "min_battery") {
+                $("#error_min_battery_capacity").html(error);
+            }else if (element.attr("name") == "max_battery") {
+                $("#error_max_battery_capacity").html(error);
+            }else if (element.attr("name") == "min_suspension_travel") {
+                $("#error_min_suspension_travel").html(error);
+            }else if (element.attr("name") == "max_suspension_travel") {
+                $("#error_max_suspension_travel").html(error);
+            } else {
+                error.insertBefore(element);
+            }
+        },
+
+    });
+
+    </script>
+    <script src="{% static 'assets/js/custom.js' %}"></script>
+</body>
+
+</html>

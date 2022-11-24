@@ -1,0 +1,156 @@
+{% extends 'frontend/subpages/base.html'%}
+{% load review_card %}
+{% load static %}
+
+{% block title %}
+    Local Electric Bike Shops | ElectricBikeReview.com
+{% endblock %}
+
+{% block seoTag %}
+    <meta name="description" content="Interactive directory map! Find electric bike shops in your area, search around the world, and filter shop results by electric bike brand.">
+    <meta name="theme-color" content="#80b600">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#80b600">
+	<meta name="msapplication-navbutton-color" content="#80b600">
+    <meta property='og:url' content='https://electricbikereview.com/shop-directory/' />
+    <meta property="fb:app_id" content="462030500496873" />
+
+    <meta property="og:locale" content="en_us" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Ebike Shop Directory | Find a Local Shop | ElectricBikeReview.com" />
+    <meta property="og:description" content="Interactive directory map! Find electric bike shops in your area, search around the world, and filter shop results by electric bike brand." />
+    <meta property="og:site_name" content="ElectricBikeReview.com" />
+    <meta property="og:image" content="http://54.213.76.238/static/assets/images/EBRlogo.png" />
+	<meta name="twitter:card" content="summary" />
+    <meta name="twitter:description" content="Interactive directory map! Find electric bike shops in your area, search around the world, and filter shop results by electric bike brand." />
+    <meta name="twitter:title" content="Ebike Shop Directory | Find a Local Shop | ElectricBikeReview.com" />
+    <meta name="twitter:image" content="http://54.213.76.238/static/assets/images/EBRlogo.png" />
+    <meta name="twitter:site" content="@ebikereview" />
+{% endblock %}
+
+
+{% block body %}
+    <script type="application/ld+json">
+        {
+          "@context": "http://schema.org",
+          "@type": "WebPage",
+          "@id": "https://electricbikereview.com/shop-directory/#WebPage",
+          "url": "https://electricbikereview.com/shop-directory/",
+          "name": "Electric Bike Shop Directory",
+          "mainEntity": {
+              "@type": "Map",
+              "interactivityType": "active"
+          },
+          "isPartOf":
+          {
+            "@type": "WebSite",
+            "@id": "https://electricbikereview.com/#WebSite",
+            "name": "ElectricBikeReview.com",
+            "url": "https://electricbikereview.com/"
+          },
+          "description": "An interactive map directory of local ebike shops around the globe! Search different locations, filter by brand, and find the electric bike of your dreams.",
+          "about": "An interactive map directory of local ebike shops around the globe! Search different locations, filter by brand, and find the electric bike of your dreams.",
+          "publisher": {
+            "@type": "Organization",
+            "@id": "https://electricbikereview.com/#Organization",
+            "name": "Electric Bike Review",
+            "url": "https://electricbikereview.com/"
+          }
+        }
+    </script>
+    <!-- Middle Area -->
+    <section class="middle_area">
+        <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="slash">/</span>
+          <a href="javascript:void(0);" class="active">Electric Bike Shops Directory</a>
+        </div>
+        <div class="main-content">
+            <div class="row m-0">
+                <div class="col-lg-12 col-xl-12 col-md-12 col-sm-12 p-0">
+                    <div class="left-side-content directory-left-cont" style="width:100% !important">
+                        <h3 class="section-title">Electric Bike Shops Directory</h3>
+                        <div class="directory-map-section">
+                            <iframe src="http://54.213.76.238/dashboard-integration/shops-osm/" id="shops-directory-map-iframe" style="width: 100%; height: 687px;"></iframe>
+                            <div class="directory-map-btn">
+                                <a href="https://partner-dashboard.electricbikereview.com/register" target="_blank" class="btn theme-btn">Register Your Shop</a>
+                            </div>
+                        </div>
+
+                        <div class="product-card-wrapper" >
+                            {% for review in featured_reviews %}
+                                <div class="product-card-item">
+                                    <div class="protitle-wrapper">
+                                        <h4 class="product-title"><a href="/{{review.brands.first.slug}}/{{review.slug}}/">{{ review.name }}</a><span>Promoted</span></h4>
+                                        <p class="product-price">${{ review.review_general_review.first.msrp|floatformat:"-3g" }}</p>
+                                    </div>
+                                    <div class="product-desc">
+                                        <p class="desc_1">
+                                            {% for brand in review.brands.all %}
+                                                <a href="/brand/{{brand.slug}}" class="ps-link">{{brand.name}}</a>
+                                            {% endfor %}
+                                        </p>
+                                        <div class="data-price">
+                                            <div class="procard-lastdata">
+                                                {% for category in review.categories.all %}
+                                                    <p class="desc_1">
+                                                        <a href="/category/{{category.slug}}">{{ category.slug | category_name_clean }}</a>
+                                                    </p>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="owl-carousel product-img-slider" >
+                                        <a href="/{{review.brands.first.slug}}/{{review.slug}}">
+                                            <img src="{{ review.featured_image_thumbnail.url }}" class="pro-card-img" alt="{{ review.name }}"  />
+                                        </a>
+                                        {% for reviewgalley in review.review_galley_review.all|dictsort:"order" %}
+                                            <a href="/{{review.brands.first.slug}}/{{review.slug}}">
+                                                <img src="{{reviewgalley.image.thumbnail_image.url}}" class="pro-card-img" alt="{{ reviewgalley.image.title }}"  />
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                    <!-- <button class="btn compare-btn">
+                                        <img src="./assets/images/plus.png" alt="plus" />
+                                    </button> -->
+                                    <div class="pro-meta-data">
+                                        <div class="pro-metadata-item">
+                                            <p class="prometa-title">Motor Type</p>
+                                            <h6>{{ review.review_general_review.all.0.motor_type }}</h6>
+                                        </div>
+                                        <div class="pro-metadata-item">
+                                            <p class="prometa-title">Battery Size</p>
+                                            <h6>{{ review.review_general_review.all.0.demo_battery_watt_hours|floatformat:"-2g" }}  Wh</h6>
+                                        </div>
+                                        <div class="pro-metadata-item">
+                                            <p class="prometa-title">Ebike Type</p>
+                                            {% if review.review_general_review.all.0.demo_bike_class.all|length > 1 %}
+                                                <h6 class="dotted-class">{{ review.review_general_review.all.0.demo_bike_class.all.0 }}<span>···</span></h6>
+                                            {% else %}
+                                                <h6>{{ review.review_general_review.all.0.demo_bike_class.all.0 }}</h6>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="procard-btns">
+                                        <button class="btn theme-btn grey-btn">
+                                            <a href="/{{review.brands.first.slug}}/{{review.slug}}">VIEW DETAILS</a>
+                                        </button>
+                                        {% if review.id in compare_review %}
+                                            <button class="btn theme-btn grey-btn compare-btn added" data-id="{{review.id}}"><span>-</span>REMOVE</button>
+                                        {% else %}
+                                            <button class="btn theme-btn grey-btn compare-btn" data-id="{{review.id}}"><span>+</span>COMPARE</button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

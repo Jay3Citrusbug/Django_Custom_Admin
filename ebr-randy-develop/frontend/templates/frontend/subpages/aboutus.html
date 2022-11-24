@@ -1,0 +1,69 @@
+{% extends 'frontend/subpages/base.html'%}
+{% load review_card %}
+{% load static %}
+
+{% block title %}
+    About Us | ElectricBikeReview.com
+{% endblock %}
+
+{% block seoTag %}
+    <meta name="description" content="Research electric bikes including prices, detailed specs, compare tools, local shops, and forums. Objective unbiased reviews and advice in the forums.">
+    <meta name="theme-color" content="#80b600">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#80b600">
+	<meta name="msapplication-navbutton-color" content="#80b600">
+    <meta property='og:url' content='https://electricbikereview.com/about-us/' />
+    <meta property="fb:app_id" content="462030500496873" />
+
+    <meta property="og:locale" content="en_us" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="About Us | ElectricBikeReview.com" />
+    <meta property="og:description" content="" />
+    <meta property="og:site_name" content="ElectricBikeReview.com" />
+    <meta property="og:image" content="http://54.213.76.238/static/assets/images/EBRlogo.png" />
+	<meta name="twitter:card" content="summary" />
+    <meta name="twitter:description" content="" />
+    <meta name="twitter:title" content="About Us | ElectricBikeReview.com" />
+    <meta name="twitter:image" content="http://54.213.76.238/static/assets/images/EBRlogo.png" />
+    <meta name="twitter:site" content="@ebikereview" />
+{% endblock %}
+
+
+{% block body %}
+  <!-- Middle Area -->
+  <section class="middle_area">
+      <div class="breadcrumb">
+          <a href="/">Home</a>
+          <span class="slash">/</span>
+          <a href="javascript:void(0);" class="active">About Us</a>
+      </div>
+      <div class="main-content">
+          <div class="row m-0">
+<!--              <div class="col-lg-8 col-xl-9 col-md-6 col-sm-6 p-0">-->
+                  <div class="left-side-content">
+                      <h3 class="section-title">About Us</h3>
+                      <p class="desc_p terms-p">Hi guys! My name is Court. I grew up riding bikes with my family and friends in Colorado. That’s me with the pinwheel in the child seat at the back of the tandem!</p>
+                      <div class="terms-data">
+                          <img src="{% static 'assets/images/aboutus.png' %}" alt="about-img" class="about-img" />
+                          <p class="desc_p">Like many young people, bicycles brought me freedome and connection. Over the years, I rode my bike to visit friends, discover new places, and commute to school and work. As I got older, my bicycle helped me stay in shape and unwind after work ;)</p>
+                          <p class="desc_p">I discovered electric bikes while living in Texas, because there were some big hils and hot hot days! My first ebike seemed a little heavy and expensive, and I actually regretted not spending more for a nicer one because I was riding it so much!</p>
+                          <p class="desc_p">I launched ElectricBikeReview.com to share what I had learned and make it easier for people to find the right bike for their budget and lifestyle. The most common question I get is “what’s the best electric bike” but that answer really depends on the activity and budget. Each of us is different, and that’s why I cover and list so many different products here!</p>
+                          <p class="desc_p">A basic affordable ebike could be great for a high schooler or college commuter where theft and damage is more likely, and the bike has to stay outside most of the time. A less comfortable but compact and light weight folding model could be perfect for that cramped RV or city apartment! Perhaps a relaxed cruiser with just one gear and no lights, racks, or fenders is all you really need for that happy neighborhood ride. It really depends on you... but I hope this site helps.</p>
+                          <p class="desc_p">EBR remains founder owned and operated. I try to keep the advertising minimal and complimentary, we respect your privacy. I care about you, and this website is one way I am trying to make the world a little brighter... bicycles bring us together :)</p>
+                      </div>
+
+                      <div class="video_review_wrapper about-video">
+                          <div class="review_video_box">
+                            <iframe src="https://www.youtube.com/embed/HXSSGmyOWVA" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                          </div>
+                      </div>
+                  </div>
+<!--              </div>-->
+
+              {% include 'frontend/include/right_side_section.html' %}
+          </div>
+      </div>
+  </section>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'frontend/subpages/base.html'%}
+{% load review_card %}
+{% load static %}
+
+{% block title %}
+    Electric Bike Advertising Services | ElectricBikeReview.com
+{% endblock %}
+
+{% block seoTag %}
+    <meta name="description" content="EBR serves over 2 million pageviews per month to potential customers looking to select the perfect product for their lifestyle and budget. Leverage our platform and reach to place your shop or products front and center!">
+    <meta name="theme-color" content="#80b600">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#80b600">
+	<meta name="msapplication-navbutton-color" content="#80b600">
+    <meta property='og:url' content='http://54.213.76.238/advertise/' />
+    <meta property="fb:app_id" content="462030500496873" />
+
+    <meta property="og:locale" content="en_us" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Electric Bike Advertising Services | ElectricBikeReview.com" />
+    <meta property="og:description" content="EBR serves over 2 million pageviews per month to potential customers looking to select the perfect product for their lifestyle and budget. Leverage our platform and reach to place your shop or products front and center!" />
+    <meta property="og:site_name" content="54.213.76.238" />
+    <meta property="og:image" content="http://54.213.76.238/static/assets/images/EBRlogo.png" />
+	<meta name="twitter:card" content="summary" />
+    <meta name="twitter:description" content="EBR serves over 2 million pageviews per month to potential customers looking to select the perfect product for their lifestyle and budget. Leverage our platform and reach to place your shop or products front and center!" />
+    <meta name="twitter:title" content="Electric Bike Advertising Services | ElectricBikeReview.com" />
+    <meta name="twitter:image" content="http://54.213.76.238/static/assets/images/EBRlogo.png" />
+    <meta name="twitter:site" content="@ebikereview" />
+{% endblock %}
+
+
+{% block body %}
+    <!-- Middle Area -->
+    <section class="middle_area">
+        <div class="breadcrumb">
+            <a href="/">Home</a>
+            <span class="slash">/</span>
+            <a href="javascript:void(0);" class="active">EBR Advertising Services</a>
+        </div>
+        <div class="main-content">
+            <div class="row m-0">
+<!--                <div class="col-lg-8 col-xl-9 col-md-6 col-sm-6 p-0">-->
+                    <div class="left-side-content advertise-data">
+                        <h3 class="section-title">EBR Advertising Services</h3>
+                        <p class="desc_p">Whether you’re a brand that designs and sells electric bikes, a local brick and mortar shop, or an online seller, we have targeted marketing services that will help you drive sales. Our services are measurable, and cost effective. Most importantly, they are authentic and complimentary for our visitors.</p>
+
+                        <div class="ebike-brand-content">
+                            <h3 class="custom-inner-title">Ebike Brands</h3>
+                            <ul>
+                                <li>Our base service is a package deal including an official listing that directs visitors to your official website to make a purchase, combined with one promoted bike that appears at the top of your brand listing page and the “Related Ebikes” widget. If a competitor is not enrolled in this program, you can promote your bike on their pages too.</li>
+                                <li>Our first high-end services allow you to promoted a bike in the main categories of the site, which also appear in the “Related Ebikes” widget for every review that is included in the category.</li>
+                                <li>Our second high-end service allows you to support your dealer network with bulk pricing to add all shops on the local listing and map widgets. All services include analytics and monthly reporting, so you can see how promoted bikes are performing, and which which regions and shops are getting the most engagement. <a href="/contact/">Contact us</a> for pricing and more details.</li>
+                            </ul>
+                        </div>
+
+                        <div class="adverise-card-box">
+                            <h3 class="custom-inner-title">Physical Shops:</h3>
+                            <p class="ad-p desc_p">Every day, thousands of people visit ElectricBikeReview.com with the aim of selecting the perfect product for their lifestyle and budget. But that’s only the beginning! Where will they actually make the purchase and get accessories? Our local listing service and map widgets are designed to highlight the nearest, most relevant shops that actually carry the brand and products in question.  Shops pay a low monthly fee to be included, and there are no set contract lengths to join. This is pay for performance and includes analytics, you’re in control.</p>
+                            <a href="https://partner-dashboard.electricbikereview.com/register" target="_blank" class="btn theme-btn">Register Your Shop</a>
+                            <p class="small">If you’ve got questions about the local listing program, contact us through the support request page or call (970) 632-7870 and our dedicated operations manager will help you right away!</p>
+                        </div>
+
+                        <div class="adverise-card-box">
+                            <h3 class="custom-inner-title">Online Shops:</h3>
+                            <p class="ad-p desc_p">For regions where local dealers have not been established or added to our directory, select online dealers that carry relevant brands and products will be shown. For brands that only sell direct online, manufacturer listings are given priority, but online shops may appear as well. Our aim is to connect customers with the most relevant sellers for a seamless handoff. Just like physical shops, online shops pay a low monthly fee to be included, and there are no set contract lengths to join. This is pay for performance and includes analytics, you’re in control.</p>
+                            <a href="https://partner-dashboard.electricbikereview.com/register" target="_blank" class="btn theme-btn">Register Your Shop</a>
+                            <p class="small">If you’ve got questions about the local listing program, contact us through the support request page or call (970) 632-7870 and our dedicated operations manager will help you right away!</p>
+                        </div>
+
+                    </div>
+<!--                </div>-->
+
+                {% include 'frontend/include/right_side_section.html' %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

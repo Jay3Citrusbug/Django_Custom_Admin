@@ -1,0 +1,2913 @@
+{% extends 'frontend/subpages/base.html'%}
+{% load static %}
+{% load review_card %}
+
+{% block title %}
+    {{review.meta_title}}
+{% endblock %}
+
+{% block seoTag %}
+    <meta name="description" content="Price: ${{ review_general.msrp | floatformat:'-3g'}} | Model Year: {{review_general.review.model_year}} | {{ review_highlights.highlight }}">
+    <meta name="theme-color" content="#80b600">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#80b600">
+	<meta name="msapplication-navbutton-color" content="#80b600">
+    <meta property='og:url' content='http://54.213.76.238/{{ review.brands.all.0.slug }}/{{review.slug}}/' />
+    <meta property="fb:app_id" content="462030500496873" />
+
+    <meta property="og:locale" content="en_us" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{review.meta_title}}" />
+    <meta property="og:description" content="Price: ${{ review_general.msrp | floatformat:'-3g'}} | Model Year: {{review_general.review.model_year}} | {{ review_highlights.highlight }}" />
+    <meta property="og:site_name" content="ElectricBikeReview.com" />
+    <meta property="og:image" content="{{ review.featured_image_web.url }}" />
+	<meta name="twitter:card" content="summary" />
+    <meta name="twitter:description" content="Price: ${{ review_general.msrp | floatformat:'-3g'}} | Model Year: {{review_general.review.model_year}} | {{ review_highlights.highlight }}" />
+    <meta name="twitter:title" content="{{review.meta_title}}" />
+    <meta name="twitter:image" content="{{ review.featured_image_web.url }}" />
+    <meta name="twitter:site" content="@ebikereview" />
+{% endblock %}
+
+{% block body %}
+    <!-- Middle Area -->
+    <section class="middle_area">
+    <div class="breadcrumb">
+      <a href="/">Home</a>
+      <span class="slash">/</span>
+      <a href="/brand/">Electric Bike Brands </a>
+      <span class="slash">/</span>
+      <a href="/brand/{{ review.brands.all.0.slug }}/">{{ review.brands.all.0.name }} Reviews</a>
+      <span class="slash">/</span>
+<!--      <a href="javascript:void(0);" class="active">{{ review.name }}</a>-->
+    </div>
+    <div class="main-content review-cont-wrapper-box">
+      <div class="row m-0">
+<!--        <div class="col-lg-8 col-xl-9 col-md-6 col-sm-6 p-0">-->
+          <div class="left-side-content">
+            <h3 class="section-title" data-id="{{review.id}}">{{ review.name }}</h3>
+            <div class="data-price main-data-price">
+              <div class="procard-lastdata main_category">
+                {% for category in review.categories.all %}
+                  <p class="desc_1" data-id="{{ category.id }}">
+                    <a href="/category/{{ category.slug }}">{{ category.slug|category_name_clean }}</a>
+                  </p>
+                {% endfor %}
+              </div>
+              <div class="procard-btns rev-cmp-btn">
+                {% if review.id in compare_review %}
+                  <button class="btn theme-btn grey-btn compare-btn added" id="comparebtn" data-id="{{review.id}}"><span>-</span>REMOVE</button>
+                {% else %}
+                  <button class="btn theme-btn grey-btn compare-btn" id="comparebtn" data-id="{{review.id}}"><span>+</span>COMPARE </button>
+                {% endif %}
+              </div>
+            </div>
+            <div class="review-detail-wrapper">
+
+              <div class="rev-img-slider-box">
+                <div class="owl-carousel product-img-slider" id="review-product-slider">
+                  <a href="javascript:void(0);" class="rev-cycle-item">
+                    <img src="{{ review.featured_image.url }}" class="pro-card-img rev-active-cycle" alt="{{ review.name }}" />
+                  </a>
+                  {% for reviewgallery in review_gallery %}
+                    <a href="javascript:void(0);" class="rev-cycle-item">
+                      <img src="{{reviewgallery.image.image.url}}" class="pro-card-img" alt="{{ reviewgallery.image.title }}" />
+                    </a>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="rev-img-blocks">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="reg-block-items">
+                      <img src="{% static 'assets/images/photoimgbg.png' %}" />
+                      <a onclick="open_gallery_modal('#rev-photo')" href="javascript:void(0);">
+                        <img src="{% static 'assets/images/camera.png' %}">
+                        <span>Photos ({{review_gallery|length|add:'1'}})</span>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="reg-block-items">
+                      <img src="{% static 'assets/images/videiimgbg.png' %}" />
+                      <a onclick="open_gallery_modal('#rev-video')" href="javascript:void(0);">
+                        <img src="{% static 'assets/images/youtube.png' %}">
+                        <span>Videos</span>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="reg-block-items">
+                      <img src="{% static 'assets/images/showmap.png' %}" />
+                      <a onclick="open_gallery_modal('#rev-map')" href="javascript:void(0);">
+                        <img src="{% static 'assets/images/map-pin.png' %}">
+                        <span>Shops</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ebr_pros_con_tabs_wrapper page_section">
+                <div class="ebr_pros_con_tabs" id="tabs">
+                  <div class="prev_main_heading">
+                    <h2>Highlights</h2>
+                  </div>
+                  <div class="highlights_div">
+
+                  </div>
+                </div>
+              </div>
+
+              <!-- Technical Specs & Ratings -->
+              <div class="technical-specs-wrapper review-techspecs">
+                <h3>Technical Specs & Ratings</h3>
+                <div class="Comparelist-wrapper img-slider-table-wrapper">
+                  <div class="ts_accordion_wrapper">
+                    <!-- General -->
+                    <div class="acc_card">
+                      <div class="acc_title rev_acc_title active">
+                        <div class="acc_icon">
+                          <svg width="28" height="28" viewBox="0 0 28 28" fill="#1d1d1f" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 9L23 9C23.55 9 24 8.55 24 8C24 7.45 23.55 7 23 7L11 7C10.45 7 10 7.45 10 8C10 8.55 10.45 9 11 9ZM23 19H11C10.45 19 10 19.45 10 20C10 20.55 10.45 21 11 21H23C23.55 21 24 20.55 24 20C24 19.45 23.55 19 23 19ZM23 13L11 13C10.45 13 10 13.45 10 14C10 14.55 10.45 15 11 15L23 15C23.55 15 24 14.55 24 14C24 13.45 23.55 13 23 13Z" fill="#1D1D1F" />
+                            <path d="M4 8L5.5 9.5L8 7" stroke="#1D1D1F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M4 13.998L5.5 15.498L8 12.998" stroke="#1D1D1F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M4 20L5.5 21.5L8 19" stroke="#1D1D1F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                          </svg>
+                        </div>
+                        <div class="acc_text">
+                          <h4>General</h4>
+                        </div>
+                      </div>
+                      <div class="acc_panel panel_active">
+                        <table class="rev-technical-table">
+                          {% if review.model_year %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Year</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">When this particular ebike model configuration was released</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review.model_year}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review.brands.all|length > 0 %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Brand</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The company that produces this particular electric bicycle</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content brand_name">
+                                  <p>{% for brand in review.brands.all %} <span data-id="{{ brand.id }}" data-value="{{ brand.slug }}"><a href="/brand/{{brand.slug}}" class="ps-link">{{brand}}</a></span> {% if not forloop.last %},{% endif %} {% endfor %}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review.model_name %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Model</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The specific product or family of products from a brand</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review.model_name}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review.trim %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Trim</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The specific product configuration within a model family</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review.trim}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_general.msrp %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>MSRP</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The Manufacturer’s Suggested Retail Price listed in US Dollars</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>${{ review_general.msrp | floatformat:"-3g"}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review.categories.all|length > 0 %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Category</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">A grouping of products with similar features and uses</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{% for category in review.categories.all %} <a href="/category/{{category.slug}}" class="ps-link">{{category}}</a> {% if not forloop.last %},{% endif %} {% endfor %}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_general.demo_bike_class.all|length > 0 %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Class</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">Ebike performance type: Class 1 = 20mph or 25km/h pedal assist only, Class 2 = includes throttle activation, Class 3 = 28mph or 45km/h top speed, Other</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{% for class in review_general.demo_bike_class.all %} {{class}} {% if not forloop.last %},{% endif %} {% endfor %}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_general.demo_frame_type.all|length > 0 %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Frame Type</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The physical layout of a frame. High-Step tends to be sturdy and light but tall, Mid-Step is fairly sturdy and easier to stand over, Step-Thru is the most approachable but may flex and weigh more</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{% for frame_type in review_general.demo_frame_type.all %} {{frame_type}} {% if not forloop.last %},{% endif %} {% endfor %}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_general.suspension == "" %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Suspension</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">Hardware designed to reduce vibration and impacts</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_general.suspension}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_general.demo_wheel_size.all|length > 0 %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Wheel Size</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The diameter of wheels used on the bike, may be listed in inches or millimeters, may include multiple wheel sizes</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{% for wheel_size in review_general.demo_wheel_size.all %} {{wheel_size}} {% if not forloop.last %},{% endif %} {% endfor %}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_general.gears %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Gears</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The number of gear ratios offered by the drivetrain, infinity is used for continuously variable transmissions</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_general.gears}} </p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_general.demo_brake_type.all|length > 0 %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Brake Type</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The mechanism used to slow and stop the ebike, may include multiple brake types</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{% for brake_type in review_general.demo_brake_type.all %} {{brake_type}} {% if not forloop.last %},{% endif %} {% endfor %}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_general.motor_type %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Motor Type</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">Electronically activated machine that produces motion, hub motors are built directly into wheels and offer a single gear ration, mid-drives interface with the chain, belt, or shaft and leverage the drivetrain for improved efficiency</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_general.motor_type}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_general.motor_nominal_output %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Motor Nominal Output</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The measure of continuous power being produced by the motor, measured in watts</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_general.motor_nominal_output}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_general.battery_watt_hours %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Battery Watt Hours</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The measure of power capacity found by multiply voltage by amp hours ie 36V * 10ah = 360wh</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_general.battery_watt_hours}} Wh</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_general.weight %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Weight</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The total heaviness of the ebike: the force acting on it due to gravity</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_general.weight}} lbs /  {{review_general.weight | pound_to_kg}} kgs</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                        </table>
+                      </div>
+                    </div>
+
+                    <!-- Frameset -->
+                    <div class="acc_card">
+                      <div class="acc_title rev_acc_title">
+                        <div class="acc_icon frameset_icon">
+                          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13.4706 20.1176L20.5294 9.52941L9.05882 12.1765L2 21L13.4706 20.1176ZM13.4706 20.1176L7.29412 6.88235M23.1765 6L19.6471 6L25.8235 20.1176" stroke="#1D1D1F" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round" />
+                          </svg>
+                        </div>
+                        <div class="acc_text">
+                          <h4>Frameset</h4>
+                        </div>
+                      </div>
+                      <div class="acc_panel">
+                        <table class="rev-technical-table">
+                          {% if review_frameset.demo_frameset_frame_type.all|length > 0 %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Frame Type</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The physical layout of a frame. High-Step tends to be sturdy and light but tall, Mid-Step is fairly sturdy and easier to stand over, Step-Thru is the most approachable but may flex and weigh more</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{% for frameset_frame_type in review_frameset.demo_frameset_frame_type.all %} {{frameset_frame_type}} {% if not forloop.last %},{% endif %} {% endfor %}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_frameset.frameset_weight %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Weight</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The total heaviness of the ebike: the force acting on it due to gravity</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_frameset.frameset_weight}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_frameset.load_capacity %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Load Capacity</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The maximum weight that an electric bike can safely handle, according to the manufacturer</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_frameset.load_capacity}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_frameset.frameset_suspension %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Suspension</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">Hardware designed to reduce vibration and impacts</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_frameset.frameset_suspension}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_frameset.suspension_travel %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Suspension Travel</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The distance a suspension system can flex or move under load, usually measured in millimeters</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_frameset.suspension_travel}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_frameset.rear_shock %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Rear Shock</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">A component designed to lessen vibration or impact at the center and rear portion of an ebike</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_frameset.rear_shock}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_frameset.fork %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Fork</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The part of an electric bike that holds the front wheel, steers it, and may include suspension</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_frameset.fork}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_frameset.demo_frameset_wheel_size.all|length > 0 %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Wheel Size</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The diameter of wheels used on the bike, may be listed in inches or millimeters, may include multiple wheel sizes</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{% for frameset_wheel_size in review_frameset.demo_frameset_wheel_size.all %} {{frameset_wheel_size}} {% if not forloop.last %},{% endif %} {% endfor %}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_frameset.front_wheel %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Front Wheel</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">A circular component that connects the front hub to the tire, consisting of spokes or arms and a rim</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_frameset.front_wheel}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_frameset.rear_wheel %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Rear Wheel</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">A circular component that connects the rear hub to the tire, consisting of spokes or arms and a rim</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_frameset.rear_wheel}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_frameset.front_hub %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Front Hub</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The center section of a wheel attaching directly to the frame, it may contain bearings, a freewheel, or a motor</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_frameset.front_hub}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_frameset.rear_hub %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Rear Hub</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The center section of a wheel attaching directly to the frame, it may contain bearings, a freewheel, or a motor</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_frameset.rear_hub}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_frameset.tires %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Tires</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">A construction of rubber that fits on a wheel, usually contains an inner tube filled with air, providing cusion for the rider and traction for the ebike</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_frameset.tires}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                        </table>
+                      </div>
+                    </div>
+
+                    <!-- Drivetrain -->
+                    <div class="acc_card">
+                      <div class="acc_title rev_acc_title">
+                        <div class="acc_icon">
+                          <svg width="28" height="28" viewBox="0 0 28 28" fill="1D1D1F" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18.2696 18.6845C18.9837 19.702 19.6805 20.7034 20.3856 21.6971C20.4468 21.7679 20.5321 21.8136 20.625 21.8252C21.5271 21.9515 22.4303 22.0682 23.3437 22.1885V23.333L15.7012 23.333V22.1915L18.5743 21.8096L17.018 19.5841C16.7594 19.6924 16.505 19.7924 16.259 19.9109C16.2189 19.9307 16.1992 20.0306 16.2022 20.0947C16.2249 20.4359 16.2584 20.7765 16.2896 21.1332C15.9442 21.2128 15.6126 21.2954 15.2774 21.3589C15.2313 21.3679 15.1385 21.2942 15.1164 21.2392C15.0092 20.9686 14.9128 20.6939 14.8249 20.4167C14.7841 20.2874 14.7213 20.2443 14.5854 20.2587C14.3851 20.2832 14.1828 20.2886 13.9815 20.2749C13.8438 20.2629 13.7971 20.3132 13.7636 20.4287C13.6672 20.7567 13.5643 21.0829 13.4601 21.4223L12.3659 21.2284C12.3659 20.898 12.3527 20.5789 12.3707 20.2617C12.3815 20.0821 12.3444 19.9798 12.1588 19.9421C12.0577 19.9161 11.9593 19.8806 11.8649 19.8361C11.4932 19.6835 11.4938 19.6829 11.2298 20.0025C11.0682 20.1976 10.9048 20.3916 10.73 20.6011L9.75673 19.981C9.90698 19.6643 10.0446 19.3596 10.1961 19.0616C10.2559 18.9418 10.2458 18.8718 10.1434 18.7772C9.95785 18.6054 9.79324 18.4103 9.61966 18.2241L8.52128 18.797L7.86285 17.856C8.12143 17.6208 8.36984 17.3861 8.62842 17.1629C8.72599 17.0791 8.74814 17.009 8.6799 16.8977C8.62253 16.7928 8.57214 16.6842 8.52906 16.5727C8.36206 16.1794 8.36266 16.1782 7.93049 16.2135C7.68567 16.2357 7.44145 16.2608 7.17688 16.2872C7.09248 15.9149 7.01108 15.5539 6.92308 15.163C7.24033 15.0481 7.54859 14.9236 7.86524 14.8272C8.02805 14.777 8.06097 14.698 8.04781 14.5387C8.02865 14.3023 8.04302 14.0629 8.04302 13.8109L6.88837 13.4487C6.95361 13.0758 7.01707 12.7107 7.07872 12.3569C7.40494 12.3569 7.72398 12.3438 8.04062 12.3617C8.22678 12.3725 8.32255 12.3306 8.37343 12.1367C8.43329 11.9224 8.53325 11.7177 8.62603 11.4872L7.70423 10.724C7.90834 10.4026 8.11065 10.0854 8.32315 9.75135C8.64159 9.90159 8.95285 10.0417 9.25692 10.1955C9.37005 10.2524 9.43649 10.2434 9.52149 10.1434C9.67592 9.96384 9.84831 9.79504 10.0243 9.61008C9.99676 9.56579 9.96923 9.51491 9.93631 9.46762C9.27788 8.53086 8.61945 7.59529 7.9694 6.65433C7.93469 6.59844 7.88714 6.55164 7.83072 6.5178C7.7743 6.48397 7.71062 6.46408 7.64497 6.4598C6.75609 6.35086 5.86841 6.22635 4.96875 6.10604V4.96875L12.6071 4.96875V6.11202L9.73399 6.49391L11.2867 8.71462C11.5411 8.60867 11.7895 8.5117 12.0295 8.39738C12.0548 8.37663 12.0749 8.35033 12.0883 8.32053C12.1017 8.29073 12.108 8.25823 12.1067 8.22559C12.084 7.8832 12.0469 7.54142 12.0151 7.1703L13.1393 6.91651C13.2548 7.23914 13.3787 7.5498 13.4763 7.86764C13.5241 8.02147 13.596 8.06038 13.7504 8.04063C13.9284 8.01075 14.1097 8.00552 14.2891 8.02506C14.4687 8.0526 14.5202 7.97299 14.5621 7.82634C14.6507 7.51269 14.7524 7.20203 14.8524 6.8782L15.9442 7.07094C15.9442 7.4223 15.952 7.75631 15.94 8.08851C15.9352 8.23038 15.9687 8.30041 16.113 8.3453C16.347 8.41713 16.5715 8.51949 16.8181 8.61586L17.5807 7.69884L18.554 8.31896C18.3995 8.64518 18.2547 8.95644 18.1038 9.26231C18.0512 9.36766 18.0661 9.42812 18.1529 9.50893C18.3433 9.6885 18.518 9.88244 18.7018 10.0722L19.7888 9.50294L20.4472 10.4445C20.1893 10.6797 19.9409 10.915 19.6823 11.1382C19.5859 11.2214 19.5626 11.2915 19.6296 11.4028C19.6809 11.494 19.7255 11.5888 19.7631 11.6865C19.9504 12.1229 19.9498 12.1241 20.4215 12.0822C20.6508 12.0624 20.88 12.0355 21.1302 12.0098C21.2146 12.3821 21.296 12.743 21.3846 13.1351C21.068 13.2494 20.7591 13.3745 20.4431 13.4703C20.282 13.52 20.2455 13.5972 20.2587 13.7576C20.2784 13.994 20.2641 14.2335 20.2641 14.4837L21.4193 14.847C21.3579 15.2205 21.2954 15.5848 21.232 15.94C20.9058 15.94 20.5867 15.9532 20.2701 15.9352C20.0839 15.9244 19.9881 15.9669 19.9367 16.1603C19.8798 16.3746 19.7768 16.5793 19.6841 16.8091L20.6029 17.5765C20.3982 17.8991 20.1958 18.217 19.9845 18.548L18.9496 18.0619L18.2696 18.6845ZM17.3718 17.4041C18.9777 15.8682 19.2615 13.1776 17.7357 11.2801C16.9973 10.3553 15.93 9.75168 14.7569 9.5955C13.5838 9.43933 12.3958 9.74267 11.4411 10.4421C10.4861 11.1404 9.83762 12.1805 9.63086 13.3453C9.4241 14.5102 9.67505 15.7099 10.3314 16.6942C11.7332 18.7922 14.3472 19.1855 16.0962 18.2852C16.0561 18.2224 16.0196 18.1589 15.9765 18.0996C15.5096 17.4322 15.0355 16.769 14.577 16.0956C14.4058 15.8436 14.2496 15.6808 13.8911 15.6467C13.0644 15.5677 12.506 14.7375 12.6341 13.9013C12.7586 13.0758 13.5684 12.4964 14.4088 12.6317C15.2283 12.7634 15.8454 13.5738 15.6503 14.3873C15.5599 14.7674 15.6658 15.0038 15.8712 15.263C15.9358 15.345 15.9909 15.4342 16.0507 15.5198L17.3718 17.4041Z" fill="#1D1D1F" />
+                            <path d="M11.4151 11.9791C11.4141 11.9045 11.4279 11.8305 11.4559 11.7613C11.484 11.6922 11.5255 11.6294 11.5782 11.5766C11.6308 11.5237 11.6935 11.482 11.7625 11.4538C11.8316 11.4255 11.9056 11.4114 11.9801 11.4122C12.0566 11.4108 12.1326 11.4246 12.2037 11.4529C12.2748 11.4812 12.3395 11.5234 12.3941 11.577C12.4487 11.6307 12.492 11.6946 12.5215 11.7652C12.5511 11.8358 12.5662 11.9115 12.5661 11.988C12.5615 12.1387 12.4998 12.282 12.3934 12.3888C12.287 12.4957 12.144 12.558 11.9933 12.5633C11.9168 12.5635 11.841 12.5485 11.7704 12.5192C11.6997 12.4898 11.6356 12.4467 11.5818 12.3923C11.528 12.338 11.4855 12.2734 11.4569 12.2025C11.4283 12.1315 11.4141 12.0556 11.4151 11.9791Z" fill="#1D1D1F" />
+                            <path d="M16.8917 11.996C16.8894 12.146 16.8288 12.2892 16.7228 12.3954C16.6168 12.5015 16.4736 12.5622 16.3236 12.5647C16.1691 12.5605 16.0222 12.4968 15.9137 12.3868C15.8051 12.2768 15.7433 12.129 15.7412 11.9745C15.7435 11.8982 15.7607 11.8232 15.7921 11.7536C15.8234 11.6841 15.8681 11.6214 15.9238 11.5691C15.9794 11.5169 16.0447 11.4762 16.1161 11.4493C16.1875 11.4224 16.2635 11.4099 16.3398 11.4124C16.4146 11.4137 16.4884 11.43 16.5568 11.4601C16.6253 11.4903 16.687 11.5339 16.7384 11.5882C16.7898 11.6426 16.8298 11.7067 16.8562 11.7767C16.8825 11.8467 16.8945 11.9213 16.8917 11.996Z" fill="#1D1D1F" />
+                            <path d="M17.7893 14.1607C17.7887 14.3114 17.7285 14.4559 17.6219 14.5625C17.5153 14.6691 17.3709 14.7293 17.2201 14.7299C17.0656 14.7268 16.9183 14.6636 16.8096 14.5538C16.7009 14.4439 16.6392 14.2961 16.6377 14.1415C16.6439 13.9909 16.7071 13.8482 16.8146 13.7425C16.9221 13.6368 17.0658 13.5759 17.2165 13.5723C17.2931 13.5721 17.369 13.5873 17.4396 13.617C17.5102 13.6467 17.5741 13.6903 17.6275 13.7451C17.681 13.8 17.7228 13.8651 17.7506 13.9365C17.7784 14.0079 17.7916 14.0841 17.7893 14.1607V14.1607Z" fill="#1D1D1F" />
+                            <path d="M14.1444 17.7864C13.9937 17.7853 13.8495 17.7249 13.7429 17.6183C13.6364 17.5116 13.5761 17.3673 13.5752 17.2166C13.5783 17.0621 13.6415 16.9149 13.7514 16.8063C13.8612 16.6977 14.0091 16.6361 14.1636 16.6348C14.3142 16.641 14.4569 16.7042 14.5626 16.8117C14.6683 16.9192 14.7292 17.0629 14.7328 17.2136C14.7329 17.2901 14.7175 17.3659 14.6878 17.4365C14.658 17.507 14.6144 17.5708 14.5596 17.6242C14.5047 17.6776 14.4397 17.7195 14.3684 17.7474C14.2971 17.7752 14.221 17.7885 14.1444 17.7864V17.7864Z" fill="#1D1D1F" />
+                            <path d="M14.1576 10.5157C14.3084 10.5149 14.4534 10.5736 14.5611 10.6791C14.6688 10.7845 14.7305 10.9282 14.7329 11.079C14.7313 11.2335 14.6697 11.3814 14.5609 11.4912C14.4522 11.6011 14.305 11.6643 14.1505 11.6674C13.9999 11.6625 13.8567 11.6006 13.75 11.4943C13.6432 11.388 13.5808 11.2451 13.5752 11.0945C13.5744 11.018 13.589 10.9421 13.618 10.8712C13.647 10.8004 13.6899 10.7361 13.7442 10.6822C13.7985 10.6282 13.8631 10.5857 13.9341 10.5571C14.0051 10.5285 14.0811 10.5144 14.1576 10.5157Z" fill="#1D1D1F" />
+                            <path d="M10.5177 14.1469C10.517 13.9962 10.5759 13.8512 10.6815 13.7437C10.787 13.6361 10.9308 13.5745 11.0815 13.5723C11.236 13.5736 11.3838 13.6353 11.4935 13.7441C11.6032 13.8529 11.6661 14.0002 11.6687 14.1547C11.6642 14.3054 11.6025 14.4488 11.4961 14.5556C11.3897 14.6625 11.2466 14.7248 11.0959 14.7299C11.0194 14.7306 10.9434 14.716 10.8726 14.6869C10.8018 14.6578 10.7376 14.6148 10.6837 14.5605C10.6298 14.5061 10.5873 14.4415 10.5588 14.3705C10.5303 14.2995 10.5163 14.2234 10.5177 14.1469Z" fill="#1D1D1F" />
+                            <path d="M11.4155 16.3051C11.4183 16.1546 11.4797 16.0112 11.5867 15.9053C11.6937 15.7994 11.8378 15.7395 11.9883 15.7383C12.1429 15.7425 12.2898 15.8068 12.3978 15.9176C12.5057 16.0283 12.5663 16.1768 12.5665 16.3315C12.5642 16.408 12.5467 16.4833 12.515 16.553C12.4832 16.6227 12.4379 16.6854 12.3817 16.7374C12.3255 16.7894 12.2595 16.8297 12.1875 16.8559C12.1155 16.882 12.0391 16.8936 11.9626 16.8899C11.8881 16.8879 11.8148 16.8712 11.7468 16.8406C11.6789 16.81 11.6177 16.7663 11.5668 16.7119C11.5159 16.6575 11.4763 16.5935 11.4504 16.5237C11.4244 16.4539 11.4125 16.3796 11.4155 16.3051V16.3051Z" fill="#1D1D1F" />
+                          </svg>
+                        </div>
+                        <div class="acc_text">
+                          <h4>Drivetrain</h4>
+                        </div>
+                      </div>
+                      <div class="acc_panel">
+                        <table class="rev-technical-table">
+                          {% if review_drivetrain.drivetrain_gears %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Gears</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The number of gear ratios offered by the drivetrain, infinity is used for continuously variable transmissions</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_drivetrain.drivetrain_gears}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_drivetrain.shift_levers %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Shift Levers</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The interface that a rider interacts with to change gears, they may be levers, twist mechanisms, or electronic buttons</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_drivetrain.shift_levers}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_drivetrain.front_derailleur %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Front Derailleur</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">A mechanism that moves the chain in different directions to fit different sized chainring cogs, effectively changing pedal ratio and speed</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_drivetrain.front_derailleur}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_drivetrain.crankset %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Crankset</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">A group of components that convert reciprocating motion of a rider's legs into rotational motion used to drive a chain, belt, or shaft, which in turn drives the rear wheel, usually consisting of a bottom bracket, crank arms, and chainrings</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_drivetrain.crankset}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_drivetrain.rear_derailleur %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Rear Derailleur</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">A mechanism that moves the chain in different directions to fit different sized freewheel or cassette cogs, effectively changing pedal ratio and speed</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_drivetrain.rear_derailleur}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_drivetrain.electronic_shifting %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Wireless Components</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">A method of changing gears using electronic switches instead of conventional control levers and mechanical cables</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_drivetrain.electronic_shifting}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_drivetrain.internally_geared_hub %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Internally Geared Hub</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">A gear ratio changing system that is implemented with planetary or epicyclic gears, sealed within the shell of a hub, they tend to require less maintenance and can be shifted at standstill, but introduce more weight than a traditional cassette</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_drivetrain.internally_geared_hub}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_drivetrain.continually_variable_transmission %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Continually Variable Transmission</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">A gear ratio changing system that eliminates indexing between gears, it is implemented with spheres and ramps, sealed within the shell of a hub, they tend to require less maintenance and can be shifted at standstill, but introduce more weight and friction than a traditional cassette</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_drivetrain.continually_variable_transmission}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_drivetrain.cassette %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Cassette</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The cluster of sprockets mounted on the rear hub of an ebike, they may be grouped together as a freewheel that threads onto a hub or slotted individually onto a freehub body which is referred to as a cassette and is stronger</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_drivetrain.cassette}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_drivetrain.chainring %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Chainring</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The large cog or cogs attached to the crankset that directly carry the chain as the rider pedals</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_drivetrain.chainring}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_drivetrain.belt_drive %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Belt Drive</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">A toothed synchronous belt used to transmit power from the pedals to the drivetrain and wheels, it replaces a traditional chain and is often quieter and more durable</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_drivetrain.belt_drive}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                        </table>
+                      </div>
+                    </div>
+
+                    <!-- Components -->
+                    <div class="acc_card">
+                      <div class="acc_title rev_acc_title">
+                        <div class="acc_icon">
+                          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10.8333 8.67845C9.63333 8.39322 7.44444 8.5596 6.5 8.67845C6 9.92659 6.5 10.1043 6.5 10.6391C6.5 11.174 10.3333 11.7088 11.8333 12.4218C13.3333 13.1349 14.1667 14.9176 13.6667 17.4134C13.1667 19.9091 9 20.6222 7 20.8005C5 20.9788 5 21.157 5 22.2266C5 23.0823 6 23.0586 6.5 22.9397C7.94444 22.8803 11.4 22.4406 13.6667 21.157C16.5 19.5526 16 15.9872 16.5 13.848C17 11.7088 17.8333 10.9957 18.6667 10.6391C19.5 10.2826 19.6667 10.4609 20.1667 11.3522C20.6667 12.2436 20.5 14.0263 20.6667 15.9872C20.8333 17.9482 21.6667 18.1264 22 19.0178C22.2667 19.7309 22.7778 19.3149 23 19.0178C22.7222 18.6018 22.0667 17.4134 21.6667 15.9872C21.1667 14.2045 21.6667 13.4915 21.6667 12.7784C21.6667 12.0653 21 11.3522 21 10.1043C21 8.85646 20.5 6.0043 20.1667 5.46949C19.8333 4.93469 18.3333 4.57815 17.8333 6.0043C17.3333 7.43045 17.5 7.60872 16 8.67845C14.5 9.74818 12.3333 9.03499 10.8333 8.67845Z" fill="#1D1D1F" />
+                          </svg>
+                        </div>
+                        <div class="acc_text">
+                          <h4>Components</h4>
+                        </div>
+                      </div>
+                      <div class="acc_panel">
+                        <table class="rev-technical-table">
+                          {% if review_components.headset %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Headset</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The set of components that provide a rotatable interface between the fork and the head tube of the frame</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_components.headset}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_components.stem %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Stem</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The component that connects the handlebars to the steerer tube of the bicycle fork, it often extends forward and up, it may offer adjustable angle for rider comfort</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_components.stem}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_components.handlebar %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Handlebar</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The steering control for bicycles, it is most often directly mechanically linked to a pivoting front wheel via a stem which in turn attaches it to the fork</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_components.handlebar}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_components.grips %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Grips</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The component that a rider holds to direct the handlebar, often made of rubber or cork, may consiste of grip tape</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_components.grips}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_components.seatpost %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Seatpost</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">A component that connects the saddle or seat to the bicycle frame, often vertically adjustable to provide a rider with comfortable leg extension</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_components.seatpost}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_components.seatpost_diameter  %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Seatpost Diameter</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The diameter measurement of a seat post, usually in millimeters, this may be important if you wish to replace a rigid post with a suspension seatpost, consider using shims to match a smaller seatpost with a larger seat tube.</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_components.seatpost_diameter}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_components.saddle %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Saddle</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">A component that supports the rider as they sit and pedal a bicycle, it may slide forward and back to improve ergonomics</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_components.saddle}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_components.pedals %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Pedals</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The part of a bicycle that the rider pushes with their foot to create motion in the drivetrain, they are usually easy to replace with different designs for greater traction and surface area or reduced weight</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_components.pedals}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_components.demo_components_brake_type.all|length > 0 %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Brake Type</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The group of components that introduce friction and stopping force to the bicycle, hydraulic systems tend to require less hand effort and actuate more consistently</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{% for brake_type in review_components.demo_components_brake_type.all %} {{brake_type}} {% if not forloop.last %},{% endif %} {% endfor %}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_components.front_brake %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Front Brake</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The component that applies friction to the front wheel to provide stopping force</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_components.front_brake}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_components.rear_brake %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Rear Brake</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The component that applies friction to the front wheel to provide stopping force</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_components.rear_brake}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                        </table>
+                      </div>
+                    </div>
+
+                    <!-- Ebike Systems -->
+                    <div class="acc_card">
+                      <div class="acc_title rev_acc_title">
+                        <div class="acc_icon ebike_icon">
+                          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="13.5" cy="13.5" r="10.35" stroke="#1D1D1F" stroke-width="2.3" />
+                            <path d="M11.1721 25.7667L11.0013 25.6742C10.7284 25.5264 10.363 25.3006 10.1864 24.8824C10.0117 24.4689 10.0999 24.0502 10.1786 23.7528C10.1786 23.7526 10.1787 23.7525 10.1787 23.7523L11.1849 19.9435L11.9719 16.9644H11.9702H11.9599H11.9496H11.9393H11.929H11.9187H11.9083H11.898H11.8877H11.8774H11.8671H11.8567H11.8464H11.8361H11.8258H11.8155H11.8052H11.7948H11.7845H11.7742H11.7639H11.7536H11.7432H11.7329H11.7226H11.7123H11.702H11.6917H11.6813H11.671H11.6607H11.6504H11.6401H11.6297H11.6194H11.6091H11.5988H11.5885H11.5781H11.5678H11.5575H11.5472H11.5369H11.5266H11.5162H11.5059H11.4956H11.4853H11.475H11.4646H11.4543H11.444H11.4337H11.4234H11.4131H11.4027H11.3924H11.3821H11.3718H11.3615H11.3511H11.3408H11.3305H11.3202H11.3099H11.2995H11.2892H11.2789H11.2686H11.2583H11.248H11.2376H11.2273H11.217H11.2067H11.1964H11.186H11.1757H11.1654H11.1551H11.1448H11.1345H11.1241H11.1138H11.1035H11.0932H11.0829H11.0725H11.0622H11.0519H11.0416H11.0313H11.0209H11.0106H11.0003H10.99H10.9797H10.9694H10.959H10.9487H10.9384H10.9281H10.9178H10.9074H10.8971H10.8868H10.8765H10.8662H10.8559H10.8455H10.8352H10.8249H10.8146H10.8043H10.7939H10.7836H10.7733H10.763H10.7527H10.7424H10.732H10.7217H10.7114H10.7011H10.6908H10.6804H10.6701H10.6598H10.6495H10.6392H10.6288H10.6185H10.6082H10.5979H10.5876H10.5773H10.5669H10.5566H10.5463H10.536H10.5257H10.5153H10.505H10.4947H10.4844H10.4741H10.4638H10.4534H10.4431H10.4328H10.4225H10.4122H10.4018H10.3915H10.3812H10.3709H10.3606H10.3502H10.3399H10.3296H10.3193H10.309H10.2987H10.2883H10.278H10.2677H10.2574H10.2471H10.2367H10.2264H10.2161H10.2058H10.1955H10.1852H10.1748H10.1645H10.1542H10.1439H10.1336H10.1232H10.1129H10.1026H10.0923H10.082H10.0716H10.0613H10.051H10.0407H10.0304H10.0201H10.0097H9.99942H9.9891H9.97878H9.96846H9.95815H9.94783H9.93751H9.92719H9.91687H9.90655H9.89624H9.88592H9.8756H9.86528H9.85496H9.84464H9.83432H9.82401H9.81369H9.80337H9.79305H9.78273H9.77241H9.7621H9.75178H9.74146H9.73114H9.72082H9.7105H9.70018H9.68987H9.67955H9.66923H9.65891H9.64859H9.63827H9.62796H9.61764H9.60732H9.597H9.58668H9.57636H9.56604H9.55573H9.54541H9.53509H9.52477H9.51445H9.50413H9.49381H9.4835H9.47318H9.46286H9.45254H9.44222H9.4319H9.42159H9.41127H9.40095H9.39063H9.38031H9.36999H9.35967H9.34936H9.33904H9.32872H9.3184H9.30808H9.29776H9.28745H9.27713H9.26681H9.25649H9.24617H9.23585H9.22553H9.21522H9.2049H9.19458H9.18426H9.17394H9.16362H9.15331H9.14299H9.13267H9.12235H9.11203H9.10171H9.09139H9.08108H9.07076H9.06044H9.05012H9.0398H9.02948H9.01917H9.00885H8.99853H8.98821H8.97789H8.96757H8.95725H8.94694H8.93662H8.9263H8.91598H8.90566H8.89534H8.88502H8.87471H8.86439H8.85407H8.84375H8.83343H8.82311H8.8128H8.80248H8.79216H8.78184H8.77152H8.7612H8.75088H8.74057H8.73025H8.71993H8.70961H8.69929H8.68897H8.67866H8.66834H8.65802H8.6477H8.63738H8.62706H8.61674H8.60643H8.59611H8.58579H8.57547H8.56515H8.55483H8.54452H8.5342H8.52388H8.51356H8.50324H8.49292H8.4826H8.47229H8.46197H8.45165H8.44133H8.43101H8.42069H8.41037H8.40006H8.38974H8.37942H8.3691H8.35878H8.34846H8.33815H8.32783H8.31751H8.30719H8.29687H8.28655H8.27623H8.26592H8.2556H8.24528H8.23496H8.22464H8.21432H8.20401H8.19369H8.18337H8.17305H8.16273H8.15241H8.14209H8.13178H8.12146H8.11114H8.10082H8.0905H8.08018H8.06987H8.05955H8.04923H8.03891H8.02859H8.01827H8.00795H7.99764H7.98732H7.977H7.96668H7.95636H7.94604H7.93573H7.92541H7.91509H7.90477H7.89445H7.88413H7.87381H7.8635H7.85318H7.84286H7.83254H7.82222H7.8119H7.80158H7.79127H7.78095H7.77063H7.76031H7.74999H7.73967H7.72936H7.71904H7.70872H7.6984H7.68808H7.67776H7.66744H7.65713H7.64681H7.63649H7.62617H7.61585H7.60553H7.59522H7.5849H7.57458H7.56426H7.55394H7.54362H7.5333H7.52299H7.51267H7.50235H7.49203H7.48171H7.47139H7.46108H7.45076H7.44044H7.43012H7.4198C6.97726 16.9644 6.37745 16.843 6.02292 16.2258C5.86108 15.944 5.8027 15.6392 5.84754 15.3345C5.88926 15.0511 6.01306 14.817 6.12922 14.6419C8.91729 10.4314 11.7035 6.21932 14.4878 2.00563L15.1274 2.42829L14.4874 2.00625C14.6583 1.74701 14.8891 1.51023 15.1952 1.36701C15.5136 1.218 15.8559 1.19784 16.1825 1.28541L16.1831 1.28557C16.5607 1.38712 16.8861 1.62267 17.0823 1.96665C17.2783 2.31007 17.3158 2.70916 17.2167 3.08645L17.2166 3.08682C16.7478 4.86852 16.2775 6.64982 15.8058 8.43073L11.1721 25.7667ZM11.1721 25.7667H11.3664H11.7437H12.0222L12.2358 25.588C12.2698 25.5595 12.2893 25.5457 12.3202 25.5239C12.3488 25.5038 12.3871 25.4768 12.4556 25.4249C12.5545 25.3501 12.7166 25.2203 12.8439 25.0282L12.844 25.0281C15.6405 20.8043 18.4369 16.5797 21.233 12.3543C21.4964 11.9579 21.6812 11.3645 21.3187 10.7585C20.9665 10.1696 20.3911 10.0429 19.9457 10.0429H19.9354H19.925H19.9147H19.9044H19.8941H19.8838H19.8735H19.8631H19.8528H19.8425H19.8322H19.8219H19.8115H19.8012H19.7909H19.7806H19.7703H19.76H19.7496H19.7393H19.729H19.7187H19.7084H19.698H19.6877H19.6774H19.6671H19.6568H19.6464H19.6361H19.6258H19.6155H19.6052H19.5949H19.5845H19.5742H19.5639H19.5536H19.5433H19.5329H19.5226H19.5123H19.502H19.4917H19.4814H19.471H19.4607H19.4504H19.4401H19.4298H19.4194H19.4091H19.3988H19.3885H19.3782H19.3679H19.3575H19.3472H19.3369H19.3266H19.3163H19.3059H19.2956H19.2853H19.275H19.2647H19.2543H19.244H19.2337H19.2234H19.2131H19.2028H19.1924H19.1821H19.1718H19.1615H19.1512H19.1408H19.1305H19.1202H19.1099H19.0996H19.0893H19.0789H19.0686H19.0583H19.048H19.0377H19.0273H19.017H19.0067H18.9964H18.9861H18.9757H18.9654H18.9551H18.9448H18.9345H18.9242H18.9138H18.9035H18.8932H18.8829H18.8726H18.8622H18.8519H18.8416H18.8313H18.821H18.8107H18.8003H18.79H18.7797H18.7694H18.7591H18.7487H18.7384H18.7281H18.7178H18.7075H18.6971H18.6868H18.6765H18.6662H18.6559H18.6456H18.6352H18.6249H18.6146H18.6043H18.594H18.5836H18.5733H18.563H18.5527H18.5424H18.5321H18.5217H18.5114H18.5011H18.4908H18.4805H18.4701H18.4598H18.4495H18.4392H18.4289H18.4186H18.4082H18.3979H18.3876H18.3773H18.367H18.3566H18.3463H18.336H18.3257H18.3154H18.305H18.2947H18.2844H18.2741H18.2638H18.2535H18.2431H18.2328H18.2225H18.2122H18.2019H18.1915H18.1812H18.1709H18.1606H18.1503H18.14H18.1296H18.1193H18.109H18.0987H18.0884H18.078H18.0677H18.0574H18.0471H18.0368H18.0264H18.0161H18.0058H17.9955H17.9852H17.9749H17.9645H17.9542H17.9439H17.9336H17.9233H17.9129H17.9026H17.8923H17.882H17.8717H17.8614H17.851H17.8407H17.8304H17.8201H17.8098H17.7994H17.7891H17.7788H17.7685H17.7582H17.7478H17.7375H17.7272H17.7169H17.7066H17.6963H17.6859H17.6756H17.6653H17.655H17.6447H17.6343H17.624H17.6137H17.6034H17.5931H17.5828H17.5724H17.5621H17.5518H17.5415H17.5312H17.5208H17.5105H17.5002H17.4899H17.4796H17.4693H17.4589H17.4486H17.4383H17.428H17.4177H17.4073H17.397H17.3867H17.3764H17.3661H17.3557H17.3454H17.3351H17.3248H17.3145H17.3042H17.2938H17.2835H17.2732H17.2629H17.2526H17.2422H17.2319H17.2216H17.2113H17.201H17.1907H17.1803H17.17H17.1597H17.1494H17.1391H17.1287H17.1184H17.1081H17.0978H17.0875H17.0771H17.0668H17.0565H17.0462H17.0359H17.0256H17.0152H17.0049H16.9946H16.9843H16.974H16.9636H16.9533H16.943H16.9327H16.9224H16.9121H16.9017H16.8914H16.8811H16.8708H16.8605H16.8501H16.8398H16.8295H16.8192H16.8089H16.7985H16.7882H16.7779H16.7676H16.7573H16.747H16.7366H16.7263H16.716H16.7057H16.6954H16.685H16.6747H16.6644H16.6541H16.6438H16.6335H16.6231H16.6128H16.6025H16.5922H16.5819H16.5715H16.5612H16.5509H16.5406H16.5303H16.52H16.5096H16.4993H16.489H16.4787H16.4684H16.458H16.4477H16.4374H16.4271H16.4168H16.4064H16.3961H16.3858H16.3755H16.3652H16.3549H16.3445H16.3342H16.3239H16.3136H16.3033H16.2929H16.2826H16.2723H16.262H16.2517H16.2414H16.231H16.2207H16.2104H16.2001H16.1898H16.1794H16.1691H16.1588H16.1485H16.1382H16.1278H16.1175H16.1072H16.0969H16.0866H16.0763H16.0659H16.0556H16.0453H16.035H16.0247H16.0143H16.004H15.9937H15.9834H15.9731H15.9628H15.9524H15.9421H15.9318H15.9215H15.9112H15.9008H15.8905H15.8802H15.8699H15.8596H15.8492H15.8389H15.8286H15.8183H15.808H15.7977H15.7873H15.777H15.7667H15.7564H15.7461H15.7357H15.7254H15.7151H15.7048H15.6945H15.6842H15.6738H15.6635H15.6532H15.6429H15.6326H15.6222H15.6119H15.6016H15.5913H15.581H15.5707H15.5603H15.55H15.5397H15.5294H15.5191H15.5087H15.4984H15.4881H15.4778H15.4675H15.4571H15.4468H15.4365H15.4262H15.4159H15.4056H15.3952H15.3849H15.38L15.8056 8.4313L11.1721 25.7667Z" fill="#1D1D1F" stroke="#F5F5F7" stroke-width="1.53333" />
+                          </svg>
+                        </div>
+                        <div class="acc_text">
+                          <h4>Ebike Systems</h4>
+                        </div>
+                      </div>
+                      <div class="acc_panel">
+                        <table class="rev-technical-table">
+                          {% if review_ebikeSystems.demo_systems_bike_class.all|length > 0 %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Bike Class</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">Ebike performance type: Class 1 = 20mph or 25km/h pedal assist only, Class 2 = includes throttle activation, Class 3 = 28mph or 45km/h top speed, Other</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{% for brake_type in review_ebikeSystems.demo_systems_bike_class.all %} {{brake_type}} {% if not forloop.last %},{% endif %}{% endfor %}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_ebikeSystems.systems_motor_type %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Motor Type</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">Electronically activated machine that produces motion, hub motors are built directly into wheels and offer a single gear ration, mid-drives interface with the chain, belt, or shaft and leverage the drivetrain for improved efficiency</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_ebikeSystems.systems_motor_type}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_ebikeSystems.motor %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Motor</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">Details about the primary motor system propelling the electric bike</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_ebikeSystems.motor}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_ebikeSystems.additional_motors %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Additional Motors</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">Details about the secondary motor system propelling the electric bike</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_ebikeSystems.additional_motors}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_ebikeSystems.systems_motor_nominal_output %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Motor Nominal Output</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The measure of continuous power being produced by the motor, measured in watts</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_ebikeSystems.systems_motor_nominal_output}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_ebikeSystems.display %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Display</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">A component that communicates ebike system information to the rider including battery charge level, assist setting, speed, and more</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_ebikeSystems.display}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_ebikeSystems.smart_bike %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Smart Bike</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">An electric bike with advanced settings and feedback available to riders through a computer or smartphone application</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_ebikeSystems.smart_bike}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_ebikeSystems.theft_gps %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Theft / Gps</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">Security systems designed to deter or prevent theft, and aid in location and recovery</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_ebikeSystems.theft_gps}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_ebikeSystems.systems_battery_watt_hours %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Battery Watt Hours</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">The measure of power capacity found by multiply voltage by amp hours ie 36V * 10ah = 360wh</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_ebikeSystems.systems_battery_watt_hours}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_ebikeSystems.battery %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Battery</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">Details about the power system of an ebike, may include the type of cells, battery chemistry, and manufacturer</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_ebikeSystems.battery}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_ebikeSystems.additional_battery %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Additional Battery</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">Details about additional power systems of an ebike, they may be included or available separately for extended range</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_ebikeSystems.additional_battery}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                          {% if review_ebikeSystems.charger %}
+                            <tr>
+                              <td>
+                                <div class="tbl_title">
+                                  <h5>Charger</h5>
+                                  <div class="ac_tooltip">
+                                    <a href="javascript:;">
+                                      <div class="info material-symbols-outlined">info</div>
+                                      <div class="tooltip_content">
+                                        <p style="margin-bottom:0px;">A device that plugs into a standard power outlet and converts electricity to fill an electric bike battery</p>
+                                      </div>
+                                    </a>
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="tbl_content">
+                                  <p>{{review_ebikeSystems.charger}}</p>
+                                </div>
+                              </td>
+                            </tr>
+                          {% endif %}
+                        </table>
+                      </div>
+                    </div>
+
+                    <!-- Accessories -->
+                    <div class="acc_card">
+                      <div class="acc_title rev_acc_title">
+                        <div class="acc_icon">
+                          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 11.5011C2.03189 11.3615 2.06136 11.2218 2.09663 11.0827C2.33096 10.1203 2.88947 9.36074 3.60212 8.70221C4.61383 7.7678 5.80818 7.13005 7.07354 6.61839C8.7003 5.96083 10.3947 5.54629 12.1307 5.30471C12.5838 5.24142 13.038 5.18441 13.5076 5.12305L13.5076 18.6773C12.9907 18.6126 12.4819 18.5589 11.976 18.484C10.5976 18.2777 9.24143 17.9729 7.92243 17.5177C6.50149 17.0244 5.15013 16.3963 3.97511 15.4402C3.16294 14.7744 2.49329 14.0014 2.16813 12.9771C2.0976 12.7558 2.05508 12.5249 2 12.2983V11.5011Z" fill="#1D1D1F" />
+                            <path d="M14.0977 18.7334L14.0977 5.07966C14.5228 5.0584 14.9427 5.02265 15.3621 5.01927C16.8226 5.00815 18.2837 5.00864 19.7442 5.00429C19.9012 5.00429 20.0583 4.99704 20.2153 5.00139C20.4569 5.00767 20.5569 5.10865 20.5535 5.34877C20.5288 6.36339 20.0819 7.17894 19.3277 7.83312C18.588 8.47523 17.7097 8.79314 16.7434 8.88687L16.6279 8.89847V9.12796C16.6279 11.8745 16.6279 14.6212 16.6279 17.3681C16.6279 17.9754 16.3863 18.4271 15.8307 18.6929C15.7462 18.7401 15.6524 18.7682 15.5558 18.775C15.0736 18.7687 14.5929 18.7489 14.0977 18.7334Z" fill="#1D1D1F" />
+                            <path d="M6.85194 17.5195C7.31818 17.6833 7.75833 17.8659 8.21394 17.9921C9.10052 18.237 9.99434 18.4554 10.8877 18.6747C11.1587 18.7409 11.1626 18.726 11.1626 18.9955C11.1626 19.599 11.1626 20.2034 11.1626 20.8059C11.1578 21.9249 10.3292 22.8859 9.28315 22.9878C8.08301 23.1013 7.09303 22.3742 6.87079 21.2103C6.85047 21.0913 6.84125 20.9706 6.84325 20.8499C6.84131 19.7821 6.84131 18.714 6.84325 17.6456C6.84325 17.6075 6.84808 17.5722 6.85194 17.5195ZM10.1596 20.8533C10.162 20.7009 10.1341 20.5496 10.0775 20.4082C10.0209 20.2667 9.93679 20.1379 9.82996 20.0293C9.72314 19.9207 9.59577 19.8344 9.45528 19.7754C9.31478 19.7165 9.16397 19.6861 9.01162 19.686C8.78132 19.6831 8.55535 19.7487 8.3624 19.8745C8.16944 20.0002 8.0182 20.1805 7.92785 20.3923C7.8375 20.6042 7.81213 20.8381 7.85494 21.0644C7.89775 21.2907 8.00683 21.4992 8.16832 21.6634C8.32982 21.8276 8.53645 21.9402 8.76201 21.9868C8.98757 22.0333 9.22188 22.0119 9.43522 21.9251C9.64856 21.8383 9.8313 21.6901 9.96027 21.4992C10.0892 21.3084 10.1586 21.0836 10.1596 20.8533Z" fill="#1D1D1F" />
+                            <path d="M17.0137 16.8607V9.25164L18.108 8.99219C18.1732 9.32314 18.25 9.65603 18.3013 9.99279C18.4738 11.0785 18.4979 12.1826 18.3728 13.2748C18.2515 14.3377 18.0418 15.3828 17.4799 16.3187C17.3586 16.5206 17.1978 16.6984 17.0552 16.8873L17.0137 16.8607Z" fill="#1D1D1F" />
+                            <path d="M20.5537 9.77144L25.3261 6.58984" stroke="#1D1D1F" stroke-width="2.03825" stroke-linecap="round" />
+                            <path d="M20.5537 16.1348L25.3261 19.3164" stroke="#1D1D1F" stroke-width="2.03825" stroke-linecap="round" />
+                            <path d="M20.5537 12.9531H26.9169" stroke="#1D1D1F" stroke-width="2.03825" stroke-linecap="round" />
+                          </svg>
+                        </div>
+                        <div class="acc_text">
+                          <h4>Accessories</h4>
+                        </div>
+                      </div>
+                      <div class="acc_panel">
+                        <table class="rev-technical-table">
+                          <tr>
+                            <td>
+                              <div class="tbl_title">
+                                <h5>Lights</h5>
+                                <div class="ac_tooltip">
+                                  <a href="javascript:;">
+                                    <div class="info material-symbols-outlined">info</div>
+                                    <div class="tooltip_content">
+                                      <p style="margin-bottom:0px;">Components that illuminate the surroundings and help make the ebike more visible during low light conditions</p>
+                                    </div>
+                                  </a>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="tbl_content">
+                                <p>{% if review_accessories.lights == "" %} No {% else %}{{review_accessories.lights}} {% endif %}</p>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div class="tbl_title">
+                                <h5>Fenders</h5>
+                                <div class="ac_tooltip">
+                                  <a href="javascript:;">
+                                    <div class="info material-symbols-outlined">info</div>
+                                    <div class="tooltip_content">
+                                      <p style="margin-bottom:0px;">Components that partially surround the tires, deflecting mud, water, and other debris from splashing up onto the rider and their surroundings</p>
+                                    </div>
+                                  </a>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="tbl_content">
+                                <p>{% if review_accessories.fenders == "" %} No {% else %} {{review_accessories.fenders}} {% endif %}</p>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div class="tbl_title">
+                                <h5>Front Rack</h5>
+                                <div class="ac_tooltip">
+                                  <a href="javascript:;">
+                                    <div class="info material-symbols-outlined">info</div>
+                                    <div class="tooltip_content">
+                                      <p style="margin-bottom:0px;">A component that can store and transport cargo on the front portion of an ebike, usually offering lower capacity than rear racks, some are removeable</p>
+                                    </div>
+                                  </a>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="tbl_content">
+                                <p>{% if review_accessories.front_rack == "" %} No {% else %} {{review_accessories.front_rack}} {% endif %}</p>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <div class="tbl_title">
+                                <h5>Rear Rack</h5>
+                                <div class="ac_tooltip">
+                                  <a href="javascript:;">
+                                    <div class="info material-symbols-outlined">info</div>
+                                    <div class="tooltip_content">
+                                      <p style="margin-bottom:0px;">A component that can store and transport cargo on the rear portion of an ebike, good capacity is 25kg or 55lbs, it may include a top platform, pannier hangers on the sides, bungee loops, and proprietary accessory interfaces such as RackTime or MIK, some racks are removeable</p>
+                                    </div>
+                                  </a>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                              <div class="tbl_content">
+                                <p>{% if review_accessories.rear_rack == "" %} No {% else %} {{review_accessories.rear_rack}} {% endif %}</p>
+                              </div>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+
+                    <!-- More Details -->
+                    <div class="acc_card">
+                      <div class="acc_title rev_acc_title ">
+                        <div class="acc_icon">
+                          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3.5 7.37699C3.52943 7.25306 3.55771 7.12913 3.5883 7.00558C3.92911 5.64429 5.17151 4.66795 6.57037 4.66718C11.1338 4.66563 15.6972 4.66563 20.2604 4.66718C21.9327 4.66718 23.3226 6.05132 23.325 7.71896C23.3288 10.275 23.3288 12.8311 23.325 15.3871C23.325 15.8635 23.0058 16.2031 22.5597 16.2059C22.1019 16.2086 21.7782 15.8701 21.7782 15.3844C21.7782 12.8738 21.7782 10.3631 21.7782 7.85218C21.7782 7.07065 21.3394 6.4661 20.6299 6.27711C20.474 6.2367 20.3137 6.2164 20.1527 6.21669C15.6603 6.21359 11.1678 6.21295 6.67532 6.21476C5.71332 6.21476 5.04874 6.88398 5.04874 7.84831C5.04719 12.3341 5.04719 16.8199 5.04874 21.306C5.04874 22.2804 5.71525 22.9449 6.6912 22.9457C9.28599 22.9457 11.8808 22.9523 14.4756 22.9407C14.9573 22.9384 15.261 23.2164 15.338 23.5603C15.4244 23.9449 15.2219 24.2768 14.7959 24.4673C14.7858 24.472 14.7792 24.4855 14.7711 24.4948H6.21214C6.18471 24.4798 6.15576 24.4677 6.12577 24.4588C4.82489 24.2145 3.98914 23.4519 3.60302 22.1909C3.56235 22.0573 3.53486 21.9198 3.50116 21.7839L3.5 7.37699Z" fill="#1D1D1F" />
+                            <path d="M22.3596 24.4949C22.1683 24.3477 21.9638 24.2149 21.7888 24.0507C21.4553 23.737 21.1358 23.4081 20.8163 23.0801C20.7327 22.9945 20.6715 22.9732 20.5549 23.0348C18.4535 24.1397 15.9428 22.9337 15.4815 20.6015C15.1016 18.6833 16.4691 16.7806 18.419 16.5141C20.6498 16.2094 22.573 18.0149 22.3914 20.2495C22.3433 20.8392 22.1447 21.4067 21.8147 21.8978C22.2369 22.3141 22.6621 22.7273 23.08 23.1475C23.4142 23.4841 23.4173 23.9825 23.085 24.2822C22.9882 24.3702 22.8612 24.4252 22.7477 24.4949H22.3596ZM18.9055 21.9001C19.9593 21.9059 20.8419 21.0279 20.8488 19.971C20.8558 18.9141 19.9778 18.0346 18.9198 18.028C17.8617 18.0214 16.9834 18.8998 16.9768 19.9567C16.9702 21.0136 17.8486 21.8943 18.9055 21.9001Z" fill="#1D1D1F" />
+                            <path d="M15.3309 10.5913C14.2279 10.5913 13.1248 10.5913 12.0215 10.5913C11.836 10.5934 11.6559 10.5285 11.5142 10.4086C11.3726 10.2887 11.279 10.1217 11.2505 9.93832C11.2208 9.74824 11.263 9.55393 11.3687 9.39321C11.4744 9.2325 11.6362 9.11688 11.8225 9.06887C11.8976 9.0511 11.9746 9.04316 12.0518 9.04525C14.2515 9.04525 16.4513 9.04525 18.651 9.04525C19.1212 9.04525 19.457 9.37289 19.4554 9.82368C19.4539 10.2745 19.1146 10.5917 18.6421 10.5921C17.5379 10.5915 16.4341 10.5913 15.3309 10.5913Z" fill="#1D1D1F" />
+                            <path d="M15.3404 15.2386H12.0695C11.5834 15.2386 11.2445 14.9164 11.2461 14.4594C11.2461 14.0125 11.5861 13.6914 12.0594 13.6914C14.254 13.6914 16.4474 13.6914 18.6397 13.6914C19.1141 13.6914 19.453 14.0125 19.453 14.4602C19.453 14.9168 19.1153 15.2382 18.6285 15.2386H15.3404Z" fill="#1D1D1F" />
+                            <path d="M12.56 20.1579C12.3733 20.1579 12.1862 20.161 11.9991 20.1579C11.7968 20.1552 11.6039 20.0724 11.4625 19.9277C11.3212 19.783 11.2431 19.5881 11.2452 19.3858C11.2434 19.2859 11.2613 19.1865 11.2979 19.0934C11.3344 19.0004 11.389 18.9154 11.4585 18.8435C11.5279 18.7715 11.6108 18.714 11.7025 18.6741C11.7942 18.6342 11.8929 18.6128 11.9929 18.6111C12.3733 18.6062 12.7537 18.6062 13.1341 18.6111C13.554 18.6173 13.8797 18.9632 13.8778 19.3901C13.8789 19.5889 13.8025 19.7803 13.6648 19.9236C13.5271 20.067 13.3389 20.151 13.1403 20.1579C12.947 20.161 12.7537 20.1579 12.56 20.1579Z" fill="#1D1D1F" />
+                            <path d="M8.52714 10.5927C8.39854 10.5927 8.26954 10.5927 8.13977 10.5927C8.03806 10.593 7.9373 10.573 7.84341 10.5339C7.74952 10.4948 7.66438 10.4373 7.59298 10.3649C7.52159 10.2925 7.46537 10.2065 7.42762 10.112C7.38988 10.0176 7.37136 9.91655 7.37317 9.81486C7.37196 9.71293 7.3912 9.61179 7.42975 9.51742C7.4683 9.42306 7.52537 9.33737 7.59759 9.26544C7.66982 9.1935 7.75573 9.13678 7.85025 9.09861C7.94477 9.06044 8.04598 9.0416 8.14791 9.04322C8.41248 9.04089 8.67667 9.03973 8.94085 9.04322C9.14294 9.04485 9.33612 9.12663 9.47796 9.27058C9.61981 9.41453 9.69873 9.60889 9.69739 9.81098C9.6995 9.9126 9.68133 10.0136 9.64394 10.1081C9.60656 10.2026 9.55071 10.2888 9.47966 10.3614C9.4086 10.4341 9.32377 10.4919 9.23013 10.5314C9.13649 10.5709 9.03591 10.5913 8.93427 10.5915C8.79792 10.5927 8.66272 10.5927 8.52714 10.5927Z" fill="#1D1D1F" />
+                            <path d="M8.53715 13.6895C8.66614 13.6895 8.79513 13.6895 8.92451 13.6895C9.02645 13.6884 9.12758 13.7076 9.22194 13.7462C9.31631 13.7848 9.40199 13.8418 9.47395 13.914C9.5459 13.9862 9.60267 14.0721 9.6409 14.1666C9.67913 14.2611 9.69805 14.3623 9.69655 14.4642C9.69794 14.5658 9.67907 14.6666 9.64104 14.7608C9.60301 14.855 9.54659 14.9407 9.47507 15.0128C9.40354 15.085 9.31836 15.1421 9.2245 15.1809C9.13063 15.2198 9.02997 15.2395 8.92839 15.239C8.66421 15.2421 8.40002 15.2421 8.13583 15.239C8.0339 15.2391 7.93299 15.2187 7.83904 15.1792C7.7451 15.1396 7.66003 15.0816 7.58886 15.0087C7.5177 14.9357 7.46187 14.8492 7.42468 14.7543C7.38749 14.6594 7.36969 14.558 7.37233 14.4561C7.3714 14.2538 7.4508 14.0595 7.5931 13.9157C7.73539 13.772 7.92892 13.6906 8.13118 13.6895C8.26637 13.6895 8.40195 13.6895 8.53715 13.6895Z" fill="#1D1D1F" />
+                            <path d="M8.54687 18.6094C8.67586 18.6094 8.80447 18.6094 8.93424 18.6094C9.03587 18.6095 9.13647 18.6298 9.23013 18.6693C9.3238 18.7087 9.40865 18.7665 9.47972 18.8391C9.55079 18.9118 9.60665 18.9979 9.64402 19.0924C9.68139 19.1869 9.69952 19.2879 9.69736 19.3895C9.69812 19.4898 9.67912 19.5893 9.64143 19.6823C9.60374 19.7752 9.54811 19.8598 9.47771 19.9313C9.40731 20.0027 9.32352 20.0596 9.23114 20.0986C9.13875 20.1377 9.03957 20.1581 8.93928 20.1589C8.66863 20.1627 8.39747 20.1627 8.1258 20.1589C7.92367 20.1561 7.7309 20.0733 7.58979 19.9285C7.44867 19.7838 7.37076 19.589 7.37314 19.3868C7.37002 19.1852 7.44687 18.9904 7.5869 18.8453C7.72692 18.7001 7.91872 18.6163 8.12038 18.6121C8.26409 18.6094 8.40509 18.6094 8.54687 18.6094Z" fill="#1D1D1F" />
+                          </svg>
+                        </div>
+                        <div class="acc_text">
+                          <h4>More Details</h4>
+                        </div>
+                      </div>
+                      <div class="acc_panel">
+                        <table class="rev-technical-table">
+                           {% for key, value in review.more_details|table_to_list|more_details_dict %}
+                              <tr>
+                                <td>
+                                  <div class="tbl_title">
+                                    <h5>{{ key }}</h5>
+                                    <div class="ac_tooltip">
+                                      <a href="javascript:;">
+                                        <div class="info material-symbols-outlined">info</div>
+                                        <div class="tooltip_content">
+                                          <p style="margin-bottom:0px;">Additional details about the electric bike that did not fit into other categories</p>
+                                        </div>
+                                      </a>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td>
+                                  <div class="tbl_content">
+                                    <p>{{ value }}</p>
+                                  </div>
+                                </td>
+                              </tr>
+                           {% endfor %}
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                  <iframe id="shops-carrying-iframe" src="http://54.213.76.238/dashboard-integration/shops-carrying/" frameborder="0" style="width: 1px; min-width: 100%; overflow: hidden; height: 196px;" scrolling="no"></iframe>
+              </div>
+
+              <!-- Show video list in sider -->
+              <div class="video_review_wrapper">
+                <h3>Video Reviews</h3>
+                <div class="youtube_video_slider">
+                  <div class="youtube_video_swiper">
+                    <!-- Additional required wrapper -->
+                    <div class="owl-carousel" id="youtubevideowrapper">
+                      <!-- Slides -->
+                      {% for video in videos %}
+                        <div class="swiper-slide">
+                          <div class="review_video_box">
+                            <iframe src="https://www.youtube.com/embed/{{video}}" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Written Review -->
+              <div class="page_section sec_mb ebr_written_rev_wrapper">
+                <h3>Written Reviews</h3>
+                <div class="ebr_written_rev_inner">
+                  {{review.description | safe}}
+                </div>
+              </div>
+
+              <!-- Comments -->
+              <div class="page_section ebr_comments_wrapper">
+                <div class="ebr_comments">
+                  <div class="prev_main_heading">
+                    <h2>Comments for {{ review.name }} ({{total_comment}})</h2>
+                    <button type="button" id="filter" class="btn btn-popover btn-primary btn-lg" data-toggle="popover" data-trigger="focus" data-placement="bottom">
+                      <img src="{% static 'assets/images/filter.png' %}" />Sort BY </button>
+                    <div id="filter-content" class="dropdown-menu" style="display: none;">
+                      <input type="hidden" id="comment_filter" name="comment_filter">
+                      <ul class="custmenu-list">
+                        <li>
+                          <a href="javascript:void(0);" class="dropdown-item" onclick="sort_by('most_valuable')">Top Comments</a>
+                        </li>
+                        <li>
+                          <a href="javascript:void(0);" class="dropdown-item" onclick="sort_by('newest_first')">Newest First</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="comments_inner">
+                    <div class="replied_comments">
+                    </div>
+                    {% if total_comment|add:"-2" > 0 %}
+                        <div class="see_more_btn comment-readmore-link">
+                          <a href="javascript:;" id="show_more_comments" data-review="{{ comment_type_id }}">
+                              Show {% if total_comment >= 3 %} {{total_comment|add:"-2"}} {% else %} {{total_comment}} {% endif %} More {% if total_comment|add:"-2" > 1 %} Comments {% else %} Comment {% endif %} <i class="fa fa-angle-down"></i>
+                          </a>
+                        </div>
+                    {% elif total_comment|add:"-2" < -1 %}
+                        <h4>No comment for this Review!</h4>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <div class="ebr_post_comment" id="postcomment">
+                  <div class="prev_main_heading">
+                    <h2>Post a Comment for {{ review.name }}</h2>
+                  </div>
+                  <div class="comment_form_div">
+                    <div class="cancel_reply_link mb-3 d-none">
+                        <a href="javascript:void(0);" onclick="return false;">Cancel reply
+                        </a>
+                      </div>
+                    <p class="sub_title">Name and email are optional. Your email address will not be published.</p>
+                    <form method="POST" id="comment_reply_form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                      <div class="row">
+                        <div class="col-lg-6 col-md-12 ps-0">
+                          <div class="ebr_form_block">
+                            <div class="ebr_inputs form-group">
+                              <input type="hidden" id="comment_type_id" name="comment_type_id" value="{{review.id}}">
+                              <input type="hidden" id="parent_id" name="replied_comment">
+                              <input type="text" placeholder="Name" class="form-control" name="name" id="name" autocomplete="off">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12 pl_0">
+                          <div class="ebr_form_block">
+                            <div class="ebr_inputs form-group">
+                              <input type="text" placeholder="Email" class="form-control" name="email" id="email" autocomplete="off">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 ps-0">
+                            <div class="ebr_form_block">
+                              <div class="ebr_inputs form-group">
+                                <!-- <textarea placeholder="Comments" class="form-control" rows="4"></textarea> -->
+                                <div class="wrapper" style="display: block;position: relative;">
+
+                              		<!-- Editor Control Box -->
+                              		<div class="editor-controls" id="editor-controls">
+
+                              			<!-- Inline Styles -->
+                              			<div class="rte editor button-group" id="inlineStyleGroup">
+                              				<!-- Bold -->
+                              				<a class="rte button editor" id="bold" title="Bold" onclick="boldSel()"><i class="fa fa-fw fa-bold"></i></a>
+                              				<!-- Italicize -->
+                              				<a class="rte button editor" id="italic" title="Italicize" onclick="italicSel()"><i class="fa fa-fw fa-italic"></i></a>
+                                            <!-- Underline -->
+                                            <a class="rte button editor" id="underline" title="Underline" onclick="underlineSel()"><i class="fa fa-fw fa-underline"></i></a>
+                                            <!-- Strikethrough -->
+                                            <a class="rte button editor" id="strikethrough" title="Strikethrough" onclick="strikethroughSel()"><i class="fa fa-fw fa-strikethrough"></i></a>
+                              			</div>
+
+                              			<!-- Lists -->
+                              			<div class="button-group" id="listsGroup">
+                              				<!-- Unordered List -->
+                              				<a class="rte button editor" id="unordered" title="Bulleted List" onclick="newUlSel()"><i class="fa fa-fw fa-list-ul"></i></a>
+                              				<!-- Ordered List -->
+                              				<a class="rte button editor" id="ordered" title="Numbered List" onclick="newOlSel()"><i class="fa fa-fw fa-list-ol"></i></a>
+                              			</div>
+
+                              			<!-- Hyperlinks -->
+                              			<div class="button-group" id="linkGroup">
+                              				<!-- Hyperlink -->
+                              				<a class="rte button editor" id="link" title="Add Hyperlink" onclick="linkSel()"><i class="fa fa-fw fa-link"></i></a>
+                              				<!-- Remove Hyperlink -->
+                              				<a class="rte button editor" id="unlink" title="Remove Hyperlink" onclick="unlinkSel()"><i class="fa fa-fw fa-unlink"></i></a>
+                              			</div>
+
+                              		</div>
+
+                              		<!-- Editor text box -->
+                              		<!-- <textarea class="editor-richText-box form-control" id="editor-richText-box" name="richTextBox" style="display:none" wrap="hard" placeholder="Comments" rows="4"></textarea> -->
+                              		<iframe class="editor-richText-box" id="editor-richText-box" name="richTextBox"></iframe>
+                                    <small class='description_error' style="color: red; display: none;">Please enter description</small>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="comment_footer">
+                        <div class="ebr_checkbox">
+                          <div class="form-check">
+                            <label class="form-check-label">
+                              <input type="checkbox" class="form-check-input" value="true" id="is_notification" name="is_notification"> Receive email notification when someone replies.
+                            </label>
+                          </div>
+                        </div>
+                        <div class="post_btn">
+                          <button type="submit" class="add_review_btn btn theme-btn">Post Comment</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+              </div>
+              <div class="comment-submitted d-none">
+                  <p>Comment has been submitted successfully.</p>
+                  <p>Comment is being held for moderation and will be posted after it has been reviewed</p>
+              </div>
+
+            </div>
+          </div>
+<!--        </div>-->
+        {% include 'frontend/include/right_side_section.html' %}
+      </div>
+    </div>
+    </section>
+
+    <!-- The Modal -->
+    <div class="modal" id="reviewGallaryModal">
+      <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+          <!-- Modal Header -->
+          <div class="modal-header">
+              <button type="button" class="close back-close" data-dismiss="modal">
+                  <img src="{% static 'assets/images/left-arrow.png' %}" />
+              </button>
+              <ul class="nav nav-tabs rev-gallary-tabs" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#rev-photo">Photos</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#rev-video">Videos</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#rev-map">Shops</a>
+                  </li>
+              </ul>
+            <button type="button" class="close" data-dismiss="modal">×</button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="tab-content">
+              <div id="rev-photo" class="tab-pane active">
+                  <div class="rev-modalbody-wrapper">
+                      <div class="row">
+                          <div class="col-md-6">
+                            <div class="rev-modal-photo-wrapper">
+                              <img src="{{ review.featured_image.url }}" alt="{{ review.name }}" class="rev-photo-img" />
+                              <a href="{{ review.featured_image.url }}" target="_blank">
+                                  <i class="fa fa-arrows" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                          </div>
+                          {% for reviewgallery in review_gallery %}
+                            <div class="col-md-6">
+                              <div class="rev-modal-photo-wrapper">
+                                <img src="{{reviewgallery.image.image.url}}" alt="{{ reviewgallery.image.title }}" class="rev-photo-img" />
+                                <a href="{{reviewgallery.image.image.url}}" target="_blank">
+                                  <i class="fa fa-arrows" aria-hidden="true"></i>
+                                </a>
+                              </div>
+                            </div>
+                          {% endfor %}
+                      </div>
+                  </div>
+              </div>
+              <div id="rev-video" class="tab-pane fade">
+                  <div class="rev-modalbody-wrapper video_review_wrapper">
+                      <div class="youtube_video_slider">
+                        <div class="youtube_video_swiper">
+                          <!-- Additional required wrapper -->
+                          <div class="owl-carousel" id="youtubevideowrappergallry">
+                            <!-- Slides -->
+                            {% for video in videos %}
+                              <div class="swiper-slide">
+                                <div class="review_video_box">
+                                  <iframe width="1280" height="720" src="https://www.youtube.com/embed/{{video}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                              </div>
+                            {% endfor %}
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+              <div id="rev-map" class="tab-pane fade">
+                  <div class="rev-modalbody-wrapper gallery-map-box">
+                      <div class="map-wrapper">
+                        <iframe src="http://54.213.76.238/dashboard-integration/shops-osm/" id="shops-directory-map-iframe" style="width: 100%; height: 600px;"></iframe>
+                      </div>
+                      <div class="find-shop-wrapper">
+                          <iframe src="http://54.213.76.238/dashboard-integration/shops-nearby/" id="shops-nearby-iframe" frameborder="0" style="width: 100%;height: 100vh;"></iframe>
+                      </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
+{% block script %}
+    <script src="{% static 'assets/js/flyto-review.js' %}"></script>
+    <script src="{% static 'assets/js/jquery.fancybox.min.js' %}"></script>
+    <script>
+      $('#review-product-slider').owlCarousel({
+          loop:true,
+          margin:10,
+          nav:true,
+          dots: false,
+          mouseDrag: false,
+          // touchDrag: false,
+          // pullDrag: false,
+          responsive:{
+              0:{
+                  items:1
+              },
+              600:{
+                  items:1
+              },
+              1000:{
+                  items:1
+              }
+          },
+          onDragged: callback
+      });
+      function callback(event) {
+        var scroll_zoom = new ScrollZoom($('.rev-img-slider-box .owl-item.active .rev-cycle-item'),3,0.5);
+        var scroll_zoom = new ScrollZoom($('.rev-img-slider-box .owl-item.cloned.active .rev-cycle-item'),3,0.5);
+      };
+      $('.owl-next').on('click', function(event) {
+        // alert("hie");
+          var scroll_zoom = new ScrollZoom($('.rev-img-slider-box .owl-item.active .rev-cycle-item'),3,0.5);
+          var scroll_zoom = new ScrollZoom($('.rev-img-slider-box .owl-item.cloned.active .rev-cycle-item'),3,0.5);
+      });
+      $('.owl-prev').on('click', function(event) {
+          // alert("hello");
+          var scroll_zoom = new ScrollZoom($('.rev-img-slider-box .owl-item.active .rev-cycle-item'),3,0.5);
+          var scroll_zoom = new ScrollZoom($('.rev-img-slider-box .owl-item.cloned.active .rev-cycle-item'),3,0.5);
+      });
+
+      $(document).ready(function(){
+
+        // $('img.rev-photo-img').each(function(){
+        //   $(this).wrapAll('<a class="fancybox" href="" data-fancybox="gallery"></a>');
+        // });
+
+        // $('div#rev-photo a').each(function(){
+        //   var link = $(this).attr('src');
+        //   console.log(link);
+        //   // link = link.replace(/(url\(|\)|")/g,'');
+        //   $(this).attr('href', link);
+        // });
+
+        $('.rev-modalbody-wrapper [data-fancybox="images"]').fancybox({
+          buttons : [
+            // "zoom",
+            // "share",
+            // "slideShow",
+            "fullScreen",
+            "download",
+            "thumbs",
+            "close"
+          ]
+        });
+
+        var scroll_zoom = new ScrollZoom($('.rev-img-slider-box .owl-item.active .rev-cycle-item'),3,0.5);
+
+      });
+
+      function ScrollZoom(container,max_scale,factor){
+        var target = container.children(".pro-card-img")
+        var size = {w:target.width(),h:target.height()}
+        var pos = {x:0,y:0}
+        var scale = 1
+        var zoom_target = {x:0,y:0}
+        var zoom_point = {x:0,y:0}
+        var curr_tranform = target.css('transition')
+        var last_mouse_position = { x:0, y:0 }
+        var drag_started = 0
+
+        target.css('transform-origin','0 0')
+        target.on("mousewheel DOMMouseScroll",scrolled)
+        target.on('mousemove', moved)
+        target.on('mousedown', function() {
+          drag_started = 1;
+          target.css({'cursor':'move', 'transition': 'transform 0s'});
+          /* Save mouse position */
+          last_mouse_position = { x: event.pageX, y: event.pageY};
+        });
+
+        target.on('mouseup mouseout', function() {
+          drag_started = 0;
+          target.css({'cursor':'default', 'transition': curr_tranform});
+        });
+
+        function scrolled(e){
+          var offset = container.offset()
+          zoom_point.x = e.pageX - offset.left
+          zoom_point.y = e.pageY - offset.top
+
+          e.preventDefault();
+          var delta = e.delta || e.originalEvent.wheelDelta;
+          if (delta === undefined) {
+            //we are on firefox
+            delta = e.originalEvent.detail;
+          }
+          delta = Math.max(-1,Math.min(1,delta)) // cap the delta to [-1,1] for cross browser consistency
+
+          // determine the point on where the slide is zoomed in
+          zoom_target.x = (zoom_point.x - pos.x)/scale
+          zoom_target.y = (zoom_point.y - pos.y)/scale
+
+          // apply zoom
+          scale += delta * factor * scale
+          scale = Math.max(1,Math.min(max_scale,scale))
+
+          // calculate x and y based on zoom
+          pos.x = -zoom_target.x * scale + zoom_point.x
+          pos.y = -zoom_target.y * scale + zoom_point.y
+
+          update()
+        }
+
+        function moved(event){
+          if(drag_started == 1) {
+            var current_mouse_position = { x: event.pageX, y: event.pageY};
+            var change_x = current_mouse_position.x - last_mouse_position.x;
+            var change_y = current_mouse_position.y - last_mouse_position.y;
+
+            /* Save mouse position */
+            last_mouse_position = current_mouse_position;
+            //Add the position change
+            pos.x += change_x;
+            pos.y += change_y;
+
+          update()
+          }
+        }
+
+        function update(){
+          // Make sure the slide stays in its container area when zooming out
+          if(pos.x>0)
+            pos.x = 0
+          if(pos.x+size.w*scale<size.w)
+            pos.x = -size.w*(scale-1)
+          if(pos.y>0)
+            pos.y = 0
+          if(pos.y+size.h*scale<size.h)
+            pos.y = -size.h*(scale-1)
+
+          target.css('transform','translate('+(pos.x)+'px,'+(pos.y)+'px) scale('+scale+','+scale+')')
+        }
+      }
+    </script>
+    <script>
+        var more_highlights = false;
+        function GetUserIP(){
+          var ret_ip;
+          $.ajaxSetup({async: false});
+          $.get('https://api.ipify.org/?format=json', function(r){
+            ret_ip = r.ip;
+          });
+          return ret_ip;
+        }
+
+        $(document).ready(function(){
+            var review = document.querySelector('.left-side-content').querySelector('.section-title');
+            var review_name = review.innerText;
+            var review_id = review.getAttribute('data-id');
+            console.log(review_name)
+            $.ajax({
+                url: '/visitor_history/',
+                method: 'GET',
+                data: {
+                    "ip": GetUserIP(),
+                    "type": 'review details',
+                    "type_name": review_name,
+                    "type_name_id": review_id,
+                    "type_url": window.location.href,
+                },
+                async: false,
+                success: function (data) {
+                    console.log(data);
+                }
+            })
+
+            $('.main_category').find('.desc_1').each(function(e){
+                let type_url = window.location.origin+$(this).children().attr('href')
+                $.ajax({
+                    url: '/visitor_history/',
+                    method: 'GET',
+                    data: {
+                        "ip": GetUserIP(),
+                        "type": 'category',
+                        "type_name": $(this).text(),
+                        "type_name_id": $(this).data('id'),
+                        "type_url": type_url,
+                    },
+                    async: false,
+                    success: function (data) {
+                        console.log(data);
+                    }
+                })
+            });
+
+            $('.brand_name').find('p').each(function(e){
+                let type_url = window.location.origin+'/brand/'+$(this).children('span').data('value');
+                $.ajax({
+                    url: '/visitor_history/',
+                    method: 'GET',
+                    data: {
+                        "ip": GetUserIP(),
+                        "type": 'brand',
+                        "type_name": $(this).children('span').data('value'),
+                        "type_name_id": $(this).children('span').data('id'),
+                        "type_url": type_url,
+                    },
+                    async: false,
+                    success: function (data) {
+                        console.log(data);
+                    }
+                })
+            });
+        });
+
+        window.addEventListener( "pageshow", function ( event ) {
+          var historyTraversal = event.persisted ||
+                                 ( typeof window.performance != "undefined" &&
+                                      window.performance.navigation.type === 2 );
+          if ( historyTraversal ) {
+            // Handle page restore.
+            window.location.reload();
+          }
+        });
+
+        $(".compare-btn").on('click', function () {
+            var get_cookies = $.cookie("id")
+            console.log(get_cookies)
+            var id_list = []
+            var data_id = $(this).data('id');
+            if (get_cookies == undefined || get_cookies == ""){
+                if ($(this).hasClass('added') === true) {
+                    for(var i=0; i<id_list.length; i++){
+                        if (id_list[i] === data_id) {
+                            id_list.splice(i, 1);
+                        }
+                    }
+                }else{
+                    id_list.push(data_id)
+                }
+                console.log(id_list, '============>')
+                $.cookie("id", JSON.stringify(id_list), { path: '/' });
+                $('.count-icon').html(id_list.length)
+            }else{
+                get_cookies = JSON.parse(get_cookies)
+
+                if ($(this).hasClass('added') === true) {
+                   for(var i=0; i<get_cookies.length; i++){
+                        if (get_cookies[i] === data_id) {
+                            get_cookies.splice(i, 1);
+                        }
+                    }
+                }else{
+                    get_cookies.push(data_id)
+                }
+                $.cookie("id", JSON.stringify(get_cookies), { path: '/' });
+                $('.count-icon').html(get_cookies.length)
+            }
+        });
+
+
+<!-- ============================================= -->
+      $(document).on('click', ".reply_comment", function(){
+            $('#parent_id').attr('value', $(this).data('parentid'))
+            $(".cancel_reply_link").removeClass('d-none')
+        });
+
+        $(".cancel_reply_link").on('click', function(){
+            $('#parent_id').val("");
+            $(".cancel_reply_link").addClass('d-none')
+        })
+
+        var is_notification_checked = true;
+        $("#comment_reply_form").on('submit', function(e){
+            e.preventDefault();
+
+            var name = $.trim($("#name").val());
+            var email = $.trim($("#email").val());
+            // var description = $("#description").val();
+            var description = $('#editor-richText-box').contents().find('body').html();
+            var comment_type_id = $("#comment_type_id").val();
+            var user_ip = GetUserIP();
+            var parent_id = $("#parent_id").val();
+            var is_notification = $("#is_notification").prop('checked');
+            var csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
+            var regex = /(<\/?(?:span|div|b|i|u|p|pre|ol|ul|li|strong|a|em|small)[^>]*>)|<[^>]+>/ig
+            var final_description = description.replace(regex,'$1').replaceAll(/<input(.*?)>/gim, " ");
+            if(final_description.replace(/\&nbsp;/g, '').trim().length > 1){
+              $(".add_review_btn").prop("disabled", true);
+              console.log(final_description.length, "======", final_description)
+              var data = {
+                  'csrf_token':csrf_token,
+                  'name': name.length>1? name : "Anonymous",
+                  'email':email,
+                  'description':final_description,
+                  'comment_type_id':comment_type_id,
+                  'comment_type': 'Review',
+                  'user_ip':user_ip,
+                  'parent_id':parent_id,
+                  'is_notification':is_notification,
+                  'user_ip':GetUserIP(),
+              }
+
+              $.ajax({
+                  url:'/add-new-comment/',
+                  method: 'POST',
+                  data: data,
+                  async: true,
+                  beforeSend: function(msg){
+                      clear_comment_form()
+                      $(".comment-submitted").removeClass("d-none");
+                  },
+                  success: function(data){
+                      $("#email").attr('required',false);
+                      setTimeout(function(){
+                          is_notification_checked = true;
+                          $(".comment-submitted").addClass("d-none");
+                          $(".comment_form_div").show()
+                      }, 5000);
+                  }
+              })
+            }else{
+              $('.description_error').css('display', 'block');
+            }
+            return false;
+        });
+
+        function clear_comment_form(){
+            $(".cancel_reply_link").click();
+            $(".comment_form_div").hide();
+            $("#comment_reply_form")[0].reset();
+            $(".add_review_btn").prop("disabled", false);
+            $('#editor-richText-box').contents().find('body').html('');
+            $('.description_error').css('display', 'none');
+        }
+
+        $("#email").on("keyup", function(){
+            var EmailRegex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if(is_notification_checked == true){
+                $("#is_notification").prop('checked', true);
+            }
+
+            if($("#is_notification").prop("checked") == true && $(this).val() == ""){
+                $(this).css("border-color", "red");
+                $(this).attr("placeholder", "Email is Requeired now.");
+                $(this).attr('required',true);
+            } else if($("#is_notification").prop("checked") == false && $(this).val() == ""){
+                $(this).css("border-color", "");
+            } else if($("#is_notification").prop("checked") == true && EmailRegex.test($(this).val()) === true){
+                $(this).css("border-color", "");
+            } else if($("#is_notification").prop("checked") == true && EmailRegex.test($(this).val()) === false){
+                $(this).css("border-color", "red");
+                $(this).attr("placeholder", "Email is Requeired now.");
+                $(this).attr('required',true);
+            } else if($("#is_notification").prop("checked") == false && EmailRegex.test($(this).val()) === true){
+                $(this).css("border-color", "");
+            } else if($("#is_notification").prop("checked") == false && EmailRegex.test($(this).val()) === false){
+                $(this).css("border-color", "red");
+            }
+            is_notification_checked = false;
+        })
+
+        $("#is_notification").on("click", function(){
+            var EmailRegex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if(!$(this).is(":checked")){
+                $("#is_notification").val("False")
+                $("#email").css("border-color", "");
+                $("#email").attr('required',false);
+                $("#email").attr("placeholder", "Email");
+            } else if ($(this).is(":checked")){
+                $("#is_notification").val("True")
+                $("#email").attr('required',true);
+                if(EmailRegex.test($("#email").val()) === false){
+                    $("#email").css("border-color", "red");
+                    $("#email").attr("placeholder", "Email is Requeired now.");
+                }
+            }
+        })
+
+        function display_comments(data){
+            $.ajax({
+                url:'/display-comments/',
+                method:"GET",
+                data: data,
+                success:function(data){
+                    $(".replied_comments").append(data)
+                }
+            })
+        }
+
+        $(document).ready(function(){
+            var brand = document.querySelector('.left-side-content').querySelector('.section-title');
+            var brand_name = brand.innerText;
+            var brand_id = brand.getAttribute('data-id');
+            var data = {
+                'ip': GetUserIP(),
+                'comment_type': 'Review',
+                'comment_type_id': brand_id,
+            }
+            display_comments(data)
+        })
+
+        $(document).on('click', '.sub_comments', function(){
+            var parent_comment_id = $(this).data("parent")
+            var is_sub_comment = $(this).data("issubcomment")
+
+            var data = {
+                'ip':GetUserIP(),
+                'parent_comment_id':parent_comment_id,
+                'is_sub_comment': is_sub_comment
+            }
+
+            //$(this).hide()
+            console.log($(this).parent(), is_sub_comment)
+
+            $.ajax({
+                url:'/display-sub-comments/',
+                method:'GET',
+                data:data,
+                context: this,
+                success:function(data){
+                    if(is_sub_comment == 'True'){
+                        $(this).parent().replaceWith(data);
+                    } else{
+                        $(this).parent().replaceWith(data);
+                    }
+                }
+            })
+        })
+
+        $(document).on("click", "#show_more_comments", function(){
+            $(this).toggleClass('all_comments')
+            var comment_filter = $("#comment_filter").val()
+            if($("#show_more_comments").html() != "Less comments"){
+                display_show_more_button = $("#show_more_comments").html()
+            }
+            var all_comments;
+
+            if($(this).hasClass('all_comments') === true){
+                $("#show_more_comments").html("Less comments")
+                $(".replied_comments").empty()
+                all_comments = 'True'
+            } else {
+                $("#show_more_comments").html(`${display_show_more_button}`)
+                $(".replied_comments").empty()
+                all_comments = 'False'
+            }
+
+            var brand = document.querySelector('.left-side-content').querySelector('.section-title');
+            var brand_id = brand.getAttribute('data-id');
+            var data = {
+                'ip': GetUserIP(),
+                'comment_type': 'Review',
+                'comment_type_id': brand_id,
+                'all_comments' : all_comments,
+                'comment_filter': comment_filter,
+            }
+
+            display_comments(data)
+        })
+
+        $(document).on('click', "a.btn.theme-btn.helpfulbtn", function(){
+          $(this).toggleClass("helpbtnactive");
+          $(this).parents("ul.comment_btns").parent(".comment_inner").parent(".cm_right").parent(".comment_head").siblings(".download_box").find(".icon").toggleClass("active-icon");
+        });
+         $(document).on('click', ".download_box .icon svg", function(){
+          $(this).parents(".icon").parents(".download_box").siblings(".comment_head").children(".cm_right").children(".comment_inner").children("ul.comment_btns").find("a.btn.theme-btn.helpfulbtn").toggleClass("helpbtnactive");
+          $(this).parents(".icon").toggleClass("active-icon");
+        });
+
+        $(document).on('click', '.comment_upvote', function(){
+            var comment_id = $(this).data('id')
+            $.ajax({
+                url: '/comment/upvote',
+                method: 'GET',
+                data: {
+                    "ip": GetUserIP(),
+                    "comment_type": 'Review',
+                    "comment_id": comment_id,
+                },
+                async: false,
+                success: function (data) {
+                    console.log(data);
+                }
+            })
+        });
+
+        function sort_by(name){
+            $('#comment_filter').val(name);
+            var all_comments;
+            var brand = document.querySelector('.left-side-content').querySelector('.section-title');
+            var brand_id = brand.getAttribute('data-id');
+            if($("#show_more_comments").html() != "Less comments"){
+                display_show_more_button = $("#show_more_comments").html()
+            }
+
+            if($("#show_more_comments").hasClass('all_comments') === true){
+                $("#show_more_comments").html("Less comments")
+                $(".replied_comments").empty()
+                all_comments = 'True'
+            } else {
+                $("#show_more_comments").html(`${display_show_more_button}`)
+                $(".replied_comments").empty()
+                all_comments = 'False'
+            }
+
+            var data = {
+                'ip':GetUserIP(),
+                'comment_type': 'Review',
+                'comment_type_id': brand_id,
+                'all_comments' : all_comments,
+                'comment_filter': name,
+            }
+            console.log("---------->")
+            $(".replied_comments").empty()
+            display_comments(data)
+        }
+    <!-- =======================--------------====================== -->
+    $(document).on('click', '#highlights_upvote', function(){
+        //console.log($(this).attr('class'))
+        vote = parseInt($(this).find('small').text())
+
+        var change_code = false
+        $.ajax({
+          method: "POST",
+          url: "/highlights/update_vote",
+          data: {
+            'highlights_id': $(this).data('id'),
+            'ip': GetUserIP(),
+          },
+          dataType: 'json',
+          async: false,
+          success: function (res) {
+            if(res['status']===true){
+                //$(this).toggleClass("text-primary");
+                if(res['change']===true){
+                    change_code = true
+                    vote+=1
+                }else{
+                    change_code = false
+                    vote-=1
+                }
+                get_review_highlights()
+            }else{
+                console.log(res['message'])
+            }
+          },
+          complete: function(){
+            $('.page-loader').hide();
+          }
+         });
+
+         if(change_code===true){
+            $(this).addClass('text-primary')
+            $(this).find('small').text(vote)
+         }else{
+            $(this).removeClass('text-primary')
+            $(this).find('small').text(vote)
+         }
+    })
+    var live_url;
+    $(document).ready(function(){
+        live_url = window.location.pathname
+        // console.log(live_url)
+        get_review_highlights()
+    });
+
+    function get_review_highlights(){
+        var review = document.querySelector('.left-side-content').querySelector('.section-title');
+        var review_name = review.innerText;
+        var review_id = review.getAttribute('data-id');
+        $.ajax({
+          method: "POST",
+          url: "/highlights/get",
+          data: {
+            'review_id': review_id,
+            'ip': GetUserIP(),
+            'show_all': more_highlights,
+          },
+          dataType: 'json',
+          async: false,
+          success: function (res) {
+            if(res['status']===true){
+                // console.log(res['data'])
+                $('.highlights_div').empty();
+                $('.highlights_div').html(res['data']);
+            }else{
+                console.log(res['message'])
+            }
+          },
+          complete: function(){
+            $('.page-loader').hide();
+          }
+         });
+    }
+
+    function show_highlight(review_id){
+      $('.show_more_highlights').addClass('d-none');
+      more_highlights = true
+      $.ajax({
+          method: "POST",
+          url: "/highlights/get",
+          data: {
+            'review_id': review_id,
+            'ip': GetUserIP(),
+            'show_all': true,
+          },
+          dataType: 'json',
+          async: false,
+          success: function (res) {
+            if(res['status']===true){
+                // console.log(res['data'])
+                $('.highlights_div').empty();
+                $('.highlights_div').append(res['data']);
+            }else{
+                console.log(res['message'])
+            }
+          }
+         });
+    }
+
+    function open_gallery_modal(tab_name){
+      $('#reviewGallaryModal').modal('show');
+
+      // Now show the selected tab
+      $('.nav-tabs a[href="'+tab_name+'"]').tab('show');
+    }
+
+    $(".ac_tooltip").popover({
+      html: true,
+      trigger: 'focus',
+      placement: 'bottom',
+      content: function() {
+              return $(this).children('a').children('.tooltip_content').html();
+            }
+    });
+
+    $('.review-cont-wrapper-box').flytoReview({
+        item: '.rev-img-slider-box',
+        target: '.compare-icon-head',
+        button: '#comparebtn'
+    });
+
+    </script>
+
+    <script>
+      /*Handles functionality for rich text editor web component.*/
+      $(document).ready(function(){
+      	// Call iFrameReady function
+      	iFrameReady();
+
+      	// Handle Editor Permissions
+      	setPermissions(1,1,1,1,1,1,1,1,1,1,1);
+
+      	// Handle text file import event
+      	$("#fileImport").change(function() {
+      		var fr = new FileReader();
+      		console.log("This = " + this);
+      		fr.onload = function() {
+      			loadContent(this.result);
+      			console.log("This.result = " + this.result);
+      		};
+      		fr.readAsText(this.files[0]);
+      		console.log("This.Files[0] = " + this.files[0]);
+      	});
+
+
+      	// Load content
+      	//loadContent("This is <i>Awesome</i>!");
+
+      	// Preformat text font
+      	$('.editor-richText-box').ready(function() {
+      		richTextBox.document.execCommand('fontName',false,'sans-serif');
+      	})
+
+      	// Dropdown Functionality
+      	// font family
+      	$('#fontFamily').change(function() {
+      		var fontFamily = this.value;
+      		// Match dropdown box style to selected color
+      		$(this).css('font-family',fontFamily);
+
+      		// Set selected color
+      		richTextBox.document.execCommand('fontName',false,fontFamily);
+      	});
+
+      	$('#parStyle').change(function() {
+      		richTextBox.document.execCommand('formatBlock',false,this.value);
+      	});
+
+      	$('#fontSize').change(function() {
+      		richTextBox.document.execCommand('fontSize',false,this.value);
+      	});
+
+      	$('#textColor').change(function() {
+      		var colorValue = this.value;
+      		var textColor = $(this).css('color');
+      		console.log("TextColor: ",textColor);
+      		if (colorValue == "CUSTOM") {
+      			// Prompt for Custom Color
+      			colorValue = prompt("Enter the HEX value or RGBA value: ","");
+      		}
+      		// Match dropdown box style to selected color
+      		$(this).css('background-color',colorValue);
+
+      		// Set selected color
+      		richTextBox.document.execCommand('foreColor',false,colorValue);
+      	});
+
+      	$('#textHilight').change(function() {
+      		var color = this.value;
+      		if (color == "CUSTOM") {
+      			// Prompt for Custom Color
+      			color = prompt("Enter the HEX value or RGBA value: ","");
+      		}
+      		richTextBox.document.execCommand('foreColor',false,color);
+      	});
+
+      });
+
+      /* FUNCTION DEFINITIONS */
+
+      /* FUNCTION: iFrameReady()
+      Allows user editing of iFrame contents. */
+      function iFrameReady() {
+      	richTextBox.document.designMode = 'On';
+      }
+
+      /* FUNCTION: submitContent()
+      Inserts rich text iFrame content into textarea field and submits the content to the parser */
+      function submitContent() {
+      	var theForm = document.getElementById("wc-richTextEditor-form");
+      	theForm.elements["textareaBox"].value = window.frames['richTextBox'].document.body.innerHTML;
+      	theForm.submit();
+      }
+
+      /* FUNCTION: importContent()
+      Gets html content from database and injects it into the editor iframe */
+      function loadContent(content) {
+      	var theForm = document.getElementById("wc-richTextEditor-form");
+      	window.frames['richTextBox'].document.body.innerHTML = content;
+      }
+
+      /* FUNCTION: setPermissions()
+      Gets object editing permissions and sets Constants for editor's use. */
+      function setPermissions(HTML,CHANGE_PAR_STYLE,ALLOW_H1,CHANGE_INLINE_STYLE,CHANGE_SIZE,CHANGE_FONT_FAMILY,CHANGE_PAR_ALIGNMENT,CHANGE_TEXT_COLOR,ADD_LINK,ADD_LIST,ADD_IMAGE) {
+      		// Restrict all HTML features
+      		if (HTML == 0) {
+      			CHANGE_PAR_STYLE = 0;
+      			ALLOW_H1 = 0;
+      			CHANGE_INLINE_STYLE = 0;
+      			CHANGE_SIZE = 0;
+      			CHANGE_FONT_FAMILY = 0;
+      			CHANGE_PAR_ALIGNMENT = 0;
+      			CHANGE_TEXT_COLOR = 0;
+      			ADD_LINK = 0;
+      			ADD_LIST = 0;
+      			ADD_IMAGE = 0;
+      		}
+
+      		//Handle Permissions
+      		if (CHANGE_PAR_STYLE == 0) {
+      			$('.editor-controls > #parStyleGroup').hide();
+      		}
+      		if (ALLOW_H1 == 0) {
+      			$('option#heading1').hide();
+      			$('option#heading1').selected = false;
+      		}
+      		if (CHANGE_INLINE_STYLE == 0) {
+      			$('.editor-controls > #inlineStyleGroup').hide();
+      		}
+      		if (CHANGE_SIZE == 0) {
+      			$('.editor-controls > #textSizeGroup').hide();
+      		}
+      		if (CHANGE_FONT_FAMILY == 0) {
+      			$('.editor-controls > #fontFamilyGroup').hide();
+      		}
+      		if (CHANGE_PAR_ALIGNMENT == 0) {
+      			$('.editor-controls > #alignmentGroup').hide();
+      		}
+      		if (CHANGE_TEXT_COLOR == 0) {
+      			$('.editor-controls > #textColorGroup').hide();
+      		}
+      		if (ADD_LIST == 0) {
+      			$('.editor-controls > #listsGroup').hide();
+      		}
+      		if (ADD_LINK == 0) {
+      			$('.editor-controls > #linkGroup').hide();
+      		}
+      }
+
+      /* FUNCTION: importFromFile()
+      Gets object editing permissions and sets Constants for editor's use. */
+
+
+      /* FUNCTION: boldSel()
+      Bolds selected text. */
+      function boldSel() {
+      	richTextBox.document.execCommand('bold',false,null);
+      }
+
+      /* FUNCTION: underlineSel()
+      Underlines selected text. */
+      function underlineSel() {
+      	richTextBox.document.execCommand('underline',false,null);
+      }
+
+      /* FUNCTION: italicSel()
+      Italicizes selected text. */
+      function italicSel() {
+      	richTextBox.document.execCommand('italic',false,null);
+      }
+
+      /* FUNCTION: strikethroughSel()
+      Stikes through selected text. */
+      function strikethroughSel() {
+      	richTextBox.document.execCommand('strikeThrough',false,null);
+      }
+
+      /* FUNCTION: highlightColorSel()
+      Changes highlight color of selected text. */
+      function highlightColorSel() {
+
+      }
+
+      /* FUNCTION: alignLeftSel()
+      Left-aligns selected text. */
+      function alignLeftSel() {
+      	richTextBox.document.execCommand('justifyLeft',false,null);
+      }
+
+      /* FUNCTION: alignCenterSel()
+      Center-aligns selected text. */
+      function alignCenterSel() {
+      	richTextBox.document.execCommand('justifyCenter',false,null);
+      }
+
+      /* FUNCTION: alignRightSel()
+      Right-aligns selected text. */
+      function alignRightSel() {
+      	richTextBox.document.execCommand('justifyRight',false,null);
+      }
+
+      /* FUNCTION: alignJustifySel()
+      Justifies selected text. */
+      function alignJustifySel() {
+      	richTextBox.document.execCommand('justifyFull',false,null);
+      }
+
+      /* FUNCTION: newOlSel()
+      Creates new Ordered List. */
+      function newOlSel() {
+      	richTextBox.document.execCommand("InsertOrderedList", false,"newOL");
+      }
+
+      /* FUNCTION: newUlSel()
+      Creates new Unordered List. */
+      function newUlSel() {
+      	richTextBox.document.execCommand("InsertUnorderedList", false,"newUL");
+      }
+
+      /* FUNCTION: linkSel()
+      Creates new hyperlink. */
+      function linkSel() {
+      	var linkURL = prompt("Enter URL:", "http://");
+      	richTextBox.document.execCommand("CreateLink", false, linkURL);
+      }
+
+      /* FUNCTION: unlinkSel()
+      Removes hyperlink. */
+      function unlinkSel() {
+      	richTextBox.document.execCommand("Unlink", false, null);
+      }
+    </script>
+
+<!--    <script src="{% static 'assets/js/flyto-review.js' %}"></script>-->
+{% endblock %}

@@ -1,0 +1,53 @@
+{% load static %}
+{% load review_card %}
+
+{% for comment in comments %}
+      <ul class="sub_ul">
+        <li>
+          <div class="li_expand">
+            <span class="material-symbols-outlined">open_in_full</span>
+          </div>
+          <div class="ebr_comment_block">
+            <a href="javascript:;" class="download_box">
+              <div class="upvote_icon">
+                <div class="icon {% if comment.id in upvoted_comments %} active-icon {% endif %} comment_upvote" data-id="{{comment.id}}">
+<!--                  <img class="img_icon" src="{% static 'assets/images/upvote.gif' %}" alt="">-->
+                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19.8359 14.0201H18.8359V15.0201L18.8359 26.265L8.591 26.265V15.0201V14.0201H7.591L1.84195 14.0201L13.7134 2.14859L25.5849 14.0201L19.8359 14.0201Z" stroke="#6E6E73" stroke-width="2" />
+                  </svg>
+                </div>
+
+              </div>
+              <div class="vert_line">
+                <span></span>
+              </div>
+            </a>
+            <div class="comment_head">
+              <!-- <div class="reply_icon material-symbols-outlined">reply</div> -->
+              <div class="cm_right">
+                <div class="comment_author" data-bs-toggle="collapse" data-bs-target="#sub_comment">
+                  <h5>{{comment.name}}{% if comment.email in admin_emails %} <img style="width: 35px;" src="{% static 'assets/images/ebr-logo.svg' %}" alt="logo"/> {% endif %} <span>{{comment.create_at}}</span></h5>
+                </div>
+                <div class="comment_inner">
+                  <div class="comment">
+                    <p> {{comment.description | safe}}</p>
+                  </div>
+                  <ul class="comment_btns">
+                    <li>
+                      <a href="#postcomment" class="btn theme-btn reply_comment" data-parentid="{{comment.id}}">Reply</a>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0);" data-id="{{comment.id}}" class="btn theme-btn helpfulbtn comment_upvote{% if comment.id in upvoted_comments %} helpbtnactive{% endif %}">Helpful <img class="like-default" src="{% static 'assets/images/icons/like.svg' %}" alt="like" /><img class="like-active" src="{% static 'assets/images/icons/like-active.svg' %}" alt="like" />
+                      </a>
+                    </li>
+                  </ul>
+                  {% if comment.replied_comments %}
+                    {% include "frontend/include/show_child_comment.html" with comments=comment.replied_comments %}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+{% endfor %}

@@ -1,0 +1,560 @@
+{% extends 'frontend/subpages/base.html'%}
+{% load static %}
+{% load review_card %}
+{% block title %}
+    Electric Bike Reviews | ElectricBikeReview.com
+{% endblock %}
+
+ {% block seoTag %}
+    <meta name="description" content="Prices, Specs, Videos, Photos">
+    <meta name="theme-color" content="#80b600">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#80b600">
+	<meta name="msapplication-navbutton-color" content="#80b600">
+    <meta property='og:url' content='https://electricbikereview.com/' />
+    <meta property="fb:app_id" content="462030500496873" />
+
+    <meta property="og:locale" content="en_us" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Electric Bike Reviews | ElectricBikeReview.com" />
+    <meta property="og:description" content="Prices, Specs, Videos, Photos" />
+    <meta property="og:site_name" content="ElectricBikeReview.com" />
+    <meta property="og:image" content="http://54.213.76.238/static/assets/images/EBRlogo.png" />
+	<meta name="twitter:card" content="summary" />
+    <meta name="twitter:description" content="Prices, Specs, Videos, Photos" />
+    <meta name="twitter:title" content="Electric Bike Reviews | ElectricBikeReview.com" />
+    <meta name="twitter:image" content="http://54.213.76.238/static/assets/images/EBRlogo.png" />
+    <meta name="twitter:site" content="@ebikereview" />
+{% endblock %}
+
+{% block body %}
+    <!-- Middle Area -->
+    <section class="middle_area">
+        <div class="filter-selected-options">
+            {% for category in category %}
+                <button class="btn filter-selected-databtn">
+                    <a href="javascript:void(0);" class="remove-category-cross" data-id="{{category.id}}"><img src="{% static 'assets/images/cross.png' %}" alt="cross" /></a>
+                    <span>{{category.name}}</span>
+                </button>
+            {% endfor %}
+            {% for tags in filtered_tags %}
+                <button class="btn filter-selected-databtn">
+                    <a href="javascript:void(0);" class="remove-category-cross search-filter-tags" data-value = "{% for key, value in tags.items %}{{value}}{% endfor %}" data-key="{% for key, value in tags.items %}{{key}}{% endfor %}"><img src="{% static 'assets/images/cross.png' %}" alt="cross" /></a>
+                    <span>{% for key, value in tags.items %} {{value}} {% endfor %}</span>
+                </button>
+            {% endfor %}
+            {% if total_reviews|length > 2 %}
+                <p class="search-res-text">{{ total_reviews }} Results:</p>
+            {% else %}
+                <p class="search-res-text">{{ total_reviews }} Result:</p>
+            {% endif %}
+        </div>
+        <div class="main-content">
+            <div class="row m-0">
+<!--                <div class="col-lg-8 col-xl-9 col-md-6 col-sm-6 p-0">-->
+                    <div class="left-side-content">
+                        <h3 class="section-title">{{total_reviews}} Results:</h3>
+
+                        <div class="product-card-wrapper" >
+                            {% for featured_review in featured_reviews %}
+                                <div class="product-card-item">
+                                    <div class="protitle-wrapper">
+                                        <h4 class="product-title"><a href="/{{featured_review.brands.all.0.slug}}/{{featured_review.slug}}/">{{featured_review.name}}</a><span>Promoted</span></h4>
+                                        <p class="product-price">${{ featured_review.review_general_review.all.0.msrp|floatformat:"-3g" }}</p>
+                                    </div>
+                                    <div class="product-desc">
+                                        <p class="desc_1"><a href="/brand/{{featured_review.brands.all.0.slug}}/" class="ps-link">{{featured_review.brands.all.0.name}}</a></p>
+                                        <div class="data-price">
+                                            <div class="procard-lastdata">
+                                                {% for category in featured_review.categories.all %}
+                                                    <p class="desc_1">
+                                                      <a href="/category/{{category.slug}}">{{ category.slug | category_name_clean }}</a>
+                                                    </p>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="owl-carousel product-img-slider" >
+                                        <a href="/{{featured_review.brands.all.0.slug}}/{{featured_review.slug}}">
+                                            <img src="{{ featured_review.featured_image_thumbnail.url }}" class="pro-card-img active-cycle" alt="{{ featured_review.name }}"  />
+                                        </a>
+                                        {% for reviewgalley in featured_review.review_galley_review.all|dictsort:"order" %}
+                                            <a href="/{{featured_review.brands.all.0.slug}}/{{featured_review.slug}}">
+                                                <img src="{{reviewgalley.image.thumbnail_image.url}}" class="pro-card-img" alt="{{ reviewgalley.image.title }}"  />
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                    <!-- <button class="btn compare-btn">
+                                        <img src="./assets/images/plus.png" alt="plus" />
+                                    </button> -->
+                                    <div class="pro-meta-data">
+                                        <div class="pro-metadata-item">
+                                            <p class="prometa-title">Motor Type</p>
+                                            <h6>{{ featured_review.review_general_review.all.0.motor_type }}</h6>
+                                        </div>
+                                        <div class="pro-metadata-item">
+                                            <p class="prometa-title">Battery Size</p>
+                                            <h6>{{ featured_review.review_general_review.all.0.demo_battery_watt_hours|floatformat:"-2g" }} Wh</h6>
+                                        </div>
+                                        <div class="pro-metadata-item">
+                                            <p class="prometa-title">Ebike Type</p>
+                                            {% if featured_review.review_general_review.all.0.demo_bike_class.all|length > 1 %}
+                                                <h6 class="dotted-class">{{ featured_review.review_general_review.all.0.demo_bike_class.all.0 }}<span>···</span></h6>
+                                            {% else %}
+                                                <h6>{{ featured_review.review_general_review.all.0.demo_bike_class.all.0 }}</h6>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="procard-btns">
+                                        <button class="btn theme-btn grey-btn">
+                                            <a href="/{{featured_review.brands.all.0.slug}}/{{featured_review.slug}}">VIEW DETAILS</a>
+                                        </button>
+                                        {% if featured_review.id in compare_review %}
+                                          <button class="btn theme-btn grey-btn compare-btn added" data-id="{{featured_review.id}}"><span>-</span>REMOVE</button>
+                                        {% else %}
+                                          <button class="btn theme-btn grey-btn compare-btn" data-id="{{featured_review.id}}"><span>+</span>COMPARE</button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                            {% for review in reviews %}
+                                <div class="product-card-item">
+                                    <div class="protitle-wrapper">
+                                        <h4 class="product-title"><a href="/{{review.brands.all.0.slug}}/{{review.slug}}/">{{ review.name }}</a></h4>
+                                        <p class="product-price">${{ review.review_general_review.all.0.msrp|floatformat:"-3g" }}</p>
+                                    </div>
+                                    <div class="product-desc">
+                                        {% for brand in review.brands.all %}
+                                            <p class="desc_1">
+                                              <a href="/brand/{{review.brands.all.0.slug}}" class="ps-link">{{brand.name}}</a>
+                                            </p>
+                                        {% endfor %}
+                                        <div class="data-price">
+                                            <div class="procard-lastdata">
+                                                {% for category in review.categories.all %}
+                                                    <p class="desc_1">
+                                                      <a href="/category/{{category.slug}}">{{ category.slug | category_name_clean }}</a>
+                                                    </p>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="owl-carousel product-img-slider" >
+                                        <a href="/{{review.brands.all.0.slug}}/{{review.slug}}/">
+                                            <img src="{{ review.featured_image_thumbnail.url }}" class="pro-card-img active-cycle" alt="{{ review.name }}"  />
+                                        </a>
+                                        {% for reviewgalley in review.review_galley_review.all|dictsort:"order" %}
+                                            <a href="/{{review.brands.all.0.slug}}/{{review.slug}}/">
+                                                <img src="{{reviewgalley.image.thumbnail_image.url}}" class="pro-card-img" alt="{{ reviewgalley.image.title }}"  />
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                    <!-- <button class="btn compare-btn">
+                                        <img src="./assets/images/plus.png" alt="plus" />
+                                    </button> -->
+                                    <div class="pro-meta-data">
+                                        <div class="pro-metadata-item">
+                                            <p class="prometa-title">Motor Type</p>
+                                            <h6>{{ review.review_general_review.all.0.motor_type }}</h6>
+                                        </div>
+                                        <div class="pro-metadata-item">
+                                            <p class="prometa-title">Battery Size</p>
+                                            <h6>{{ review.review_general_review.all.0.demo_battery_watt_hours|floatformat:"-2g" }} Wh</h6>
+                                        </div>
+                                        <div class="pro-metadata-item">
+                                            <p class="prometa-title">Ebike Type</p>
+                                            {% if review.review_general_review.all.0.demo_bike_class.all|length > 1 %}
+                                                <h6 class="dotted-class">{{ review.review_general_review.all.0.demo_bike_class.all.0 }}<span>···</span></h6>
+                                            {% else %}
+                                                <h6>{{ review.review_general_review.all.0.demo_bike_class.all.0 }}</h6>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="procard-btns">
+                                        <button class="btn theme-btn grey-btn">
+                                            <a href="/{{review.brands.all.0.slug}}/{{review.slug}}">VIEW DETAILS</a>
+                                        </button>
+                                        {% if review.id in compare_review %}
+                                            <button class="btn theme-btn grey-btn compare-btn added" data-id="{{review.id}}"><span>-</span>REMOVE</button>
+                                        {% else %}
+                                            <button class="btn theme-btn grey-btn compare-btn" data-id="{{review.id}}"><span>+</span>COMPARE</button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        {% if pages|length > 1 %}
+                          <ul class="pagination justify-content-center pagination-sm">
+                                <li class="page-item">
+                                    {% if reviews.has_previous %}
+                                      <a class="page-link cust-arrow" href="?{% url_replace request 'page' reviews.previous_page_number %}" aria-label="Previous">
+                                        <span aria-hidden="true">&lsaquo;</span>
+                                      </a>
+                                    {% else %}
+                                      <a class="page-link cust-arrow disabled" href="javascript:void(0);" aria-label="Previous">
+                                        <span aria-hidden="true">&lsaquo;</span>
+                                      </a>
+                                    {% endif %}
+                                </li>
+
+                                {% if reviews.number == 1 %}
+                                    {% if reviews.paginator.num_pages <= 5 %}
+                                        {% for page in pages %}
+                                            {% if  page == reviews.number %}
+                                                <li class="page-item"><a class="page-link active" >{{ page }}</a></li>
+                                            {% elif reviews.number != reviews.paginator.num_pages %}
+                                                <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' page %}">{{ page }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <li class="page-item"><a class="page-link active">{{ reviews.number }}</a></li>
+                                        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' reviews.number|add:'1' %}">{{ reviews.number|add:"1" }}</a></li>
+                                        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' reviews.number|add:'2' %}">{{ reviews.number|add:"2" }}</a></li>
+                                        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' reviews.number|add:'3' %}">{{ reviews.number|add:"3" }}</a></li>
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' reviews.paginator.num_pages %}">{{ reviews.paginator.num_pages }}</a></li>
+                                    {% endif %}
+                                    <!-- Second page pagination code. -->
+                                {% elif reviews.number > 1 and reviews.number < 4 %}
+                                    {% if reviews.paginator.num_pages <= 5 %}
+                                        {% for page in pages %}
+                                            {% if  page == reviews.number %}
+                                                <li class="page-item"><a class="page-link active" href="javascript:void(0);">{{ page }}</a></li>
+                                            {% else %}
+                                                <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' page %}">{{ page }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' 1 %}">1</a></li>
+                                        {% for page in pages %}
+                                            {% if page >= 2 and page <= 4 %}
+                                                {% if  page == reviews.number %}
+                                                    <li class="page-item"><a class="page-link active" href="javascript:void(0);">{{ page }}</a></li>
+                                                {% else %}
+                                                    <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' page %}">{{ page }}</a></li>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' reviews.paginator.num_pages %}">{{ reviews.paginator.num_pages }}</a></li>
+                                    {% endif %}
+
+                                {% elif reviews.number >= 4 and reviews.number <= reviews.paginator.num_pages|add:'-3' %}
+                                    <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' 1 %}">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                        {% for page in pages %}
+                                            {% if reviews.number >= 4 and reviews.number <= reviews.paginator.num_pages|add:'-3' %}
+                                                {% if page == reviews.number %}
+                                                    <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' reviews.previous_page_number %}">{{ reviews.previous_page_number }}</a></li>
+                                                    <li class="page-item"><a class="page-link active" href="javascript:void(0);">{{ page }}</a></li>
+                                                    <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' reviews.next_page_number %}">{{ reviews.next_page_number }}</a></li>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' reviews.paginator.num_pages %}">{{ reviews.paginator.num_pages }}</a></li>
+                                <!-- last pages -->
+                                {% elif reviews.number > reviews.paginator.num_pages|add:'-3' and reviews.number < reviews.paginator.num_pages %}
+                                    {% if reviews.paginator.num_pages <= 5 %}
+                                        {% for page in pages %}
+                                            {% if  page == reviews.number %}
+                                                <li class="page-item"><a class="page-link" href="javascript:void(0);">{{ page }}</a></li>
+                                            {% elif reviews.number != reviews.paginator.num_pages %}
+                                                <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' page %}">{{ page }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' 1 %}">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                        {% for page in pages %}
+                                            {% if page >= reviews.paginator.num_pages|add:'-3' and reviews.number < reviews.paginator.num_pages %}
+                                                {% if  page == reviews.number %}
+                                                    <li class="page-item"><a class="page-link active" href="javascript:void(0);">{{ page }}</a></li>
+                                                {% else %}
+                                                    <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' page %}">{{ page }}</a></li>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                <!--  -->
+                                {% elif reviews.number == reviews.paginator.num_pages %}
+                                    {% if reviews.paginator.num_pages <= 5 %}
+                                        {% for page in pages %}
+                                            {% if  page == reviews.number %}
+                                                <li class="page-item"><a class="page-link active" href="javascript:void(0);">{{ page }}</a></li>
+                                            {% else %}
+                                                <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' page %}">{{ page }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' 1 %}">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="javascript:void(0);">...</a></li>
+                                        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' reviews.paginator.num_pages|add:'-3' %}">{{ reviews.paginator.num_pages|add:'-3' }}</a></li>
+                                        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' reviews.paginator.num_pages|add:'-2' %}">{{ reviews.paginator.num_pages|add:'-2' }}</a></li>
+                                        <li class="page-item"><a class="page-link" href="?{% url_replace request 'page' reviews.paginator.num_pages|add:'-1' %}">{{ reviews.paginator.num_pages|add:'-1' }}</a></li>
+                                        <li class="page-item"><a class="page-link active" href="javascript:void(0);">{{ reviews.paginator.num_pages }}</a></li>
+                                    {% endif %}
+                                {% endif %}
+
+                                <li class="page-item">
+                                    {% if reviews.has_next %}
+                                      <a class="page-link cust-arrow" href="?{% url_replace request 'page' reviews.next_page_number %}" aria-label="Next">
+                                        <span aria-hidden="true">&rsaquo;</span>
+                                      </a>
+                                    {% else %}
+                                        <a class="page-link cust-arrow disabled" href="javascript:void(0);" aria-label="Next">
+                                            <span aria-hidden="true">&rsaquo;</span>
+                                        </a>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        {% endif %}
+
+                    </div>
+<!--                </div>-->
+                {% include 'frontend/include/right_side_section.html' %}
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.js"></script>
+    <script>
+
+        const slider = document.querySelector('.filter-selected-options');
+        let mouseDown = false;
+        let startX, scrollLeft;
+
+        let startDragging = function (e) {
+          mouseDown = true;
+          startX = e.pageX - slider.offsetLeft;
+          scrollLeft = slider.scrollLeft;
+        };
+        let stopDragging = function (event) {
+          mouseDown = false;
+        };
+
+        slider.addEventListener('mousemove', (e) => {
+          e.preventDefault();
+          if(!mouseDown) { return; }
+          const x = e.pageX - slider.offsetLeft;
+          const scroll = x - startX;
+          slider.scrollLeft = scrollLeft - scroll;
+        });
+
+        // Add the event listeners
+        slider.addEventListener('mousedown', startDragging, false);
+        slider.addEventListener('mouseup', stopDragging, false);
+        slider.addEventListener('mouseleave', stopDragging, false);
+
+        function GetUserIP(){
+          var ret_ip;
+          $.ajaxSetup({async: false});
+          $.get('https://api.ipify.org/?format=json', function(r){
+            ret_ip = r.ip;
+          });
+          return ret_ip;
+        }
+
+        $(document).ready(function(){
+            $.ajax({
+                url: '/visitor_history/',
+                method: 'GET',
+                data: {
+                    "ip": GetUserIP(),
+                    "type": 'page',
+                    "type_name": 'search',
+                    "type_name_id": '',
+                    "type_url": window.location.href,
+                },
+                async: false,
+                success: function (data) {
+                    console.log(data);
+                }
+            })
+        });
+
+        $(".compare-btn").on('click', function () {
+            var get_cookies = $.cookie("id")
+            console.log(get_cookies)
+            var id_list = []
+            var data_id = $(this).data('id');
+            if (get_cookies == undefined || get_cookies == ""){
+                if ($(this).hasClass('added') === true) {
+                    for(var i=0; i<id_list.length; i++){
+                        if (id_list[i] === data_id) {
+                            id_list.splice(i, 1);
+                        }
+                    }
+                }else{
+                    id_list.push(data_id)
+                }
+                $.cookie("id", JSON.stringify(id_list), { path: '/' });
+                $('.count-icon').html(id_list.length)
+            }else{
+                get_cookies = JSON.parse(get_cookies)
+                if ($(this).hasClass('added') === true) {
+                   for(var i=0; i<get_cookies.length; i++){
+                        if (get_cookies[i] === data_id) {
+                            get_cookies.splice(i, 1);
+                        }
+                    }
+                }else{
+                    get_cookies.push(data_id)
+                }
+                $.cookie("id", JSON.stringify(get_cookies), { path: '/' });
+                $('.count-icon').html(get_cookies.length)
+            }
+        });
+
+        // ==============================================
+
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+            return false;
+        };
+
+        var category_id_list = []
+        $(".remove-category-cross").on('click', function(){
+            console.log("helooooooosssssssss", getUrlParameter('categories'))
+            var category = getUrlParameter('categories')
+            if(category != false){
+                category = category.split(',')
+                console.log(category)
+                for(var i=0; i<category.length; i++){
+                    if (parseInt(category[i]) === $(this).data("id")) {
+                        category.splice(i, 1);
+                    }
+                }
+                window.location.href = `/search/?categories=${category.join(',')}`
+            }
+
+<!--            var get_removed_cookies = $.cookie("remove_category_id");-->
+<!--            if (get_removed_cookies == undefined || get_removed_cookies == ""){-->
+<!--                category_id_list.push(parseInt($(this).data("id")))-->
+<!--                $.cookie("remove_category_id", category_id_list, { path: '/' });-->
+<!--            }-->
+<!--            else if(get_removed_cookies){-->
+<!--                var new_cookies = $.map(get_removed_cookies.split(","), function(val){return parseInt(val);})-->
+<!--                new_cookies.push($(this).data('id'))-->
+<!--                $.cookie("remove_category_id", new_cookies, { path: '/' });-->
+<!--            }-->
+        })
+        // ==============================================
+
+        var remove_filtered_tags;
+        $(".search-filter-tags").on("click", function(){
+            console.log("-*/-*/-*/-*/-*/-*/-*/-*/-*/")
+            var this_key = $(this).data("key")
+            var this_value = $(this).data("value")
+
+            var this_url_path = window.location.href.split("?")
+            var this_url_list = this_url_path[1].split("&")
+
+            if (this_key.includes("accessories")){
+                this_value = "Yes"
+            }
+
+            if (isNaN(this_value)){
+                this_value = this_value.replaceAll(" ","+")
+            }
+
+            if (remove_filtered_tags == undefined){
+                remove_filtered_tags = this_url_list
+            }
+
+            console.log(this_key, '=============>>>>', this_value)
+            if(this_key == 'min_year-max_year'){
+                this_key = this_key.split('-')
+                this_value = this_value.split(':')[1].split('-')
+                for(var i=0; i<this_key.length; i++){
+                    for (let tag in this_url_list){
+                        if(this_url_list[tag].includes(this_key[i]) && this_url_list[tag].includes(this_value[i])){
+                            remove_filtered_tags = remove_filtered_tags.filter(remove_filtered_tags => remove_filtered_tags !== this_url_list[tag])
+                        }
+                        // if(this_url_list[tag].includes("page")){
+                        //     remove_filtered_tags = remove_filtered_tags.filter(remove_filtered_tags => remove_filtered_tags !== this_url_list[tag])
+                        // }
+                    }
+                }
+            }else if(this_key == 'min_weight-max_weight'){
+                this_key = this_key.split('-')
+                this_value = this_value.split(':')[1].split('-')
+                for(var i=0; i<this_key.length; i++){
+                    for (let tag in this_url_list){
+                        if(this_url_list[tag].includes(this_key[i]) && this_url_list[tag].includes(this_value[i])){
+                            remove_filtered_tags = remove_filtered_tags.filter(remove_filtered_tags => remove_filtered_tags !== this_url_list[tag])
+                        }
+                        // if(this_url_list[tag].includes("page")){
+                        //     remove_filtered_tags = remove_filtered_tags.filter(remove_filtered_tags => remove_filtered_tags !== this_url_list[tag])
+                        // }
+                    }
+                }
+            }else if(this_key == 'min_battery-max_battery'){
+                this_key = this_key.split('-')
+                this_value = this_value.split(':')[1].split('-')
+                for(var i=0; i<this_key.length; i++){
+                    for (let tag in this_url_list){
+                        if(this_url_list[tag].includes(this_key[i]) && this_url_list[tag].includes(this_value[i])){
+                            remove_filtered_tags = remove_filtered_tags.filter(remove_filtered_tags => remove_filtered_tags !== this_url_list[tag])
+                        }
+                        // if(this_url_list[tag].includes("page")){
+                        //     remove_filtered_tags = remove_filtered_tags.filter(remove_filtered_tags => remove_filtered_tags !== this_url_list[tag])
+                        // }
+                    }
+                }
+            }else if(this_key == 'min_suspension_travel-max_suspension_travel'){
+                this_key = this_key.split('-')
+                this_value = this_value.split(':')[1].split('-')
+                for(var i=0; i<this_key.length; i++){
+                    for (let tag in this_url_list){
+                        if(this_url_list[tag].includes(this_key[i]) && this_url_list[tag].includes(this_value[i])){
+                            remove_filtered_tags = remove_filtered_tags.filter(remove_filtered_tags => remove_filtered_tags !== this_url_list[tag])
+                        }
+                        // if(this_url_list[tag].includes("page")){
+                        //     remove_filtered_tags = remove_filtered_tags.filter(remove_filtered_tags => remove_filtered_tags !== this_url_list[tag])
+                        // }
+                    }
+                }
+            }
+            else{
+                for (let tag in this_url_list){
+                    if(this_url_list[tag].includes(this_key) && this_url_list[tag].includes(this_value)){
+                        remove_filtered_tags = remove_filtered_tags.filter(remove_filtered_tags => remove_filtered_tags !== this_url_list[tag])
+                    }
+                    // if(this_url_list[tag].includes("page")){
+                    //     remove_filtered_tags = remove_filtered_tags.filter(remove_filtered_tags => remove_filtered_tags !== this_url_list[tag])
+                    // }
+                }
+            }
+            this_url_path[1] = remove_filtered_tags.join("&")
+
+            console.log(remove_filtered_tags)
+            if (remove_filtered_tags.length == 1){
+                if (remove_filtered_tags[0].includes("page")){
+                    console.log(remove_filtered_tags[0], 'asdasdasdasdasdsdassdsdas 963');
+                    remove_filtered_tags = remove_filtered_tags.filter(remove_filtered_tags => remove_filtered_tags !== remove_filtered_tags)
+                }
+            }
+            if(remove_filtered_tags.length < 1){
+                window.location.href = `/`
+            } else {
+                window.location.href = `${this_url_path.join("?")}`
+            }
+        })
+    </script>
+{% endblock %}

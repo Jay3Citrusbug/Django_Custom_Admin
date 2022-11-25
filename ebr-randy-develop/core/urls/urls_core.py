@@ -106,5 +106,19 @@ urlpatterns = [
 	path("wheel-size/<int:pk>/update/", views.WheelSizeUpdateView.as_view(), name="wheelsize-update"),
 	path("wheel-size/<int:pk>/delete/", views.WheelSizeDeleteView.as_view(), name="wheelsize-delete"),
 	path("ajax-wheel-size", views.WheelSizeAjaxPagination.as_view(), name="wheelsize-list-ajax"),
-
+ 
+ 
+    path("break-type/",views.BreakTypeListView.as_view(),name="breaktype-list"),
+	path("break-type/create/", views.BreakTypeCreateView.as_view(), name="breaktype-create"),
+	path("break-type/<int:pk>/update/", views.BreakTypeUpdateView.as_view(), name="breaktype-update"),
+	path("break-type/<int:pk>/delete/", views.BreakTypeDeleteView.as_view(), name="breaktype-delete"),
+	path("ajax-break-type", views.BreakTypeAjaxPagination.as_view(), name="breaktype-list-ajax"),
+     
+     
+     
+    path("product/",views.ProductListView.as_view(),name="product-list"),
+	path("product/create/", views.ProductCreateView.as_view(), name="product-create"),
+	path("product/<int:pk>/update/", views.ProductUpdateView.as_view(), name="product-update"),
+	path("product/<int:pk>/delete/", views.ProductDeleteView.as_view(), name="product-delete"),
+	path("ajax-product", views.ProductAjaxPagination.as_view(), name="product-list-ajax"),
 ]

@@ -118,6 +118,25 @@
             {% endif %}
 
 
+            {% if perms.core.add_breaktype or perms.core.view_breaktype or perms.core.change_breaktype or perms.core.delete_breaktype or request.user.is_superuser %} 
+            <li {% if 'break-type/' in request.path %} class="active" {% endif %}>
+                <a href="{% url 'core:breaktype-list' %}">
+                    <i class="fa fa-ad fa-fw fa-2x"></i>
+                    <span class="nav-label">BreakType</span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% if perms.core.add_product or perms.core.view_product or perms.core.change_product or perms.core.delete_product or request.user.is_superuser %} 
+            <li {% if 'product/' in request.path %} class="active" {% endif %}>
+                <a href="{% url 'core:product-list' %}">
+                    <i class="fa fa-ad fa-fw fa-2x"></i>
+                    <span class="nav-label">Product</span>
+                </a>
+            </li>
+            {% endif %}
+
+
 
 
 

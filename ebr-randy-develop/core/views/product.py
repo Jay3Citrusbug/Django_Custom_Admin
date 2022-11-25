@@ -14,8 +14,8 @@ from core.mixins import HasPermissionsMixin
 from core.views.generic import (
     MyListView, MyCreateView, MyUpdateView, MyDeleteView, MyLoginRequiredView,
 )
-from core.forms.bike_class import BikeClassCreationForm,BikeClassChangeForm
-from core.models import BikeClass
+from core.forms.product import ProductCreationForm,ProductChangeForm
+from core.models import Product
 from django.http import JsonResponse
 from django.shortcuts import render
 # -----------------------------------------------------------------------------
@@ -23,27 +23,30 @@ from django.shortcuts import render
 # -----------------------------------------------------------------------------
 
 
-class BikeClassListView(MyListView):
+class ProductListView(MyListView):
     """
     View for BikeClass listing
     """
     # paginate_by = 25
     ordering = ["-id"]
-    model = BikeClass
-    queryset = model.objects.all()
-    template_name = "core/Bike_Class/Bike_Class_list.html"
-    permission_required = ("core.view_bikeclass",)
+    model = Product
+    template_name = "core/product/product_list.html"
+    permission_required = ("core.view_product",)
+    
+    def get(self,*args,**kwargs):
+        queryset = self.model.objects.all()
+        return render(self.request,self.template_name,context={"data":queryset})
 
 
 
-class BikeClassCreateView(MyCreateView):
+class ProductCreateView(MyCreateView):
     """
-    View to create BikeClass
+    View to create product
     """
-    model = BikeClass
-    form_class = BikeClassCreationForm
-    template_name = "core/Bike_Class/Bike_Class_form.html"
-    permission_required = ("core.add_bikeclass",)
+    model = Product
+    form_class = ProductCreationForm
+    template_name = "core/product/product_form.html"
+    permission_required = ("core.add_product",)
 
     def form_valid(self, form):
         form.instance.create_by = self.request.user
@@ -51,40 +54,40 @@ class BikeClassCreateView(MyCreateView):
 
     def get_success_url(self):
         # opts = self.model._meta
-        return reverse("core:bikeclass-list")
+        return reverse("core:product-list")
 
 
-class BikeClassUpdateView(MyUpdateView):
+class ProductUpdateView(MyUpdateView):
     """
-    View to update BikeClass
+    View to update product
     """
 
-    model = BikeClass
-    form_class = BikeClassChangeForm
-    template_name = "core/Bike_Class/Bike_Class_form.html"
-    permission_required = ("core.change_bikeclass",)
+    model = Product
+    form_class = ProductChangeForm
+    template_name = "core/product/product_form.html"
+    permission_required = ("core.change_product",)
 
     def get_success_url(self):
-        return reverse("core:bikeclass-list")
+        return reverse("core:product-list")
 
 
-class BikeClassDeleteView(MyDeleteView):
+class ProductDeleteView(MyDeleteView):
     """
-    View to delete BikeClass
+    View to delete product
     """
-    model = BikeClass
+    model = Product
     template_name = "core/confirm_delete.html"
-    permission_required = ("core.delete_bikeclass",)
+    permission_required = ("core.delete_product",)
 
     def get_success_url(self):
-        return reverse("core:bikeclass-list")
+        return reverse("core:product-list")
 
 
-class BikeClassAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequiredView):
+class ProductAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequiredView):
     """
-    Ajax-Pagination view for BikeClass
+    Ajax-Pagination view for FrameType
     """
-    model = BikeClass
+    model = Product
     queryset = model.objects.all().order_by("-id")
 
     def _get_is_superuser(self, obj):
@@ -114,8 +117,11 @@ class BikeClassAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequir
         # If a search term, filter the query
         if self.search:
             return qs.filter(
-                Q(bike_class__icontains=self.search) #|
-                # Q(slug__icontains=self.search)
+                Q(category__icontains=self.search) |
+                Q(product_code__icontains=self.search)|
+                Q(name__icontains=self.search)
+            
+                
             )
         return qs
 
@@ -127,7 +133,9 @@ class BikeClassAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequir
             data.append(
                 {
                     "id": o.id,
-                    "bike_class": o.bike_class,
+                    "name":o.name,
+                    "category": o.category,
+                    "product_code":o.product_code,
                     "actions": self._get_actions(o),
                 }
             )
@@ -138,4 +146,5 @@ class BikeClassAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequir
         total_filter_data = len(self.filter_queryset(self.model.objects.all().order_by("-id")))
         context_data['recordsTotal'] = len(self.model.objects.all().order_by("-id"))
         context_data['recordsFiltered'] = total_filter_data
+        print(type(context_data))
         return JsonResponse(context_data)

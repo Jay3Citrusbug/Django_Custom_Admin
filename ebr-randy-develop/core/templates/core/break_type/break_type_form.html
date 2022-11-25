@@ -13,12 +13,12 @@
         {% include "core/partials/form_hidden_fields.html" %}
 
         <div class="ibox float-e-margins">
-            {% include "core/partials/ibox_title.html" with ibox_title="Review wheelsize Details" icon_class="fas fa-info-circle" only %}
+            {% include "core/partials/ibox_title.html" with ibox_title="Review break Details" icon_class="fas fa-info-circle" only %}
             <div class="ibox-content">
 
                 <div class="row">
                     <div class="col-sm-6 mt-2">
-                        {{ form.wheel_size|as_crispy_field }}
+                        {{ form.break_type|as_crispy_field }}
                     </div>
                 </div>
                 

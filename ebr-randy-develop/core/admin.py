@@ -40,4 +40,6 @@ admin.site.register(BreakType, AllFieldAdmin)
 admin.site.register(UpVote, AllFieldAdmin)
 admin.site.register(ContactUs, AllFieldAdmin)
 admin.site.register(VisitorHistory, AllFieldAdmin)
+admin.site.register(Product, AllFieldAdmin)
+
 

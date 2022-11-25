@@ -6,3 +6,4 @@ from .pages import PagesCreationForm, PagesChangeForm
 from .menus import MenusCreationForm, MenusChangeForm
 from .trusted_accessories import TrustedAccessoriesCreationForm, TrustedAccessoriesChangeForm
 from .comments import CommentsCreationForm, CommentsChangeForm
+from .product import ProductCreationForm,ProductChangeForm

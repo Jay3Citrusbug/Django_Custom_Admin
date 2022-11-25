@@ -13,3 +13,4 @@ from .comment import Comments, UpVote
 from .model_changes import ModelYear, BikeClass, FrameType, WheelSize, BreakType
 from .contact import ContactUs
 from .visitor_history import VisitorHistory
+from .product import Product

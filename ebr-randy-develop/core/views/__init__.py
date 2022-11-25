@@ -54,3 +54,11 @@ from .frame_type import (
 from .wheel_size import (
    WheelSizeListView,WheelSizeCreateView,WheelSizeUpdateView,WheelSizeDeleteView,WheelSizeAjaxPagination
 )
+
+from .break_type import (
+   BreakTypeListView,BreakTypeCreateView,BreakTypeUpdateView,BreakTypeDeleteView,BreakTypeAjaxPagination
+)
+
+from .product import (
+   ProductListView,ProductCreateView,ProductUpdateView,ProductDeleteView,ProductAjaxPagination
+)

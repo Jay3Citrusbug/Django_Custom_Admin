@@ -185,6 +185,64 @@ $(document).ready(function(){
 
 
 
+    $('#breaktype-table').DataTable({
+        pageLength: 25,
+        responsive: true,
+        order: [[ 0, "desc" ]],
+        columnDefs: [{
+            orderable: false,
+            targets: -1
+        },],
+
+        // Ajax for pagination
+        "language":
+        {
+            "processing": "<b><i class='fa fa-refresh fa-spin'></i>&nbsp;Loading....</b>",
+        },
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: window.pagination_url,
+            type: 'get',
+        },
+        columns: [
+            { data: 'id', name: 'id' },
+            { data: 'break_type', name: 'break_type' },
+            { data: 'actions', name: 'actions' },
+        ],
+    });
+
+    $('#product-table').DataTable({
+        pageLength: 25,
+        responsive: true,
+        order: [[ 0, "desc" ]],
+        columnDefs: [{
+            orderable: false,
+            targets: -1
+        },],
+
+        // Ajax for pagination
+        "language":
+        {
+            "processing": "<b><i class='fa fa-refresh fa-spin'></i>&nbsp;Loading....</b>",
+        },
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: window.pagination_url,
+            type: 'get',
+        },
+        columns: [
+            { data: 'id', name: 'id' },
+            { data: 'name', name: 'name' },
+            { data: 'category', name: 'category' },
+            { data: 'product_code', name: 'product_code' },
+            { data: 'actions', name: 'actions' },
+        ],
+    });
+
+
+
 
 
 

@@ -8,7 +8,7 @@
 {% block page_content %}
     {% csrf_token %}
 
-    {% include "core/includes/list_header_card.html" with title="Create a new model" subtitle="You can add a new trusted by clicking this button." show_button=True %}
+    {% include "core/includes/list_header_card.html" with title="Create a new frame" subtitle="You can add a new frame by clicking this button." show_button=True %}
 
     <div class="ibox float-e-margins">
         <div class="ibox-content">
@@ -17,14 +17,18 @@
                     <thead>
                     <tr>
                         <th>ID</th>
-                        <th>YEAR</th>
+                        <th>NAME</th>
+                        <th>CATEGORY</th>
+                        <th>CODE</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
                     <tfoot>
                     <tr>
                         <th>ID</th>
-                        <th>YEAR</th>
+                        <th>NAME</th>
+                        <th>CATEGORY</th>
+                        <th>CODE</th>
                         <th>Actions</th>
                     </tr>
                     </tfoot>

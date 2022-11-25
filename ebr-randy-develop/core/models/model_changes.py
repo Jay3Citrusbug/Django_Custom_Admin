@@ -69,3 +69,6 @@ class BreakType(models.Model):
 
     class Meta:
 	    db_table = "break_type_changes"
+     
+     
+

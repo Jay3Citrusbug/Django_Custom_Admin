@@ -114,8 +114,7 @@ class WheelSizeAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequir
         # If a search term, filter the query
         if self.search:
             return qs.filter(
-                Q(name__icontains=self.search) |
-                Q(slug__icontains=self.search)
+                Q(wheel_size__icontains=self.search) 
             )
         return qs
 

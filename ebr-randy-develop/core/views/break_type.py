@@ -14,8 +14,8 @@ from core.mixins import HasPermissionsMixin
 from core.views.generic import (
     MyListView, MyCreateView, MyUpdateView, MyDeleteView, MyLoginRequiredView,
 )
-from core.forms.bike_class import BikeClassCreationForm,BikeClassChangeForm
-from core.models import BikeClass
+from core.forms.breaktype import BreakTypeCreationForm,BreakTypeChangeForm
+from core.models import BreakType
 from django.http import JsonResponse
 from django.shortcuts import render
 # -----------------------------------------------------------------------------
@@ -23,27 +23,27 @@ from django.shortcuts import render
 # -----------------------------------------------------------------------------
 
 
-class BikeClassListView(MyListView):
+class BreakTypeListView(MyListView):
     """
     View for BikeClass listing
     """
     # paginate_by = 25
     ordering = ["-id"]
-    model = BikeClass
+    model = BreakType
     queryset = model.objects.all()
-    template_name = "core/Bike_Class/Bike_Class_list.html"
-    permission_required = ("core.view_bikeclass",)
+    template_name = "core/break_type/break_type_list.html"
+    permission_required = ("core.view_breaktype",)
 
 
 
-class BikeClassCreateView(MyCreateView):
+class BreakTypeCreateView(MyCreateView):
     """
-    View to create BikeClass
+    View to create FrameType
     """
-    model = BikeClass
-    form_class = BikeClassCreationForm
-    template_name = "core/Bike_Class/Bike_Class_form.html"
-    permission_required = ("core.add_bikeclass",)
+    model = BreakType
+    form_class = BreakTypeCreationForm
+    template_name = "core/break_type/break_type_form.html"
+    permission_required = ("core.add_breaktype",)
 
     def form_valid(self, form):
         form.instance.create_by = self.request.user
@@ -51,40 +51,40 @@ class BikeClassCreateView(MyCreateView):
 
     def get_success_url(self):
         # opts = self.model._meta
-        return reverse("core:bikeclass-list")
+        return reverse("core:breaktype-list")
 
 
-class BikeClassUpdateView(MyUpdateView):
+class BreakTypeUpdateView(MyUpdateView):
     """
-    View to update BikeClass
+    View to update FrameType
     """
 
-    model = BikeClass
-    form_class = BikeClassChangeForm
-    template_name = "core/Bike_Class/Bike_Class_form.html"
-    permission_required = ("core.change_bikeclass",)
+    model = BreakType
+    form_class = BreakTypeChangeForm
+    template_name = "core/break_type/break_type_form.html"
+    permission_required = ("core.change_breaktype",)
 
     def get_success_url(self):
-        return reverse("core:bikeclass-list")
+        return reverse("core:breaktype-list")
 
 
-class BikeClassDeleteView(MyDeleteView):
+class BreakTypeDeleteView(MyDeleteView):
     """
-    View to delete BikeClass
+    View to delete FrameType
     """
-    model = BikeClass
+    model = BreakType
     template_name = "core/confirm_delete.html"
-    permission_required = ("core.delete_bikeclass",)
+    permission_required = ("core.delete_breaktype",)
 
     def get_success_url(self):
-        return reverse("core:bikeclass-list")
+        return reverse("core:breaktype-list")
 
 
-class BikeClassAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequiredView):
+class BreakTypeAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequiredView):
     """
-    Ajax-Pagination view for BikeClass
+    Ajax-Pagination view for FrameType
     """
-    model = BikeClass
+    model = BreakType
     queryset = model.objects.all().order_by("-id")
 
     def _get_is_superuser(self, obj):
@@ -114,7 +114,7 @@ class BikeClassAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequir
         # If a search term, filter the query
         if self.search:
             return qs.filter(
-                Q(bike_class__icontains=self.search) #|
+                Q(break_type__icontains=self.search) #|
                 # Q(slug__icontains=self.search)
             )
         return qs
@@ -127,11 +127,13 @@ class BikeClassAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequir
             data.append(
                 {
                     "id": o.id,
-                    "bike_class": o.bike_class,
+                    "break_type": o.break_type,
                     "actions": self._get_actions(o),
                 }
             )
+        print("***************************************************************************",data)
         return data
+        
 
     def get(self, request, *args, **kwargs):
         context_data = self.get_context_data(request)

@@ -30,12 +30,9 @@ class ProductListView(MyListView):
     # paginate_by = 25
     ordering = ["-id"]
     model = Product
+    queryset = model.objects.all()
     template_name = "core/product/product_list.html"
     permission_required = ("core.view_product",)
-    
-    def get(self,*args,**kwargs):
-        queryset = self.model.objects.all()
-        return render(self.request,self.template_name,context={"data":queryset})
 
 
 

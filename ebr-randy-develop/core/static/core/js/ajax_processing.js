@@ -237,7 +237,7 @@ $(document).ready(function(){
             { data: 'name', name: 'name' },
             { data: 'category', name: 'category' },
             { data: 'product_code', name: 'product_code' },
-            { data: 'actions', name: 'actions' },
+            { data: 'actions', name: 'actions' }
         ],
     });
 

@@ -235,12 +235,11 @@ $(document).ready(function(){
         columns: [
             { data: 'id', name: 'id' },
             { data: 'name', name: 'name' },
-            { data: 'category', name: 'category' },
             { data: 'product_code', name: 'product_code' },
             { data: 'actions', name: 'actions' }
         ],
     });
-
+// { data: 'category', name: 'category' },
 
 
 

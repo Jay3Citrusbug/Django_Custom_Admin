@@ -114,7 +114,7 @@ class ProductAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequired
         # If a search term, filter the query
         if self.search:
             return qs.filter(
-                Q(category__icontains=self.search) |
+                # Q(category__icontains=self.search) |
                 Q(product_code__icontains=self.search)|
                 Q(name__icontains=self.search)
             
@@ -131,7 +131,6 @@ class ProductAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequired
                 {
                     "id": o.id,
                     "name":o.name,
-                    "category": o.category,
                     "product_code":o.product_code,
                     "actions": self._get_actions(o),
                 }
@@ -143,5 +142,9 @@ class ProductAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequired
         total_filter_data = len(self.filter_queryset(self.model.objects.all().order_by("-id")))
         context_data['recordsTotal'] = len(self.model.objects.all().order_by("-id"))
         context_data['recordsFiltered'] = total_filter_data
-        print(type(context_data))
+        print(type(context_data),"------------------------------------------------")
+        # try:
         return JsonResponse(context_data)
+        # except Exception as e:
+        #     print(e)
+        #     return JsonResponse(str(e),safe=False)

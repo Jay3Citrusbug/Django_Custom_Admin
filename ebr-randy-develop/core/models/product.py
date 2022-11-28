@@ -18,4 +18,9 @@ class Product(models.Model):
 
 
     class Meta:
-	    db_table = "name"
+        db_table = "name"
+        indexes = [
+			models.Index(fields=['id']),
+			models.Index(fields=['name']),
+			models.Index(fields=['product_code'])
+		]

@@ -132,6 +132,9 @@ class ProductAjaxPagination(DataTableMixin, HasPermissionsMixin, MyLoginRequired
                     "id": o.id,
                     "name":o.name,
                     "product_code":o.product_code,
+                    "description":o.description,
+                    "short_description":o.short_description,
+                    "price":o.price,
                     "actions": self._get_actions(o),
                 }
             )

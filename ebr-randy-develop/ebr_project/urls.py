@@ -31,6 +31,7 @@ urlpatterns = [
     path('__debug__/', include('debug_toolbar.urls')),
     path('admin/', admin.site.urls),
     path('customadmin/', include("core.urls")),
+    path('apidata/',include("api.urls")),
     path('', include("frontend.urls")),
     # path('sitemap.xml', sitemap, {'sitemaps': sitemaps}),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps, 'template_name': 'frontend/custom_sitemap.html'}),

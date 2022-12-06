@@ -59,6 +59,8 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'debug_toolbar',
+    'api',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

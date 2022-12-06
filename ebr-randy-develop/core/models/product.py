@@ -9,10 +9,13 @@ from core.utils import category_brand_slugify, resize_image
 
 class Product(models.Model):
     name = models.CharField(max_length=255)
-    category = models.ForeignKey(ReviewCategory,on_delete=models.CASCADE)
-    product_code = models.CharField(max_length=255,unique=True)
-    
-
+    category = models.ForeignKey(ReviewCategory,on_delete=models.CASCADE,null=True,blank=True)
+    product_code = models.CharField(max_length=255)
+    description = models.TextField()
+    short_description = models.TextField()
+    price= models.DecimalField(max_digits=10, decimal_places=2)
+ 
+ 
     def __str__(self):
         return str(self.name)
 
@@ -22,5 +25,8 @@ class Product(models.Model):
         indexes = [
 			models.Index(fields=['id']),
 			models.Index(fields=['name']),
-			models.Index(fields=['product_code'])
+			models.Index(fields=['product_code']),
+            models.Index(fields=['description']),
+            models.Index(fields=['short_description']),
+            
 		]

@@ -236,7 +236,10 @@ $(document).ready(function(){
             { data: 'id', name: 'id' },
             { data: 'name', name: 'name' },
             { data: 'product_code', name: 'product_code' },
-            { data: 'actions', name: 'actions' }
+            // { data: 'description', name: 'description' },
+            // // { data: 'short_description', name: 'short_description' },
+            // // { data: 'price', name: 'price' },
+            { data: 'actions', name: 'actions' },
         ],
     });
 // { data: 'category', name: 'category' },
